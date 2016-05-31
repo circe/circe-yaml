@@ -17,6 +17,13 @@ the appropriate specification should be).
 
 ## Usage
 
+The artifact is hosted on Bintray:
+
+```scala
+resolvers += Resolver.bintrayRepo("jeremyrsmith", "maven")
+libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.1.0"
+```
+
 For better or worse, I simply placed the necessary classes under `io.circe.yaml`:
 
 ### Parsing
