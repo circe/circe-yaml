@@ -1,7 +1,7 @@
 name := "circe-yaml"
 organization := "io.github.jeremyrsmith"
 description := "Library for converting between SnakeYAML's AST and circe's AST"
-version := "0.1.0"
+version := "0.2.0"
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 scalaVersion := "2.11.8"

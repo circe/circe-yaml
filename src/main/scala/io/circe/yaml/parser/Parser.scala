@@ -11,6 +11,20 @@ import org.yaml.snakeyaml.nodes._
 
 object Parser {
 
+  object ScalarTag {
+    def unapply(tag: Tag) = if(tag.startsWith(Tag.PREFIX))
+      Some(tag.getClassName)
+    else
+      None
+  }
+
+  object CustomTag {
+    def unapply(tag: Tag) = if(!tag.startsWith(Tag.PREFIX))
+      Some(tag.getValue)
+    else
+      None
+  }
+
   // Typecasing.  Because Java :(
   private def convertYamlNode(node: Node): Xor[ParsingFailure, Json] = node match {
     case anchor: AnchorNode => convertYamlNode(anchor.getRealNode)
@@ -37,12 +51,14 @@ object Parser {
     case _ => Left(ParsingFailure("Only string keys can be represented in JSON", null))
   }
 
-  private def convertScalarNode(node: ScalarNode) = Xor.catchNonFatal(node.getTag.getClassName match {
-    case "int" => Json.fromJsonNumber(JsonNumber.unsafeIntegral(node.getValue))
-    case "float" => Json.fromJsonNumber(JsonNumber.unsafeDecimal(node.getValue))
-    case "bool" => Json.fromBoolean(node.getValue.toBoolean)
-    case "null" => Json.Null
-    case _ => Json.fromString(node.getValue)
+  private def convertScalarNode(node: ScalarNode) = Xor.catchNonFatal(node.getTag match {
+    case ScalarTag("int") => Json.fromJsonNumber(JsonNumber.unsafeIntegral(node.getValue))
+    case ScalarTag("float") => Json.fromJsonNumber(JsonNumber.unsafeDecimal(node.getValue))
+    case ScalarTag("bool") => Json.fromBoolean(node.getValue.toBoolean)
+    case ScalarTag("null") => Json.Null
+    case CustomTag(other) =>
+      Json.fromJsonObject(JsonObject.singleton(other.stripPrefix("!"), Json.fromString(node.getValue)))
+    case other => Json.fromString(node.getValue)
   }).leftMap {
     err => ParsingFailure(err.getMessage, err)
   }

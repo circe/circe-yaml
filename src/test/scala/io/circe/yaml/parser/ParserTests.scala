@@ -13,7 +13,7 @@ class ParserTests extends FreeSpec {
       }
 
     testFiles foreach {
-      case (yamlFile, jsonFile) => yamlFile - {
+      case (yamlFile, jsonFile) => yamlFile in {
         val jsonStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$jsonFile")
         val json = new BufferedReader(new InputStreamReader(jsonStream)).lines.toArray.mkString("\n")
         val parsedJson = io.circe.parser.parse(json)

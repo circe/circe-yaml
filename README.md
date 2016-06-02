@@ -21,7 +21,7 @@ The artifact is hosted on Bintray:
 
 ```scala
 resolvers += Resolver.bintrayRepo("jeremyrsmith", "maven")
-libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.1.0"
+libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.2.0"
 ```
 
 For better or worse, I simply placed the necessary classes under `io.circe.yaml`:
@@ -53,6 +53,14 @@ Other features of YAML are supported:
 * Streaming - use `parse(reader: Reader)` or `parseDocuments(reader: Reader)` to parse from a stream.  Not sure what
   you'll get out of it.
 * References / aliases - The reference will be replaced with the complete structure of the alias
+* Explicit tags (on scalar values only) are handled by converting the tag/scalar pair into a singleton json object:
+  ```yaml
+  example: !foo bar
+  ```
+  becomes
+  ```json
+  { "example": { "foo": "bar" } }
+  ```
 
 ### Printing (untested)
 
