@@ -21,7 +21,7 @@ The artifact is hosted on Bintray:
 
 ```scala
 resolvers += Resolver.bintrayRepo("jeremyrsmith", "maven")
-libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.2.0"
+libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.2.1"
 ```
 
 For better or worse, I simply placed the necessary classes under `io.circe.yaml`:
