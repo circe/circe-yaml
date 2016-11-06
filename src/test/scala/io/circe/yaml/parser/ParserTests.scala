@@ -2,6 +2,7 @@ package io.circe.yaml.parser
 
 import java.io.{BufferedReader, File, InputStreamReader}
 import org.scalatest.{FlatSpec, FreeSpec}
+import io.circe.yaml.printer._
 
 class ParserTests extends FreeSpec {
 
@@ -21,6 +22,8 @@ class ParserTests extends FreeSpec {
           new InputStreamReader(getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile"))
         )
         assert(parsedJson == parsedYaml)
+        val printedYaml = parsedYaml.map(_.asYaml)
+        assert(printedYaml.isRight)
       }
     }
   }
