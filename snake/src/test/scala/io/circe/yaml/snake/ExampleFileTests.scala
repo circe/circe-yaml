@@ -1,9 +1,10 @@
-package io.circe.yaml.parser
+package io.circe.yaml.snake
 
 import java.io.{BufferedReader, File, InputStreamReader}
-import org.scalatest.{FlatSpec, FreeSpec}
 
-class ParserTests extends FreeSpec {
+import org.scalatest.FreeSpec
+
+class ExampleFileTests extends FreeSpec {
 
   "yaml test files" - {
 
@@ -17,9 +18,9 @@ class ParserTests extends FreeSpec {
         val jsonStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$jsonFile")
         val json = new BufferedReader(new InputStreamReader(jsonStream)).lines.toArray.mkString("\n")
         val parsedJson = io.circe.parser.parse(json)
-        val parsedYaml = Parser.parse(
-          new InputStreamReader(getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile"))
-        )
+        val yamlStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile")
+        val yaml = new BufferedReader(new InputStreamReader(yamlStream)).lines.toArray.mkString("\n")
+        val parsedYaml = parser.parse(yaml)
         assert(parsedJson == parsedYaml)
       }
     }

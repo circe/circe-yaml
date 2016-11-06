@@ -21,21 +21,24 @@ The artifact is hosted on Bintray:
 
 ```scala
 resolvers += Resolver.bintrayRepo("jeremyrsmith", "maven")
-libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.2.1"
+libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.3.0"
 ```
 
 For better or worse, I simply placed the necessary classes under `io.circe.yaml`:
 
 ### Parsing
 
+If you have circe-generic, you can do:
+
 ```scala
-import io.circe.yaml.parser.Parser
+import cats.syntax.either._
 import io.circe.generic.auto._
+import io.circe.yaml._
 
 case class Nested(one: String, two: BigDecimal)
 case class Foo(foo: String, bar: Nested, baz: List[String])
 
-val json = Parser.parse("""
+val json = parser.parse("""
 foo: Hello, World
 bar:
     one: One Third
@@ -43,8 +46,8 @@ bar:
 baz:
     - Hello
     - World""")
-    
-println(json.flatMap(_.as[Foo]).valueOr(throw _))
+
+println(json.map(_.as[Foo]).valueOr(throw _))
 ```
 
 Other features of YAML are supported:
@@ -62,14 +65,16 @@ Other features of YAML are supported:
   { "example": { "foo": "bar" } }
   ```
 
-### Printing (untested)
+### Printing
 
 ```scala
-import io.circe.yaml.printer._
+import cats.syntax.either._
+import io.circe.yaml._
+import io.circe.yaml.syntax._
 
 val json = io.circe.parser.parse("""{"foo":"bar"}""").valueOr(throw _)
 
-println(json.asYaml)
+println(json.asYamlString)
 ```
 
 ### Limitations
