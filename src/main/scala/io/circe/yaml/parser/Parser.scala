@@ -9,7 +9,7 @@ import io.circe.{Json, JsonNumber, JsonObject, ParsingFailure}
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._
 
-@deprecated("Use io.circe.yaml.YamlParser instead. This will be removed in 0.3.0.", "0.2.0")
+@deprecated("Use io.circe.yaml.parser instead. This will be removed in 0.3.0.", "0.2.0")
 object Parser {
 
   object ScalarTag {
@@ -72,18 +72,18 @@ object Parser {
   private def parseYamlStream(reader: Reader) =
     new Yaml().composeAll(reader).asScala.toStream.map(convertYamlNode)
 
-  @deprecated("Use io.circe.yaml.YamlParser.parse instead. This will be removed in 0.3.0.", "0.2.0")
+  @deprecated("Use io.circe.yaml.parser.parse instead. This will be removed in 0.3.0.", "0.2.0")
   def parse(reader: Reader) : Xor[ParsingFailure, Json] = parseYaml(reader).leftMap {
     case err @ ParsingFailure(msg, underlying) => err
     case err => ParsingFailure(err.getMessage, err)
   }
 
-  @deprecated("Use io.circe.yaml.YamlParser.parse instead. This will be removed in 0.3.0.", "0.2.0")
+  @deprecated("Use io.circe.yaml.parser.parse instead. This will be removed in 0.3.0.", "0.2.0")
   def parse(string: String) : Xor[ParsingFailure, Json] = parse(new StringReader(string))
 
-  @deprecated("Use io.circe.yaml.YamlParser.stream instead. This will be removed in 0.3.0.", "0.2.0")
+  @deprecated("Use io.circe.yaml.parser.stream instead. This will be removed in 0.3.0.", "0.2.0")
   def parseDocuments(string: String) : Stream[Xor[ParsingFailure, Json]] = parseDocuments(new StringReader(string))
-  @deprecated("Use io.circe.yaml.YamlParser.stream instead. This will be removed in 0.3.0.", "0.2.0")
+  @deprecated("Use io.circe.yaml.parser.stream instead. This will be removed in 0.3.0.", "0.2.0")
   def parseDocuments(reader: Reader) : Stream[Xor[ParsingFailure, Json]] = parseYamlStream(reader)
 
 }

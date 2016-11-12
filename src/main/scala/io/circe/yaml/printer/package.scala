@@ -5,6 +5,8 @@ import org.yaml.snakeyaml.DumperOptions
 
 package object printer {
 
+  type Printer = Json => String
+
   implicit class AsYamlSyntax(val json: Json) extends AnyVal {
 
     @deprecated("Use import io.circe.yaml.syntax._ instead. This will be removed in 0.3.0.", "0.2.2")
