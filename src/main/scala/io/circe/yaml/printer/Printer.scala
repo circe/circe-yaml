@@ -15,7 +15,8 @@ import org.yaml.snakeyaml.serializer.Serializer
   * This can't hook into any circe Printer stuff, because that's a sealed case class
   * So it's a separate thing.
   */
-class Printer {
+@deprecated("Use io.circe.yaml.printer.Printer instead. This will be removed in 0.3.0.", "0.2.0")
+class PrinterImpl {
 
 
   private def toYamlNode(json: Json): Node = json match {
@@ -40,14 +41,20 @@ class Printer {
       new MappingNode(Tag.MAP, vs.asJava, false)
   }
 
+  @deprecated("Use io.circe.yaml.YamlPrinter.print instead. This will be removed in 0.3.0.", "0.2.0")
   def apply(json: Json, dumperOptions: DumperOptions = new DumperOptions): String = {
     val yaml = toYamlNode(json)
     val writer = new StringWriter()
     val serializer = new Serializer(new Emitter(writer, dumperOptions), new Resolver, dumperOptions, null)
-    serializer.serialize(yaml)
-    writer.toString
+    try {
+      serializer.open()
+      serializer.serialize(yaml)
+      writer.toString
+    }
+    finally serializer.close()
   }
 
 }
 
-object Printer extends Printer
+@deprecated("Use io.circe.yaml.printer instead. This will be removed in 0.3.0.", "0.2.0")
+object Printer extends PrinterImpl
