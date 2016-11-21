@@ -62,3 +62,5 @@ lazy val testing = (project in file("testing"))
       Libraries.discipline
     )
   )
+
+lazy val `circe-yaml` = project in file (".") aggregate (snake)
