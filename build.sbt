@@ -1,4 +1,5 @@
 name := "circe-yaml"
+version in ThisBuild := "0.3.0"
 organization in ThisBuild := "io.github.jeremyrsmith"
 description in ThisBuild := "Library for converting between SnakeYAML's AST and circe's AST"
 
@@ -21,7 +22,6 @@ val Libraries = new {
 }
 
 val commonSettings = Seq(
-  version := "0.3.0-SNAPSHOT",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8"),
 
