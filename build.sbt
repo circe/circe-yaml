@@ -2,6 +2,7 @@ name := "circe-yaml"
 version in ThisBuild := "0.3.0"
 organization in ThisBuild := "io.github.jeremyrsmith"
 description in ThisBuild := "Library for converting between SnakeYAML's AST and circe's AST"
+licenses in ThisBuild += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 val Versions = new {
   val circe = "0.6.1"
@@ -36,9 +37,7 @@ val commonSettings = Seq(
   ).map(_ % Test),
 
   bintrayRepository := "maven",
-  bintrayVcsUrl := Some("https://github.com/jeremyrsmith/circe-yaml"),
-
-  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+  bintrayVcsUrl := Some("https://github.com/jeremyrsmith/circe-yaml")
 )
 
 lazy val snake = (project in file("snake"))
