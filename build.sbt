@@ -43,7 +43,7 @@ val commonSettings = Seq(
 lazy val snake = (project in file("snake"))
   .settings(commonSettings)
   .settings(
-    name := "circe-yaml-snake",
+    name := "circe-yaml",
     libraryDependencies ++= Seq(
       Libraries.circeParser,
       Libraries.snakeYaml
@@ -62,6 +62,3 @@ lazy val testing = (project in file("testing"))
     )
   )
 
-lazy val `circe-yaml` = (project in file (".")).settings(
-  commonSettings
-) dependsOn (snake) //aggregate (snake)
