@@ -44,8 +44,14 @@ class CirceJsonConstructor extends SafeConstructor {
       val tag = node.getTag
       if (tag.startsWith(Tag.PREFIX)) tag match {
         case Tag.STR | Tag.TIMESTAMP | Tag.BINARY => JString(scalarValue(node))
-        case Tag.INT => JNumber(JsonNumber.fromIntegralStringUnsafe(scalarValue(node)))
-        case Tag.FLOAT => JNumber(JsonNumber.fromDecimalStringUnsafe(scalarValue(node)))
+        case Tag.INT | Tag.FLOAT =>
+          val strValue = scalarValue(node)
+          val jsonNumber =
+            if ((strValue contains '.') || (strValue contains 'e') || (strValue contains 'E'))
+              JsonNumber.fromDecimalStringUnsafe(strValue)
+            else
+              JsonNumber.fromIntegralStringUnsafe(strValue)
+          JNumber(jsonNumber)
         case Tag.BOOL => JBoolean(scalarValue(node).toBoolean)
         case Tag.SEQ | Tag.SET =>
           val children = node.asInstanceOf[SequenceNode].getValue.asScala

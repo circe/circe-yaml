@@ -1,5 +1,5 @@
 name := "circe-yaml"
-version in ThisBuild := "0.3.0"
+version in ThisBuild := "0.3.1"
 organization in ThisBuild := "io.github.jeremyrsmith"
 description in ThisBuild := "Library for converting between SnakeYAML's AST and circe's AST"
 licenses in ThisBuild += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
@@ -43,7 +43,7 @@ val commonSettings = Seq(
 lazy val snake = (project in file("snake"))
   .settings(commonSettings)
   .settings(
-    name := "circe-yaml-snake",
+    name := "circe-yaml",
     libraryDependencies ++= Seq(
       Libraries.circeParser,
       Libraries.snakeYaml
@@ -62,6 +62,3 @@ lazy val testing = (project in file("testing"))
     )
   )
 
-lazy val `circe-yaml` = (project in file (".")).settings(
-  commonSettings
-) dependsOn (snake) //aggregate (snake)
