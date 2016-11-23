@@ -1,7 +1,7 @@
 package io.circe.yaml
 
 import cats.Eq
-import cats.instances.option._
+import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
 import io.circe.{Decoder, Encoder, Json, ParsingFailure}
@@ -14,8 +14,9 @@ trait SymmetricSerializationLaws {
     parse: String => Either[ParsingFailure, Json],
     print: Json => String,
     a: A
-  ): IsEq[Option[A]] =
-    parse(print(Encoder[A].apply(a))).right.flatMap(_.as[A]).right.toOption <-> Some(a)
+  ): IsEq[Either[io.circe.Error, A]] =
+    parse(print(Encoder[A].apply(a))).right.flatMap(_.as[A]) <-> Right(a)
+
 }
 
 object SymmetricSerializationLaws {
