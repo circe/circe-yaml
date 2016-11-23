@@ -6,7 +6,7 @@ import io.circe.{Json, JsonDouble, JsonLong}
 import io.circe.Json._
 import io.circe.yaml.snake.CirceJsonRepresenter.RepresentCirceJson
 import org.yaml.snakeyaml.nodes.{Node, Tag}
-import org.yaml.snakeyaml.representer.{Represent, Representer, SafeRepresenter}
+import org.yaml.snakeyaml.representer.{Represent, Representer}
 
 import scala.collection.JavaConverters._
 

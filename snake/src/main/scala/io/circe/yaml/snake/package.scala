@@ -38,7 +38,7 @@ package object snake {
   object JavaSnakeYaml {
     def apply(
       config: SnakeYamlConfigs = SnakeYamlConfigs.default,
-      printerOptions: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions.default
+      printerOptions: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions.auto
     ): JavaSnakeYaml = {
       val instances = CurrentThreadSnakeYamlInstances.get()
       instances.getOrElse(printerOptions, {
@@ -60,9 +60,10 @@ package object snake {
       opts.getWidth,
       opts.getSplitLines,
       opts.getIndicatorIndent,
-      Option(opts.getTags).map(_.asScala.toMap).getOrElse(SnakeYamlPrinterOptions.default.tags),
-      Option(opts.getDefaultFlowStyle).getOrElse(SnakeYamlPrinterOptions.default.defaultFlowStyle),
+      Option(opts.getTags).map(_.asScala.toMap).getOrElse(SnakeYamlPrinterOptions.auto.tags),
+      Option(opts.getDefaultFlowStyle).getOrElse(SnakeYamlPrinterOptions.auto.defaultFlowStyle),
       opts.getDefaultScalarStyle,
+      opts.isPrettyFlow,
       opts.getLineBreak,
       Option(opts.getVersion)
     )
@@ -77,6 +78,7 @@ package object snake {
     dumperOptions.setTags(opts.tags.asJava)
     dumperOptions.setDefaultFlowStyle(opts.defaultFlowStyle)
     dumperOptions.setDefaultScalarStyle(opts.defaultScalarStyle)
+    dumperOptions.setPrettyFlow(opts.prettyFlow)
     dumperOptions.setLineBreak(opts.lineBreak)
     opts.version foreach dumperOptions.setVersion
     dumperOptions

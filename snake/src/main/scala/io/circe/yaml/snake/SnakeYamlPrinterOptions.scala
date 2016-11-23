@@ -14,11 +14,23 @@ case class SnakeYamlPrinterOptions(
   tags: Map[String, String] = Map.empty,
   defaultFlowStyle: FlowStyle = FlowStyle.AUTO,
   defaultScalarStyle: ScalarStyle = ScalarStyle.PLAIN,
-  lineBreak: LineBreak = LineBreak.UNIX,
-  version: Option[Version] = Some(Version.V1_1)
+  prettyFlow: Boolean = false,
+  lineBreak: LineBreak = LineBreak.getPlatformLineBreak,
+  version: Option[Version] = None
 )
 
 object SnakeYamlPrinterOptions {
 
-  val default: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions()
+  val document: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions(
+    defaultFlowStyle = FlowStyle.BLOCK,
+    prettyFlow = true,
+    version = Some(Version.V1_1)
+  )
+
+  val auto: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions()
+
+  @deprecated("Use auto or document depending on whether you want to pretty print a fragment or a full document")
+  val default: SnakeYamlPrinterOptions = SnakeYamlPrinterOptions(
+    version = Some(Version.V1_1)
+  )
 }
