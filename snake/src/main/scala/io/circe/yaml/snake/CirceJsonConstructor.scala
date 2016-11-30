@@ -43,7 +43,7 @@ class CirceJsonConstructor extends SafeConstructor {
       @inline def scalarValue(node: Node): String = node.asInstanceOf[ScalarNode].getValue
       val tag = node.getTag
       if (tag.startsWith(Tag.PREFIX)) tag match {
-        case Tag.STR | Tag.TIMESTAMP | Tag.BINARY => JString(scalarValue(node))
+        case Tag.STR | Tag.TIMESTAMP | Tag.BINARY => Json.fromString(scalarValue(node))
         case Tag.INT | Tag.FLOAT =>
           val strValue = scalarValue(node)
           val jsonNumber =
@@ -51,8 +51,8 @@ class CirceJsonConstructor extends SafeConstructor {
               JsonNumber.fromDecimalStringUnsafe(strValue)
             else
               JsonNumber.fromIntegralStringUnsafe(strValue)
-          JNumber(jsonNumber)
-        case Tag.BOOL => JBoolean(scalarValue(node).toBoolean)
+          Json.fromJsonNumber(jsonNumber)
+        case Tag.BOOL => Json.fromBoolean(scalarValue(node).toBoolean)
         case Tag.SEQ | Tag.SET =>
           val children = node.asInstanceOf[SequenceNode].getValue.asScala
           // Using Array for faster indexed lookup and smaller heap-size
@@ -60,7 +60,7 @@ class CirceJsonConstructor extends SafeConstructor {
           for ((child, i) <- children.zipWithIndex) {
             nodes(i) = fromNode(child)
           }
-          JArray(nodes)
+          Json.fromValues(nodes)
         case Tag.MAP | Tag.OMAP =>
           val children = node.asInstanceOf[MappingNode].getValue.asScala
           val fields = children.map { child =>
@@ -68,8 +68,8 @@ class CirceJsonConstructor extends SafeConstructor {
             val value = fromNode(child.getValueNode)
             key -> value
           }
-          JObject(JsonObject.fromIterable(fields))
-        case Tag.NULL => JNull
+          Json.fromJsonObject(JsonObject.fromIterable(fields))
+        case Tag.NULL => Json.Null
         case _ => throw new UnsupportedOperationException(s"Cannot construct Json from unsupported Yaml tag: '$tag'")
       } else {
         // custom tag
