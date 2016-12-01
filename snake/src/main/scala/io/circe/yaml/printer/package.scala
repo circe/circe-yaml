@@ -7,7 +7,12 @@ package object printer {
   type Printer = Json => String
 
   /**
-    * A default printer implementation using Snake YAML.
+    * A simple printer implementation using Snake YAML.
     */
   val print: Printer = (tree: Json) => snake.printer.print(tree)
+
+  /**
+    * A document printer implementation using Snake YAML.
+    */
+  val printDocument: Printer = (tree: Json) => snake.printer.printDocument(tree)
 }
