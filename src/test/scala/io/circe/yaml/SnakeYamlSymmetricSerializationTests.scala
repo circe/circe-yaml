@@ -1,9 +1,8 @@
-package io.circe.yaml.snake
+package io.circe.yaml
 
 import io.circe.Json
 import io.circe.Json.eqJson
 import io.circe.testing.instances._
-import io.circe.yaml._
 import org.scalatest.FunSuite
 import org.typelevel.discipline.scalatest.Discipline
 

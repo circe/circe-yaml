@@ -1,4 +1,4 @@
-package io.circe.yaml.snake
+package io.circe.yaml
 
 import java.io.{BufferedReader, File, InputStreamReader}
 
