@@ -4,10 +4,8 @@ import io.circe.Json
 
 package object printer {
 
-  type Printer = Json => String
-
   /**
     * A default printer implementation using Snake YAML.
     */
-  val print: Printer = (tree: Json) => snake.printer.print(tree)
+  def print(tree: Json): String = Printer.spaces2.pretty(tree)
 }

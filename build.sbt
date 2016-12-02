@@ -1,8 +1,14 @@
 name := "circe-yaml"
-version in ThisBuild := "0.4.0"
+version in ThisBuild := "0.4.0-SNAPSHOT"
 organization in ThisBuild := "io.github.jeremyrsmith"
 description in ThisBuild := "Library for converting between SnakeYAML's AST and circe's AST"
 licenses in ThisBuild += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+
+scalaVersion := "2.11.8"
+crossScalaVersions := Seq("2.10.6", "2.11.8")
+
+bintrayRepository := "maven"
+bintrayVcsUrl := Some("https://github.com/jeremyrsmith/circe-yaml")
 
 val Versions = new {
   val circe = "0.6.1"
@@ -12,53 +18,12 @@ val Versions = new {
   val snakeYaml = "1.17"
 }
 
-val Libraries = new {
-  val circeCore = "io.circe" %% "circe-core" % Versions.circe
-  val circeParser = "io.circe" %% "circe-parser" % Versions.circe
-  val circeTesting = "io.circe" %% "circe-testing" % Versions.circe
-  val discipline = "org.typelevel" %% "discipline" % Versions.discipline
-  val scalaCheck = "org.scalacheck" %% "scalacheck" % Versions.scalaCheck
-  val scalaTest = "org.scalatest" %% "scalatest" % Versions.scalaTest
-  val snakeYaml = "org.yaml" % "snakeyaml" % Versions.snakeYaml
-}
-
-val commonSettings = Seq(
-  scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8"),
-
-  libraryDependencies ++= Seq(
-    Libraries.circeCore
-  ) ++ Seq(
-    // Test-only dependencies
-    Libraries.circeTesting,
-    Libraries.discipline,
-    Libraries.scalaCheck,
-    Libraries.scalaTest
-  ).map(_ % Test),
-
-  bintrayRepository := "maven",
-  bintrayVcsUrl := Some("https://github.com/jeremyrsmith/circe-yaml")
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core" % Versions.circe,
+  "io.circe" %% "circe-parser" % Versions.circe,
+  "org.yaml" % "snakeyaml" % Versions.snakeYaml,
+  "io.circe" %% "circe-testing" % Versions.circe % "test",
+  "org.typelevel" %% "discipline" % Versions.discipline % "test",
+  "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "test",
+  "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
 )
-
-lazy val `circe-yaml` = (project in file("."))
-  .settings(commonSettings)
-  .settings(
-    name := "circe-yaml",
-    libraryDependencies ++= Seq(
-      Libraries.circeParser,
-      Libraries.snakeYaml
-    )
-  )
-  .dependsOn(testing % Test)
-
-lazy val testing = (project in file("testing"))
-  .settings(commonSettings)
-  .settings(
-    name := "circe-yaml-testing",
-    libraryDependencies ++= Seq(
-      Libraries.snakeYaml,
-      Libraries.circeTesting,
-      Libraries.discipline
-    )
-  )
-
