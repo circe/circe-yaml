@@ -1,11 +1,10 @@
 name := "circe-yaml"
-version in ThisBuild := "0.4.0-SNAPSHOT"
-organization in ThisBuild := "io.github.jeremyrsmith"
-description in ThisBuild := "Library for converting between SnakeYAML's AST and circe's AST"
-licenses in ThisBuild += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+organization := "io.circe"
+description := "Library for converting between SnakeYAML's AST and circe's AST"
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 scalaVersion := "2.11.8"
-crossScalaVersions := Seq("2.10.6", "2.11.8")
+crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0")
 
 bintrayRepository := "maven"
 bintrayVcsUrl := Some("https://github.com/jeremyrsmith/circe-yaml")

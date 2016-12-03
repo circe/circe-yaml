@@ -18,10 +18,16 @@ class ExampleFileTests extends FreeSpec {
         val jsonStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$jsonFile")
         val json = new BufferedReader(new InputStreamReader(jsonStream)).lines.toArray.mkString("\n")
         val parsedJson = io.circe.parser.parse(json)
-        val yamlStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile")
-        val yaml = new BufferedReader(new InputStreamReader(yamlStream)).lines.toArray.mkString("\n")
-        val parsedYaml = parser.parse(yaml)
-        assert(parsedJson == parsedYaml)
+        def yamlReader = new InputStreamReader(getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile"))
+        val yaml = new BufferedReader(yamlReader).lines.toArray.mkString("\n")
+        val parsedYamlString = parser.parse(yaml)
+        val parsedStreamString = parser.parseDocuments(yaml)
+        val parsedYamlReader = parser.parse(yamlReader)
+        val parsedStreamReader = parser.parseDocuments(yamlReader)
+        assert(parsedJson == parsedYamlString)
+        assert(parsedJson == parsedStreamString.head)
+        assert(parsedJson == parsedYamlReader)
+        assert(parsedJson == parsedStreamReader.head)
       }
     }
   }
