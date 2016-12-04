@@ -1,4 +1,4 @@
-# circe-yaml
+# circe-yaml [![codecov](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml)
 
 This is a small library which translates [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)'s AST into 
 [circe](https://github.com/travisbrown/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents
