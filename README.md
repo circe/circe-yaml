@@ -1,37 +1,64 @@
 # circe-yaml [![Build Status](https://travis-ci.org/circe/circe-yaml.svg?branch=master)](https://travis-ci.org/circe/circe-yaml) [![codecov](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml)
 
 This is a small library which translates [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)'s AST into 
-[circe](https://github.com/travisbrown/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents
-into circe's `Json` AST.
+[circe](https://github.com/circe/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents into circe's
+`Json` AST.
 
 ## Why?
 
-YAML is a useful data format for many purposes in which a more readable, less verbose document is desired.  My use
-case, for example, is configuration files.
+YAML is a useful data format for many purposes in which a more readable, less verbose document is desired.  One use
+case, for example, is human-readable configuration files.
 
-However, you might find circe's way of marshalling into a Scala ADT preferable -- using compile-time specification or
-derivation rather than runtime reflection.  This enables you to parse YAML into `Json`, and use your existing (or
-circe's generic) `Decoder`s to perform the ADT marshalling.  You can also use circe's `Encoder` to obtain a JSON, and
-print that to YAML using this library (though that feature doesn't currently have any tests, as I'm not sure what
-the appropriate specification should be).
+SnakeYAML provides a Java API for parsing YAML and marshalling its structures into JVM classes. However, you might find 
+circe's way of marshalling into a Scala ADT preferable -- using compile-time specification or derivation rather than runtime 
+reflection.  This enables you to parse YAML into `Json`, and use your existing (or circe's generic) `Decoder`s to perform 
+the ADT marshalling.  You can also use circe's `Encoder` to obtain a `Json`, and print that to YAML using this library.
 
 ## Usage
 
-The artifact is hosted on Bintray:
+The artifact is hosted by Sonatype, and release versions are synced to Maven Central:
 
 ```scala
-resolvers += Resolver.bintrayRepo("jeremyrsmith", "maven")
-libraryDependencies += "io.github.jeremyrsmith" %% "circe-yaml" % "0.3.0"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.4.0"
 ```
 
-For better or worse, I simply placed the necessary classes under `io.circe.yaml`:
+Snapshot versions are available by adding the Sonatype Snapshots resolver:
+
+```scala
+resolvers += Resolver.sonatypeRepo("snapshots")
+```
 
 ### Parsing
+Parsing is accomplished through the `io.circe.yaml.parser` package; its API is similar to that of `circe-parser`:
 
-If you have circe-generic, you can do:
+```scala
+import io.circe.yaml.parser
+val json: Either[ParsingFailure, Json] = parser.parse(yamlString)
+```
+
+Additionally, there is a function for parsing multiple YAML documents from a single string:
+
+```scala
+val jsons: Stream[Either[ParsingFailure, Json]] = parser.parseDocuments(multiDocumentString)
+```
+
+Both of these methods also support a "streaming" parse from a `java.io.Reader` – this is different from the behavior of 
+`circe-streaming` (which supports fully asynchronous streaming parsing with iteratees) but does provide a convenient way to 
+retrieve YAML from Java inputs:
+
+```scala
+val config = getClass.getClassLoader.getResourcesAsStream("config.yml")
+val json = parser.parse(new InputStreamReader(config))
+
+val configs = getClass.getClassLoader.getResourceAsStream("configs.yml")
+val jsons = parser.parseDocuments(new InputStreamReader(configs))
+```
+
+Once you've parsed to `Json`, usage is the same as circe. For example, if you have `circe-generic`, you can do:
 
 ```scala
 import cats.syntax.either._
+import io.circe._
 import io.circe.generic.auto._
 import io.circe.yaml._
 
@@ -45,9 +72,13 @@ bar:
     two: 33.333333
 baz:
     - Hello
-    - World""")
+    - World
+""")
 
-println(json.map(_.as[Foo]).valueOr(throw _))
+val foo = json
+  .leftMap(err => err: Error)
+  .flatMap(_.as[Foo])
+  .valueOr(throw _)
 ```
 
 Other features of YAML are supported:
@@ -66,6 +97,8 @@ Other features of YAML are supported:
   ```
 
 ### Printing
+The package `io.circe.yaml.syntax` provides an enrichment to `Json` which supports easily serializing to YAML using common
+options:
 
 ```scala
 import cats.syntax.either._
@@ -74,7 +107,16 @@ import io.circe.yaml.syntax._
 
 val json = io.circe.parser.parse("""{"foo":"bar"}""").valueOr(throw _)
 
-println(json.asYamlString)
+println(json.asYaml.spaces2) // 2 spaces for each indent level
+println(json.asYaml.spaces4) // 4 spaces for each indent level
+```
+
+Additionally, there is a class `io.circe.yaml.Printer` which (in similar fashion to circe's `Printer`) can be configured 
+with many options which control the `String` output. Its `pretty` method produces a `String` using the configured options:
+
+```
+io.circe.yaml.Printer(dropNullKeys = true, mappingStyle = Printer.FlowStyle.Block)
+  .pretty(json)
 ```
 
 ### Limitations
@@ -90,15 +132,11 @@ Only JSON-compatible YAML can be used, for obvious reasons:
 This is released under the Apache 2.0 license, as specified in [the LICENSE file](LICENSE).  It depends on both
 circe and SnakeYAML, which each has its own license.  Consult those projects to learn about their licenses.
 
-This library is neither affiliated with, nor endorsed by circe or SnakeYAML.
+This library is neither endorsed by, nor affiliated with, SnakeYAML.
 
 ## Contributing
+As part of the [circe](https://github.com/circe/circe) community, circe-yaml supports the [Typelevel](http://typelevel.org/) [code of conduct](http://typelevel.org/conduct.html) and wants all of its channels (Gitter, GitHub, etc.) to be welcoming environments for everyone.
 
-This library is not heavily tested, as it's a relatively simple transformation.  More tests are welcome, as is any other
-contribution.  Simply make a pull request, if you want to.
+Please read the [circe Contributor's Guide](https://github.com/circe/circe/blob/master/CONTRIBUTING.md) for information about how to submit a pull request.
 
-## Name
-
-I thought about naming this `Medea` after the sorceress who helped Jason defeat the snake who guarded the Golden Fleece
-(to bring it in line with Argonaut and Circe - get it? SnakeYAML?).  But, it's really such a small library that it
-doesn't warrant its own name.
+This circe community module is currently maintained by [Jeremy Smith](https://github.com/jeremyrsmith) and [Jeff May](https://github.com/jeffmay), with guidance from [Travis Brown](https://github.com/travisbrown). It strives to conform as closely as possible to the style of circe itself.
