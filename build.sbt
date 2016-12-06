@@ -42,7 +42,7 @@ scmInfo := Some(
 
 developers := List(
   Developer("jeremyrsmith", "Jeremy Smith", "jeremyrsmith@gmail.com", url("https://github.com/jeremyrsmith")),
-  Developer("jeffmay", "Jeff May", "", url("https://github.com/jeffmay")),
+  Developer("jeffmay", "Jeff May", "jeff.n.may@gmail.com", url("https://github.com/jeffmay")),
   Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com",
     url("https://twitter.com/travisbrown"))
 )
