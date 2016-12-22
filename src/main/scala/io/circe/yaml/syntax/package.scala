@@ -15,6 +15,6 @@ package object syntax {
     * Call this to serialize a [[Json]] AST into a YAML string using the default options.
     */
   implicit class AsYaml(val tree: Json) extends AnyVal {
-    def asYaml = new YamlSyntax(tree)
+    def asYaml: YamlSyntax = new YamlSyntax(tree)
   }
 }

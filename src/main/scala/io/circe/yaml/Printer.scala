@@ -1,16 +1,14 @@
 package io.circe.yaml
 
-import java.io.StringWriter
-
-import scala.collection.JavaConverters._
-
 import Printer._
 import io.circe._
+import java.io.StringWriter
+import org.yaml.snakeyaml.{DumperOptions, Yaml}
 import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.nodes._
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
-import org.yaml.snakeyaml.{DumperOptions, Yaml}
+import scala.collection.JavaConverters._
 
 final case class Printer(
   dropNullKeys: Boolean = false,
@@ -83,7 +81,7 @@ final case class Printer(
   private def jsonToYaml(json: Json): Node = {
 
     def convertObject(obj: JsonObject) = {
-      val map = if(dropNullKeys)
+      val map = if (dropNullKeys)
         obj.filter(!_._2.isNull).toMap
       else
         obj.toMap
@@ -149,7 +147,7 @@ object Printer {
   private def yamlTag(json: Json) = json.fold(
     Tag.NULL,
     _ => Tag.BOOL,
-    number => if(number.toLong.nonEmpty) Tag.INT else Tag.FLOAT,
+    number => if (number.toLong.nonEmpty) Tag.INT else Tag.FLOAT,
     _ => Tag.STR,
     _ => Tag.SEQ,
     _ => Tag.MAP
