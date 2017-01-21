@@ -1,14 +1,12 @@
 package io.circe.yaml
 
-import java.io.{Reader, StringReader}
-
-import scala.collection.JavaConverters._
-
 import cats.syntax.either._
-import io.circe.numbers.BiggerDecimal
 import io.circe._
+import io.circe.numbers.BiggerDecimal
+import java.io.{Reader, StringReader}
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._
+import scala.collection.JavaConverters._
 
 package object parser {
 
@@ -35,7 +33,7 @@ package object parser {
     new Yaml().composeAll(reader).asScala.toStream
 
   private[this] object CustomTag {
-    def unapply(tag: Tag) = if(!tag.startsWith(Tag.PREFIX))
+    def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
       Some(tag.getValue)
     else
       None
