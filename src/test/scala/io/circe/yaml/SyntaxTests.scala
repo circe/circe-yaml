@@ -1,6 +1,6 @@
 package io.circe.yaml
 
-import io.circe.{Json, JsonObject}
+import io.circe.Json
 import org.scalatest.{FlatSpec, Matchers}
 import syntax._
 
