@@ -1,4 +1,8 @@
-# circe-yaml [![Build Status](https://travis-ci.org/circe/circe-yaml.svg?branch=master)](https://travis-ci.org/circe/circe-yaml) [![codecov](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml)
+# circe-yaml
+
+[![Build status](https://travis-ci.org/circe/circe-yaml.svg?branch=master)](https://travis-ci.org/circe/circe-yaml)
+[![Codecov status](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12)
 
 This is a small library which translates [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)'s AST into 
 [circe](https://github.com/circe/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents into circe's
