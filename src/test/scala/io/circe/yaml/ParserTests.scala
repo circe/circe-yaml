@@ -1,6 +1,5 @@
 package io.circe.yaml
 
-import io.circe.ParsingFailure
 import org.scalatest.{FlatSpec, Matchers}
 
 class ParserTests extends FlatSpec with Matchers {

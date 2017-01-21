@@ -2,7 +2,6 @@ package io.circe.yaml
 
 import cats.syntax.either._
 import io.circe._
-import io.circe.numbers.BiggerDecimal
 import java.io.{Reader, StringReader}
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._

@@ -1,8 +1,9 @@
 package io.circe.yaml
 
-import java.io.{BufferedReader, File, InputStreamReader}
+import java.io.{File, InputStreamReader}
 
 import org.scalatest.FreeSpec
+import scala.io.Source
 
 class ExampleFileTests extends FreeSpec {
 
@@ -16,10 +17,12 @@ class ExampleFileTests extends FreeSpec {
     testFiles foreach {
       case (yamlFile, jsonFile) => yamlFile in {
         val jsonStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$jsonFile")
-        val json = new BufferedReader(new InputStreamReader(jsonStream)).lines.toArray.mkString("\n")
+        val json = Source.fromInputStream(jsonStream).mkString
+        jsonStream.close()
         val parsedJson = io.circe.parser.parse(json)
-        def yamlReader = new InputStreamReader(getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile"))
-        val yaml = new BufferedReader(yamlReader).lines.toArray.mkString("\n")
+        def yamlStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$yamlFile")
+        def yamlReader = new InputStreamReader(yamlStream)
+        val yaml = Source.fromInputStream(yamlStream).mkString
         val parsedYamlString = parser.parse(yaml)
         val parsedStreamString = parser.parseDocuments(yaml)
         val parsedYamlReader = parser.parse(yamlReader)

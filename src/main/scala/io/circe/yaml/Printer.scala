@@ -3,7 +3,7 @@ package io.circe.yaml
 import Printer._
 import io.circe._
 import java.io.StringWriter
-import org.yaml.snakeyaml.{DumperOptions, Yaml}
+import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.nodes._
 import org.yaml.snakeyaml.resolver.Resolver
