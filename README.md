@@ -87,7 +87,7 @@ val foo = json
 
 Other features of YAML are supported:
 
-* Multiple documents - use `parseDocuments` rather than `parse` to obtain `Stream[Xor[ParsingFailure, Json]]`
+* Multiple documents - use `parseDocuments` rather than `parse` to obtain `Stream[Either[ParsingFailure, Json]]`
 * Streaming - use `parse(reader: Reader)` or `parseDocuments(reader: Reader)` to parse from a stream.  Not sure what
   you'll get out of it.
 * References / aliases - The reference will be replaced with the complete structure of the alias
