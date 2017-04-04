@@ -27,6 +27,20 @@ class PrinterTests extends FreeSpec with Matchers {
     }
   }
 
+  "Preserves order" - {
+    val kvPairs = Seq("d" -> 4, "a" -> 1, "b" -> 2, "c" -> 3)
+    val json = Json.obj(kvPairs.map { case (k, v) => (k -> Json.fromInt(v)) }: _*)
+    "true" in {
+      val printer = Printer(preserveOrder = true)
+      printer.pretty(json) shouldEqual
+      """d: 4
+        |a: 1
+        |b: 2
+        |c: 3
+        |""".stripMargin
+    }
+  }
+
   "Scalar style" - {
     val foos = Seq.fill(40)("foo")
     val foosSplit = Seq(foos.take(19), foos.slice(19, 39), foos.slice(39, 40)).map(_.mkString(" "))
