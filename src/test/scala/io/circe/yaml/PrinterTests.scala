@@ -9,8 +9,8 @@ class PrinterTests extends FreeSpec with Matchers {
   "Flow style" - {
     val json = Json.obj("foo" -> Json.arr((0 until 3).map(_.toString).map(Json.fromString): _*))
 
-    "Flow" in {
-      val printer = Printer.spaces2.copy(sequenceStyle = FlowStyle.Flow, mappingStyle = FlowStyle.Flow)
+    "Block" in {
+      val printer = Printer.spaces2.copy(sequenceStyle = FlowStyle.Block, mappingStyle = FlowStyle.Block)
       printer.pretty(json) shouldEqual
         """foo:
           |- '0'
@@ -19,8 +19,8 @@ class PrinterTests extends FreeSpec with Matchers {
           |""".stripMargin
     }
 
-    "Block" in {
-      val printer = Printer.spaces2.copy(sequenceStyle = FlowStyle.Block, mappingStyle = FlowStyle.Block)
+    "Flow" in {
+      val printer = Printer.spaces2.copy(sequenceStyle = FlowStyle.Flow, mappingStyle = FlowStyle.Flow)
       printer.pretty(json) shouldEqual
         """{foo: ['0', '1', '2']}
           |""".stripMargin
