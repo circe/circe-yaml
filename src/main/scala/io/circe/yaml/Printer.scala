@@ -11,6 +11,7 @@ import org.yaml.snakeyaml.serializer.Serializer
 import scala.collection.JavaConverters._
 
 final case class Printer(
+  preserveOrder: Boolean = false,
   dropNullKeys: Boolean = false,
   indent: Int = 2,
   maxScalarWidth: Int = 80,
@@ -81,13 +82,14 @@ final case class Printer(
   private def jsonToYaml(json: Json): Node = {
 
     def convertObject(obj: JsonObject) = {
-      val map = if (dropNullKeys)
-        obj.filter(!_._2.isNull).toMap
-      else
-        obj.toMap
-      new MappingNode(Tag.MAP, map.map {
-        case (k, v) => new NodeTuple(scalarNode(Tag.STR, k), jsonToYaml(v))
-      }.toList.asJava, mappingStyle == FlowStyle.Flow)
+      val fields = if (preserveOrder) obj.fields else obj.fieldSet
+      val m = obj.toMap
+      val childNodes = fields.flatMap { key =>
+        val value = m(key)
+        if (!dropNullKeys || !value.isNull) Some(new NodeTuple(scalarNode(Tag.STR, key), jsonToYaml(value)))
+        else None
+      }
+      new MappingNode(Tag.MAP, childNodes.toList.asJava, mappingStyle == FlowStyle.Flow)
     }
 
     json.fold(
