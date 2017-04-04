@@ -17,8 +17,8 @@ final case class Printer(
   splitLines: Boolean = true,
   indicatorIndent: Int = 0,
   tags: Map[String, String] = Map.empty,
-  sequenceStyle: FlowStyle = FlowStyle.Flow,
-  mappingStyle: FlowStyle = FlowStyle.Flow,
+  sequenceStyle: FlowStyle = FlowStyle.Block,
+  mappingStyle: FlowStyle = FlowStyle.Block,
   stringStyle: StringStyle = StringStyle.Plain,
   lineBreak: LineBreak = LineBreak.Unix,
   explicitStart: Boolean = false,
@@ -87,7 +87,7 @@ final case class Printer(
         obj.toMap
       new MappingNode(Tag.MAP, map.map {
         case (k, v) => new NodeTuple(scalarNode(Tag.STR, k), jsonToYaml(v))
-      }.toList.asJava, mappingStyle == FlowStyle.Block)
+      }.toList.asJava, mappingStyle == FlowStyle.Flow)
     }
 
     json.fold(
@@ -103,7 +103,7 @@ final case class Printer(
       str =>
         stringNode(str),
       arr =>
-        new SequenceNode(Tag.SEQ, arr.map(jsonToYaml).asJava, sequenceStyle == FlowStyle.Block),
+        new SequenceNode(Tag.SEQ, arr.map(jsonToYaml).asJava, sequenceStyle == FlowStyle.Flow),
       obj =>
         convertObject(obj)
     )
