@@ -1,5 +1,3 @@
-import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
-
 organization in ThisBuild := "io.circe"
 
 val compilerOptions = Seq(
@@ -20,12 +18,13 @@ val Versions = new {
   val discipline = "0.7.3"
   val scalaCheck = "1.13.5"
   val scalaTest = "3.0.3"
-  val snakeYaml = "1.17"
+  val snakeYaml = "1.18"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
 val root = project.in(file("."))
+  .enablePlugins(GhpagesPlugin)
   .settings(
     name := "circe-yaml",
     description := "Library for converting between SnakeYAML's AST and circe's AST",
@@ -51,7 +50,7 @@ val root = project.in(file("."))
       "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
     )
   )
-  .settings(publishSettings ++ docSettings ++ ghpages.settings)
+  .settings(publishSettings ++ docSettings)
 
 lazy val docSettings = Seq(
   autoAPIMappings := true,

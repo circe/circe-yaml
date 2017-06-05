@@ -49,7 +49,7 @@ class PrinterTests extends FreeSpec with Matchers {
     val json = Json.obj("foo" -> Json.fromString(foosPlain))
 
     "Plain" in {
-      val printer = Printer.spaces2.copy(stringStyle = StringStyle.Plain)
+      val printer = Printer.spaces2.copy(splitLines = false, stringStyle = StringStyle.Plain)
       printer.pretty(json) shouldEqual
         s"""foo: $foosPlain
            |""".stripMargin
