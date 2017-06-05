@@ -1,5 +1,6 @@
 package io.circe.yaml
 
+import io.circe.Encoder
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.PropertyChecks
 import scala.util.{Success, Try}
@@ -22,9 +23,6 @@ class EscapingTests extends FlatSpec with Matchers with PropertyChecks {
 
 
   def test1(c: Char): Unit = {
-    if (c == 0x0085) return () // known bug: https://github.com/circe/circe-yaml/issues/19
-    if (c == 0xfeff) return () // known bug: https://github.com/circe/circe-yaml/issues/19
-
     val r = "'\\u%04X'" format c.toInt
     def repr[A](a: A): (String, A) = (r, a)
 
@@ -38,7 +36,7 @@ class EscapingTests extends FlatSpec with Matchers with PropertyChecks {
     repr(Try(parse(s))) shouldBe repr(Success(Right(json)))
   }
 
-  "Escaping" should "be ok" in {
+  "Escaping" should "properly escape JSON string values (all chars)" in {
     // exhaustive test: 65k test cases
     (Char.MinValue to Char.MaxValue).map(_.toChar).foreach(test1)
   }
@@ -50,7 +48,19 @@ class EscapingTests extends FlatSpec with Matchers with PropertyChecks {
     parse(s1) shouldBe Right(json)
   }
 
-  "Escaping" should "be ok2" in {
+  it should "properly escape JSON string values" in {
     forAll { (s0: String) => test2(s0) }
+  }
+
+  def test3(c: Char): Unit = {
+    val m = Map(c.toString -> c.toInt)
+    val o = Encoder[Map[String, Int]].apply(m)
+
+    parser.parse(printer.print(o)).right.flatMap(_.as[Map[String, Int]]) shouldBe Right(m)
+  }
+
+  it should "properly escape JSON object keys" in {
+    // exhaustive test: 65k test cases
+    (Char.MinValue to Char.MaxValue).map(_.toChar).foreach(test3)
   }
 }
