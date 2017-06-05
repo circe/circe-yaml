@@ -22,17 +22,17 @@ class EscapingTests extends FlatSpec with Matchers with PropertyChecks {
 
 
   def test1(c: Char): Unit = {
-    if (c == 0x0085) return () // known bug: https://github.com/circe/circe-yaml/issues/19
-    if (c == 0xfeff) return () // known bug: https://github.com/circe/circe-yaml/issues/19
-
     val r = "'\\u%04X'" format c.toInt
     def repr[A](a: A): (String, A) = (r, a)
 
     val json = c.toString.asJson
     val s = pretty(json)
 
+    // the character appears in the rendered output, make sure we
+    // considered it printable. we don't want to test the inverse
+    // (that printable characters always appear) because there is
+    // legal optional escaping that SnakeYAML may do in some cases.
     if (s.contains(c)) repr(isPrintable(c)) shouldBe repr(true)
-    else () // we do not enforce that printable chars are never escaped
 
     repr(s.forall(isPrintable)) shouldBe repr(true)
     repr(Try(parse(s))) shouldBe repr(Success(Right(json)))
