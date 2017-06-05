@@ -19,6 +19,7 @@ val Versions = new {
   val scalaCheck = "1.13.5"
   val scalaTest = "3.0.3"
   val snakeYaml = "1.18"
+  val previousCirceYaml = "0.6.0"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
@@ -48,7 +49,8 @@ val root = project.in(file("."))
       "org.typelevel" %% "discipline" % Versions.discipline % "test",
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "test",
       "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
-    )
+    ),
+    mimaPreviousArtifacts := Set("io.circe" %% "circe-yaml" % Versions.previousCirceYaml)
   )
   .settings(publishSettings ++ docSettings)
 
