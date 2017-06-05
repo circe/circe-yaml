@@ -66,18 +66,24 @@ final case class Printer(
     options
   }
 
+  private def isBad(s: String): Boolean = s.indexOf('\u0085') >= 0 || s.indexOf('\ufeff') >= 0
 
   private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, null)
   private def stringNode(value: String) = {
-    val style: Character = stringStyle match {
-      case StringStyle.DoubleQuoted => '"'
-      case StringStyle.SingleQuoted => '''
-      case StringStyle.Folded       => '>'
-      case StringStyle.Literal      => '|'
-      case StringStyle.Plain        => null
+    val style: Character = if (isBad(value)) '"' else {
+      stringStyle match {
+        case StringStyle.DoubleQuoted => '"'
+        case StringStyle.SingleQuoted => '''
+        case StringStyle.Folded       => '>'
+        case StringStyle.Literal      => '|'
+        case StringStyle.Plain        => null
+      }
     }
     new ScalarNode(Tag.STR, value, null, null, style)
   }
+
+  private def keyNode(value: String) =
+    new ScalarNode(Tag.STR, value, null, null, if (isBad(value)) '"' else null)
 
   private def jsonToYaml(json: Json): Node = {
 
@@ -86,7 +92,7 @@ final case class Printer(
       val m = obj.toMap
       val childNodes = fields.flatMap { key =>
         val value = m(key)
-        if (!dropNullKeys || !value.isNull) Some(new NodeTuple(scalarNode(Tag.STR, key), jsonToYaml(value)))
+        if (!dropNullKeys || !value.isNull) Some(new NodeTuple(keyNode(key), jsonToYaml(value)))
         else None
       }
       new MappingNode(Tag.MAP, childNodes.toList.asJava, mappingStyle == FlowStyle.Flow)
