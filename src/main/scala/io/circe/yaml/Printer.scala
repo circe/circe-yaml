@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.nodes._
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
+import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
 final case class Printer(
@@ -27,17 +28,49 @@ final case class Printer(
   version: YamlVersion = YamlVersion.Auto
 ) {
 
+  def containsBuggyChars(json: Json): Boolean = {
+    def isBad(s: String): Boolean =
+      s.indexOf('\u0085') >= 0 || s.indexOf('\ufeff') >= 0
+
+    @tailrec def loop(js: List[Json]): Boolean =
+      js match {
+        case h :: t =>
+          h match {
+            case Json.JArray(js) => loop(js.toList ::: t)
+            case Json.JObject(o) => loop(o.values.toList ::: t)
+            case Json.JString(s) if isBad(s) => true
+            case _ => loop(t)
+          }
+        case Nil =>
+          false
+      }
+    loop(json :: Nil)
+  }
+
   def pretty(json: Json): String = {
     val rootTag = yamlTag(json)
     val writer = new StringWriter()
-    val serializer = new Serializer(new Emitter(writer, options), new Resolver, options, rootTag)
+    val opts = if (containsBuggyChars(json)) safeOptions else options
+    val serializer = new Serializer(new Emitter(writer, opts), new Resolver, opts, rootTag)
     serializer.open()
     serializer.serialize(jsonToYaml(json))
     serializer.close()
     writer.toString
   }
 
-  private lazy val options = {
+  private lazy val options = makeOptions()
+
+  // these options are needed so that 0x0085 and 0xFEFF render
+  // correctly. these settings are just to work around a bug in
+  // SnakeYAML -- we only use them if we see those characters.
+  private lazy val safeOptions = {
+    val opts = makeOptions()
+    opts.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED)
+    opts.setAllowUnicode(false)
+    opts
+  }
+
+  def makeOptions(): DumperOptions = {
     val options = new DumperOptions()
     options.setIndent(indent)
     options.setWidth(maxScalarWidth)
