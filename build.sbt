@@ -19,7 +19,7 @@ val Versions = new {
   val scalaCheck = "1.13.5"
   val scalaTest = "3.0.3"
   val snakeYaml = "1.18"
-  val previousCirceYaml = "0.6.0"
+  val previousCirceYaml = "0.6.1"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
