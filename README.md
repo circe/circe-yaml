@@ -64,12 +64,12 @@ Once you've parsed to `Json`, usage is the same as circe. For example, if you ha
 import cats.syntax.either._
 import io.circe._
 import io.circe.generic.auto._
-import io.circe.yaml._
+import io.circe.yaml
 
 case class Nested(one: String, two: BigDecimal)
 case class Foo(foo: String, bar: Nested, baz: List[String])
 
-val json = parser.parse("""
+val json = yaml.parser.parse("""
 foo: Hello, World
 bar:
     one: One Third
