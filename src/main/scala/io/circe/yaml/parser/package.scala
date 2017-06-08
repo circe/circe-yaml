@@ -1,6 +1,9 @@
 package io.circe.yaml
 
+import cats.instances.either._
+import cats.instances.vector._
 import cats.syntax.either._
+import cats.syntax.traverse._
 import io.circe._
 import java.io.{Reader, StringReader}
 import org.yaml.snakeyaml.Yaml
@@ -46,7 +49,6 @@ package object parser {
     }
   }
 
-  private[this] val flattener: FlatteningConstructor = new FlatteningConstructor
 
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
 
@@ -71,14 +73,18 @@ package object parser {
 
     node match {
       case mapping: MappingNode =>
-        flattener.flatten(mapping).getValue.asScala.foldLeft(
+        mapping.getValue.asScala.foldLeft(
           Either.right[ParsingFailure, JsonObject](JsonObject.empty)
         ) {
           (objEither, tup) => for {
-            obj <- objEither
-            key <- convertKeyNode(tup.getKeyNode)
-            value <- yamlToJson(tup.getValueNode)
-          } yield obj.add(key, value)
+            obj    <- objEither
+            key    <- convertKeyNode(tup.getKeyNode)
+            value   = tup.getValueNode
+            result <- tup.getKeyNode.getTag match {
+              case Tag.MERGE => mergeNode(obj, value)
+              case _ => yamlToJson(value).map(obj.add(key, _))
+            }
+          } yield result
         }.map(Json.fromJsonObject)
       case sequence: SequenceNode =>
         sequence.getValue.asScala.foldLeft(Either.right[ParsingFailure, List[Json]](List.empty[Json])) {
@@ -89,6 +95,23 @@ package object parser {
         }.map(arr => Json.fromValues(arr.reverse))
       case scalar: ScalarNode => convertScalarNode(scalar)
     }
+  }
+
+  private[this] def mergeNode(obj: JsonObject, merge: Node) = yamlToJson(merge).flatMap {
+    valueJson => valueJson.asArray.map {
+      arr =>
+        arr.map(json => Either.fromOption(json.asObject, ParsingFailure("Only mappings can be merged", null)))
+          .sequenceU
+          .map {
+            objs => objs.foldLeft(obj)(mergeObject)
+          }
+    } orElse valueJson.asObject.map {
+      valueObj => Either.right(mergeObject(obj, valueObj))
+    } getOrElse Either.left(ParsingFailure("Only mappings can be merged", null))
+  }
+
+  private[this] def mergeObject(obj: JsonObject, valueObj: JsonObject) = {
+    JsonObject.fromMap(valueObj.toMap ++ obj.toMap)
   }
 
 }
