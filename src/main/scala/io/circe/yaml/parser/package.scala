@@ -4,6 +4,7 @@ import cats.syntax.either._
 import io.circe._
 import java.io.{Reader, StringReader}
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
@@ -38,6 +39,15 @@ package object parser {
       None
   }
 
+  private[this] class FlatteningConstructor extends SafeConstructor {
+    def flatten(node: MappingNode): MappingNode = {
+      flattenMapping(node)
+      node
+    }
+  }
+
+  private[this] val flattener: FlatteningConstructor = new FlatteningConstructor
+
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
 
     def convertScalarNode(node: ScalarNode) = Either.catchNonFatal(node.getTag match {
@@ -61,7 +71,9 @@ package object parser {
 
     node match {
       case mapping: MappingNode =>
-        mapping.getValue.asScala.foldLeft(Either.right[ParsingFailure, JsonObject](JsonObject.empty)) {
+        flattener.flatten(mapping).getValue.asScala.foldLeft(
+          Either.right[ParsingFailure, JsonObject](JsonObject.empty)
+        ) {
           (objEither, tup) => for {
             obj <- objEither
             key <- convertKeyNode(tup.getKeyNode)
