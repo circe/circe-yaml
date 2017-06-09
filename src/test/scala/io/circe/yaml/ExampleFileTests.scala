@@ -14,6 +14,8 @@ class ExampleFileTests extends FreeSpec {
         file => file.getName -> file.getName.replaceFirst("yml$", "json")
       }
 
+    val parser = Parser(useTimestampLit = false)
+
     testFiles foreach {
       case (yamlFile, jsonFile) => yamlFile in {
         val jsonStream = getClass.getClassLoader.getResourceAsStream(s"test-yamls/$jsonFile")
