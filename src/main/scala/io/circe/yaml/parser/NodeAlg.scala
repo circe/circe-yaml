@@ -18,13 +18,13 @@ abstract class NodeAlg[T] {
   def yNull(node: ScalarNode): T
   def string(node: ScalarNode): T
   def otherScalar(node: ScalarNode): T
-  
+
   def sequence(node: SequenceNode): T = fromValues {
     node.getValue.asScala.foldLeft(Queue.empty[T]) {
       (accum, next) => accum enqueue any(next)
     }
   }
-  
+
   def mapping(node: MappingNode): T = fromFields {
     node.getValue.asScala.map {
       nodeTuple => nodeTuple.getKeyNode match {
@@ -90,7 +90,7 @@ final class LiftedAlg[A](lifted: NodeAlg[A]) extends NodeAlg[Either[ParsingFailu
   } catch {
     case f @ ParsingFailure(_, _) => Either.left(f)
   }
-  
+
   def fromFields(ts: Iterable[(String, Either[ParsingFailure, A])]): Either[ParsingFailure, A] = try {
     Either.right {
       lifted.fromFields {
