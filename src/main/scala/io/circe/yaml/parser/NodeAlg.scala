@@ -104,7 +104,7 @@ final class LiftedAlg[A](lifted: NodeAlg[A]) extends NodeAlg[Either[ParsingFailu
   }
 }
 
-final class AccumlatingAlg[A](base: NodeAlg[A]) extends NodeAlg[ValidatedNel[ParsingFailure, A]] {
+final class AccumulatingAlg[A](base: NodeAlg[A]) extends NodeAlg[ValidatedNel[ParsingFailure, A]] {
   private val lifted = new LiftedAlg(base)
   def int(node: ScalarNode): ValidatedNel[ParsingFailure, A] = lifted.int(node).toValidatedNel
   def float(node: ScalarNode): ValidatedNel[ParsingFailure, A] = lifted.float(node).toValidatedNel

@@ -38,7 +38,7 @@ class Parser(algebra: NodeAlg[Json] = new DefaultAlg) {
     * or a [[Json]]
     */
   def parseAccumulating(yaml: Reader): ValidatedNel[ParsingFailure, Json] = parseSingle(yaml).toValidatedNel andThen {
-    parsed => new AccumlatingAlg(algebra).any(parsed)
+    parsed => new AccumulatingAlg(algebra).any(parsed)
   }
 
   /**
@@ -65,7 +65,7 @@ class Parser(algebra: NodeAlg[Json] = new DefaultAlg) {
     * returning the result as a [[Stream]] of [[ValidatedNel]]
     */
   def parseDocumentsAccumulating(yaml: Reader): Stream[ValidatedNel[ParsingFailure, Json]] = {
-    val alg = new AccumlatingAlg(algebra)
+    val alg = new AccumulatingAlg(algebra)
     parseStream(yaml).map(alg.any)
   }
 
