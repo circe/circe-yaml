@@ -37,10 +37,9 @@ class Parser(algebra: NodeAlg[Json] = new DefaultAlg) {
     * Parse YAML from the given [[Reader]], accumulating errors and returning either a list of [[ParsingFailure]]s
     * or a [[Json]]
     */
-  def parseAccumulating(yaml: Reader): ValidatedNel[ParsingFailure, Json] = for {
-    parsed <- parseSingle(yaml)
-    json   <- new AccumlatingAlg(algebra).any(parsed)
-  } yield json
+  def parseAccumulating(yaml: Reader): ValidatedNel[ParsingFailure, Json] = parseSingle(yaml).toValidatedNel andThen {
+    parsed => new AccumlatingAlg(algebra).any(parsed)
+  }
 
   /**
     * Parse YAML from the given string, returning either [[ParsingFailure]] or [[Json]]

@@ -1,7 +1,6 @@
 package io.circe.yaml.parser
 
 import cats.data.ValidatedNel
-import cats.instances.either._
 import cats.instances.list._
 import cats.syntax.either._
 import cats.syntax.traverse._
@@ -145,6 +144,11 @@ class DefaultAlg extends NodeAlg[Json] {
 
   def fromValues(ts: Iterable[Json]): Json = Json.fromValues(ts)
   def fromFields(ts: Iterable[(String, Json)]): Json = Json.fromFields(ts)
+
+  override def mapping(node: MappingNode): Json = {
+    Constructor.flatten(node)
+    super.mapping(node)
+  }
 }
 
 case class ConfiguredAlg(
