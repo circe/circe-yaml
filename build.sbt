@@ -18,6 +18,7 @@ val Versions = new {
   val discipline = "0.7.3"
   val scalaCheck = "1.13.5"
   val scalaTest = "3.0.3"
+  val scalaMock = "3.6.0"
   val snakeYaml = "1.18"
   val previousCirceYaml = "0.6.1"
 }
@@ -48,7 +49,8 @@ val root = project.in(file("."))
       "io.circe" %% "circe-testing" % Versions.circe % "test",
       "org.typelevel" %% "discipline" % Versions.discipline % "test",
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "test",
-      "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % "test",
+      "org.scalamock" %% "scalamock-scalatest-support" % Versions.scalaMock % "test"
     ),
     mimaPreviousArtifacts := Set("io.circe" %% "circe-yaml" % Versions.previousCirceYaml)
   )
