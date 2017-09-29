@@ -88,7 +88,7 @@ final case class Printer(
   private def jsonToYaml(json: Json): Node = {
 
     def convertObject(obj: JsonObject) = {
-      val fields = if (preserveOrder) obj.fields else obj.fieldSet
+      val fields = if (preserveOrder) obj.keys else obj.keys.toSet
       val m = obj.toMap
       val childNodes = fields.flatMap { key =>
         val value = m(key)
