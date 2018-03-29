@@ -24,4 +24,10 @@ class ParserTests extends FlatSpec with Matchers {
     ).isLeft)
   }
 
+  it should "parse yes as true" in {
+    assert(parser.parse(
+      """foo: yes"""
+    ).isRight)
+  }
+
 }
