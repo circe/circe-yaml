@@ -14,11 +14,11 @@ val compilerOptions = Seq(
 )
 
 val Versions = new {
-  val circe = "0.9.0"
+  val circe = "0.9.3"
   val discipline = "0.7.3"
   val scalaCheck = "1.13.5"
-  val scalaTest = "3.0.3"
-  val snakeYaml = "1.19"
+  val scalaTest = "3.0.5"
+  val snakeYaml = "1.20"
   val previousCirceYaml = "0.6.1"
 }
 
@@ -45,7 +45,8 @@ val root = project.in(file("."))
       "io.circe" %% "circe-core" % Versions.circe,
       "io.circe" %% "circe-jawn" % Versions.circe % "test",
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
-      "io.circe" %% "circe-testing" % Versions.circe % "test",
+      // Explicit version number is a workaround for a publishing error.
+      "io.circe" %% "circe-testing" % "0.9.2" % "test",
       "org.typelevel" %% "discipline" % Versions.discipline % "test",
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "test",
       "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"

@@ -44,13 +44,7 @@ final case class Printer(
     options.setSplitLines(splitLines)
     options.setIndicatorIndent(indicatorIndent)
     options.setTags(tags.asJava)
-    options.setDefaultScalarStyle(stringStyle match {
-      case StringStyle.Plain        => DumperOptions.ScalarStyle.PLAIN
-      case StringStyle.DoubleQuoted => DumperOptions.ScalarStyle.DOUBLE_QUOTED
-      case StringStyle.SingleQuoted => DumperOptions.ScalarStyle.SINGLE_QUOTED
-      case StringStyle.Literal      => DumperOptions.ScalarStyle.LITERAL
-      case StringStyle.Folded       => DumperOptions.ScalarStyle.FOLDED
-    })
+    options.setDefaultScalarStyle(StringStyle.toScalarStyle(stringStyle))
     options.setLineBreak(lineBreak match {
       case LineBreak.Unix    => DumperOptions.LineBreak.UNIX
       case LineBreak.Windows => DumperOptions.LineBreak.WIN
@@ -68,22 +62,15 @@ final case class Printer(
 
   private def isBad(s: String): Boolean = s.indexOf('\u0085') >= 0 || s.indexOf('\ufeff') >= 0
 
-  private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, null)
-  private def stringNode(value: String) = {
-    val style: Character = if (isBad(value)) '"' else {
-      stringStyle match {
-        case StringStyle.DoubleQuoted => '"'
-        case StringStyle.SingleQuoted => '''
-        case StringStyle.Folded       => '>'
-        case StringStyle.Literal      => '|'
-        case StringStyle.Plain        => null
-      }
-    }
-    new ScalarNode(Tag.STR, value, null, null, style)
-  }
+  private def scalarStyle(value: String): DumperOptions.ScalarStyle =
+    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED else DumperOptions.ScalarStyle.PLAIN
 
-  private def keyNode(value: String) =
-    new ScalarNode(Tag.STR, value, null, null, if (isBad(value)) '"' else null)
+  private def stringScalarStyle(value: String): DumperOptions.ScalarStyle =
+    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED else StringStyle.toScalarStyle(stringStyle)
+
+  private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, scalarStyle(value))
+  private def stringNode(value: String) = new ScalarNode(Tag.STR, value, null, null, stringScalarStyle(value))
+  private def keyNode(value: String) = new ScalarNode(Tag.STR, value, null, null, scalarStyle(value))
 
   private def jsonToYaml(json: Json): Node = {
 
@@ -95,7 +82,11 @@ final case class Printer(
         if (!dropNullKeys || !value.isNull) Some(new NodeTuple(keyNode(key), jsonToYaml(value)))
         else None
       }
-      new MappingNode(Tag.MAP, childNodes.toList.asJava, mappingStyle == FlowStyle.Flow)
+      new MappingNode(
+        Tag.MAP,
+        childNodes.toList.asJava,
+        if (mappingStyle == FlowStyle.Flow) DumperOptions.FlowStyle.FLOW else DumperOptions.FlowStyle.BLOCK
+      )
     }
 
     json.fold(
@@ -111,7 +102,11 @@ final case class Printer(
       str =>
         stringNode(str),
       arr =>
-        new SequenceNode(Tag.SEQ, arr.map(jsonToYaml).asJava, sequenceStyle == FlowStyle.Flow),
+        new SequenceNode(
+          Tag.SEQ,
+          arr.map(jsonToYaml).asJava,
+          if (sequenceStyle == FlowStyle.Flow) DumperOptions.FlowStyle.FLOW else DumperOptions.FlowStyle.BLOCK
+        ),
       obj =>
         convertObject(obj)
     )
@@ -136,6 +131,14 @@ object Printer {
     case object SingleQuoted extends StringStyle
     case object Literal extends StringStyle
     case object Folded extends StringStyle
+
+    def toScalarStyle(style: StringStyle): DumperOptions.ScalarStyle = style match {
+      case StringStyle.Plain        => DumperOptions.ScalarStyle.PLAIN
+      case StringStyle.DoubleQuoted => DumperOptions.ScalarStyle.DOUBLE_QUOTED
+      case StringStyle.SingleQuoted => DumperOptions.ScalarStyle.SINGLE_QUOTED
+      case StringStyle.Literal      => DumperOptions.ScalarStyle.LITERAL
+      case StringStyle.Folded       => DumperOptions.ScalarStyle.FOLDED
+    }
   }
 
   sealed trait LineBreak
