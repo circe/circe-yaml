@@ -109,7 +109,7 @@ import cats.syntax.either._
 import io.circe.yaml._
 import io.circe.yaml.syntax._
 
-val json = io.circe.parser.parse("""{"foo":"bar"}""").valueOr(throw _)
+val json = io.circe.jawn.parse("""{"foo":"bar"}""").valueOr(throw _)
 
 println(json.asYaml.spaces2) // 2 spaces for each indent level
 println(json.asYaml.spaces4) // 4 spaces for each indent level

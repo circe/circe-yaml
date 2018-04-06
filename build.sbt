@@ -43,7 +43,7 @@ val root = project.in(file("."))
     },
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe,
-      "io.circe" %% "circe-parser" % Versions.circe,
+      "io.circe" %% "circe-jawn" % Versions.circe % "test",
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-testing" % Versions.circe % "test",
       "org.typelevel" %% "discipline" % Versions.discipline % "test",
