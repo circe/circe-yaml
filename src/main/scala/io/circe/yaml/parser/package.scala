@@ -44,6 +44,10 @@ package object parser {
       flattenMapping(node)
       node
     }
+
+    def construct(node: ScalarNode): Object = {
+      getConstructor(node).construct(node)
+    }
   }
 
   private[this] val flattener: FlatteningConstructor = new FlatteningConstructor
@@ -54,7 +58,10 @@ package object parser {
       case Tag.INT | Tag.FLOAT => JsonNumber.fromString(node.getValue).map(Json.fromJsonNumber).getOrElse {
         throw new NumberFormatException(s"Invalid numeric string ${node.getValue}")
       }
-      case Tag.BOOL => Json.fromBoolean(node.getValue.toBoolean)
+      case Tag.BOOL => Json.fromBoolean(flattener.construct(node) match {
+          case b: java.lang.Boolean => b
+          case _ => throw new IllegalArgumentException(s"Invalid boolean string ${node.getValue}")
+      })
       case Tag.NULL => Json.Null
       case CustomTag(other) =>
         Json.fromJsonObject(JsonObject.singleton(other.stripPrefix("!"), Json.fromString(node.getValue)))
