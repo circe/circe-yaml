@@ -10,16 +10,17 @@ val compilerOptions = Seq(
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
+  "-Ywarn-unused-import",
   "-Xfuture"
 )
 
 val Versions = new {
-  val circe = "0.9.3"
-  val discipline = "0.7.3"
+  val circe = "0.10.0"
+  val discipline = "0.9.0"
   val scalaCheck = "1.13.5"
   val scalaTest = "3.0.5"
-  val snakeYaml = "1.20"
-  val previousCirceYaml = "0.6.1"
+  val snakeYaml = "1.23"
+  val previousCirceYaml = "0.8.0"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
@@ -29,12 +30,7 @@ val root = project.in(file("."))
   .settings(
     name := "circe-yaml",
     description := "Library for converting between SnakeYAML's AST and circe's AST",
-    scalacOptions ++= compilerOptions ++ (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor >= 11 => Seq("-Ywarn-unused-import")
-        case _ => Nil
-      }
-    ),
+    scalacOptions ++= compilerOptions,
     scalacOptions in (Compile, console) ~= {
       _.filterNot(Set("-Ywarn-unused-import"))
     },
@@ -43,13 +39,12 @@ val root = project.in(file("."))
     },
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe,
-      "io.circe" %% "circe-jawn" % Versions.circe % "test",
+      "io.circe" %% "circe-jawn" % Versions.circe % Test,
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
-      // Explicit version number is a workaround for a publishing error.
-      "io.circe" %% "circe-testing" % "0.9.2" % "test",
-      "org.typelevel" %% "discipline" % Versions.discipline % "test",
-      "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "test",
-      "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
+      "io.circe" %% "circe-testing" % Versions.circe % Test,
+      "org.typelevel" %% "discipline" % Versions.discipline % Test,
+      "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test
     ),
     mimaPreviousArtifacts := Set("io.circe" %% "circe-yaml" % Versions.previousCirceYaml)
   )
