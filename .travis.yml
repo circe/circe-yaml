@@ -1,17 +1,11 @@
 language: scala
 
 scala:
-  - 2.10.7
   - 2.11.12
+  - 2.12.6
 
 jdk:
-  - oraclejdk7
   - oraclejdk8
-
-matrix:
-  include:
-  - scala: 2.12.5
-    jdk: oraclejdk8
 
 script:
   - sbt clean coverage test scalastyle coverageReport && sbt coverageAggregate
