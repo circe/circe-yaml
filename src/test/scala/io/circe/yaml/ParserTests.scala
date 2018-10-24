@@ -1,6 +1,7 @@
 package io.circe.yaml
 
 import org.scalatest.{FlatSpec, Matchers}
+import io.circe.syntax._
 
 class ParserTests extends FlatSpec with Matchers {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
@@ -30,4 +31,15 @@ class ParserTests extends FlatSpec with Matchers {
     ).isRight)
   }
 
+  it should "parse hexadecimal" in {
+    assert(parser.parse(
+      """[0xFF, 0xff, 0xab_cd]"""
+    ).contains(Seq(0xFF, 0xff, 0xabcd).asJson))
+  }
+
+  it should "parse decimal with underscore breaks" in {
+    assert(parser.parse(
+      """foo: 1_000_000"""
+    ).contains(Map("foo" -> 1000000).asJson))
+  }
 }

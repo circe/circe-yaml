@@ -55,6 +55,14 @@ package object parser {
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
 
     def convertScalarNode(node: ScalarNode) = Either.catchNonFatal(node.getTag match {
+      case Tag.INT if node.getValue.startsWith("0x") || node.getValue.contains("_") =>
+        Json.fromJsonNumber(flattener.construct(node) match {
+          case int: Integer => JsonLong(int.toLong)
+          case long: java.lang.Long => JsonLong(long)
+          case bigint: java.math.BigInteger =>
+            JsonDecimal(bigint.toString)
+          case other => throw new NumberFormatException(s"Unexpected number type: ${other.getClass}")
+        })
       case Tag.INT | Tag.FLOAT => JsonNumber.fromString(node.getValue).map(Json.fromJsonNumber).getOrElse {
         throw new NumberFormatException(s"Invalid numeric string ${node.getValue}")
       }
