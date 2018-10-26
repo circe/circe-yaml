@@ -63,7 +63,6 @@ package object parser {
             JsonDecimal(bigint.toString)
           case other => throw new NumberFormatException(s"Unexpected number type: ${other.getClass}")
         })
-      
       case Tag.INT | Tag.FLOAT => JsonNumber.fromString(node.getValue).map(Json.fromJsonNumber).getOrElse {
         throw new NumberFormatException(s"Invalid numeric string ${node.getValue}")
       }
