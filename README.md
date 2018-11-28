@@ -51,7 +51,7 @@ Both of these methods also support a "streaming" parse from a `java.io.Reader` â
 retrieve YAML from Java inputs:
 
 ```scala
-val config = getClass.getClassLoader.getResourcesAsStream("config.yml")
+val config = getClass.getClassLoader.getResourceAsStream("config.yml")
 val json = parser.parse(new InputStreamReader(config))
 
 val configs = getClass.getClassLoader.getResourceAsStream("configs.yml")
