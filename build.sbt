@@ -7,18 +7,16 @@ val compilerOptions = Seq(
   "-language:existentials",
   "-language:higherKinds",
   "-unchecked",
-  "-Yno-adapted-args",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
-  "-Ywarn-unused-import",
   "-Xfuture"
 )
 
 val Versions = new {
   val circe = "0.11.0"
-  val discipline = "0.9.0"
-  val scalaCheck = "1.13.5"
-  val scalaTest = "3.0.5"
+  val discipline = "0.10.0"
+  val scalaCheck = "1.14.0"
+  val scalaTest = "3.0.6-SNAP5"
   val snakeYaml = "1.23"
   val previousCirceYaml = "0.8.0"
 }
@@ -31,11 +29,24 @@ val root = project.in(file("."))
     name := "circe-yaml",
     description := "Library for converting between SnakeYAML's AST and circe's AST",
     scalacOptions ++= compilerOptions,
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v <= 12 =>
+          Seq(
+            "-Yno-adapted-args",
+            "-Ywarn-unused-import",
+          )
+        case _ =>
+          Seq(
+            "-Ywarn-unused:imports",
+          )
+      }
+    },
     scalacOptions in (Compile, console) ~= {
-      _.filterNot(Set("-Ywarn-unused-import"))
+      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
     scalacOptions in (Test, console) ~= {
-      _.filterNot(Set("-Ywarn-unused-import"))
+      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe,
