@@ -16,7 +16,7 @@ val Versions = new {
   val circe = "0.11.1"
   val discipline = "0.10.0"
   val scalaCheck = "1.14.0"
-  val scalaTest = "3.0.6-SNAP5"
+  val scalaTest = "3.0.8-RC1"
   val snakeYaml = "1.24"
   val previousCirceYaml = "0.9.0"
 }
