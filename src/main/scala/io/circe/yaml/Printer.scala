@@ -95,7 +95,7 @@ final case class Printer(
         scalarNode(Tag.BOOL, bool.toString),
       number => {
         if (number.toLong.nonEmpty)
-          scalarNode(Tag.INT, number.toString)
+          scalarNode(Tag.INT, number.toLong.get.toString)
         else
           scalarNode(Tag.FLOAT, number.toString)
       },
