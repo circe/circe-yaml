@@ -8,17 +8,17 @@ val compilerOptions = Seq(
   "-language:higherKinds",
   "-unchecked",
   "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Xfuture"
+  "-Ywarn-numeric-widen"
 )
 
 val Versions = new {
-  val circe = "0.11.1"
-  val discipline = "0.10.0"
+  val circe = "0.12.0-M3"
+  val discipline = "0.12.0-M3"
   val scalaCheck = "1.14.0"
-  val scalaTest = "3.0.6-SNAP5"
+  val scalaTest = "3.1.0-SNAP13"
+  val scalaTestPlus = "1.0.0-SNAP8"
   val snakeYaml = "1.24"
-  val previousCirceYaml = "0.9.0"
+  val previousCirceYaml = "0.10.0"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
@@ -33,8 +33,9 @@ val root = project.in(file("."))
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, v)) if v <= 12 =>
           Seq(
+            "-Xfuture",
             "-Yno-adapted-args",
-            "-Ywarn-unused-import",
+            "-Ywarn-unused-import"
           )
         case _ =>
           Seq(
@@ -53,9 +54,11 @@ val root = project.in(file("."))
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-testing" % Versions.circe % Test,
-      "org.typelevel" %% "discipline" % Versions.discipline % Test,
+      "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
+      "org.typelevel" %% "discipline-scalatest" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions.scalaTestPlus % Test
     ),
     mimaPreviousArtifacts := Set("io.circe" %% "circe-yaml" % Versions.previousCirceYaml)
   )

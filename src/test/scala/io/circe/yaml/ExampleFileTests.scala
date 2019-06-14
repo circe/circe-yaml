@@ -2,10 +2,10 @@ package io.circe.yaml
 
 import java.io.{File, InputStreamReader}
 
-import org.scalatest.FreeSpec
+import org.scalatest.freespec.AnyFreeSpec
 import scala.io.Source
 
-class ExampleFileTests extends FreeSpec {
+class ExampleFileTests extends AnyFreeSpec {
 
   "yaml test files" - {
 

@@ -2,9 +2,10 @@ package io.circe.yaml
 
 import io.circe.Json
 import io.circe.yaml.Printer.{FlowStyle, LineBreak, StringStyle, YamlVersion}
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.Matchers
+import org.scalatest.freespec.AnyFreeSpec
 
-class PrinterTests extends FreeSpec with Matchers {
+class PrinterTests extends AnyFreeSpec with Matchers {
 
   "Flow style" - {
     val json = Json.obj("foo" -> Json.arr((0 until 3).map(_.toString).map(Json.fromString): _*))
