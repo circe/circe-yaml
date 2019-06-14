@@ -1,9 +1,10 @@
 package io.circe.yaml
 
 import io.circe.Json
-import org.scalatest.{EitherValues, FlatSpec, Matchers}
+import org.scalatest.{EitherValues, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ParserTests extends FlatSpec with Matchers with EitherValues {
+class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
   "Parser" should "fail on invalid tagged numbers" in {
