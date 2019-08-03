@@ -13,7 +13,7 @@ val compilerOptions = Seq(
 
 val Versions = new {
   val circe = "0.12.0-M3"
-  val discipline = "0.12.0-M3"
+  val discipline = "1.0.0"
   val scalaCheck = "1.14.0"
   val scalaTest = "3.1.0-SNAP13"
   val scalaTestPlus = "1.0.0-SNAP8"
