@@ -55,7 +55,6 @@ val root = project.in(file("."))
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-testing" % Versions.circe % Test,
       "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
-      "org.typelevel" %% "discipline-scalatest" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions.scalaTestPlus % Test
