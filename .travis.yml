@@ -1,3 +1,4 @@
+dist: xenial
 language: scala
 
 scala:
@@ -6,7 +7,7 @@ scala:
   - 2.13.0
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 script:
   - sbt "++ ${TRAVIS_SCALA_VERSION}! -v" clean coverage test scalastyle coverageReport && sbt coverageAggregate
