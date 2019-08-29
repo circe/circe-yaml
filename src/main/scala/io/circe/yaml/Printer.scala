@@ -93,12 +93,8 @@ final case class Printer(
       scalarNode(Tag.NULL, "null"),
       bool =>
         scalarNode(Tag.BOOL, bool.toString),
-      number => {
-        if (number.toLong.nonEmpty)
-          scalarNode(Tag.INT, number.toString)
-        else
-          scalarNode(Tag.FLOAT, number.toString)
-      },
+      number =>
+        scalarNode(numberTag(number), number.toString),
       str =>
         stringNode(str),
       arr =>
@@ -158,9 +154,12 @@ object Printer {
   private def yamlTag(json: Json) = json.fold(
     Tag.NULL,
     _ => Tag.BOOL,
-    number => if (number.toLong.nonEmpty) Tag.INT else Tag.FLOAT,
+    number => numberTag(number),
     _ => Tag.STR,
     _ => Tag.SEQ,
     _ => Tag.MAP
   )
+
+  private def numberTag(number: JsonNumber): Tag =
+    if (number.toString.contains(".")) Tag.FLOAT else Tag.INT
 }
