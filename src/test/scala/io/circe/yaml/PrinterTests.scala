@@ -2,8 +2,8 @@ package io.circe.yaml
 
 import io.circe.Json
 import io.circe.yaml.Printer.{FlowStyle, LineBreak, StringStyle, YamlVersion}
-import org.scalatest.Matchers
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
 class PrinterTests extends AnyFreeSpec with Matchers {
 
