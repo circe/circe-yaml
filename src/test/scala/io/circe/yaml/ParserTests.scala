@@ -1,9 +1,11 @@
 package io.circe.yaml
 
-import org.scalatest.{FlatSpec, Matchers}
+import io.circe.Json
+import org.scalatest.{EitherValues, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
 import io.circe.syntax._
 
-class ParserTests extends FlatSpec with Matchers {
+class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
   "Parser" should "fail on invalid tagged numbers" in {
@@ -41,5 +43,17 @@ class ParserTests extends FlatSpec with Matchers {
     assert(parser.parse(
       """foo: 1_000_000"""
     ).contains(Map("foo" -> 1000000).asJson))
+  }
+
+  it should "parse empty string as false" in {
+    assert(parser.parse(
+      ""
+    ).right.value == Json.False)
+  }
+
+  it should "parse blank string as false" in {
+    assert(parser.parse(
+      "   "
+    ).right.value == Json.False)
   }
 }

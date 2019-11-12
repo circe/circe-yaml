@@ -7,20 +7,18 @@ val compilerOptions = Seq(
   "-language:existentials",
   "-language:higherKinds",
   "-unchecked",
-  "-Yno-adapted-args",
   "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Ywarn-unused-import",
-  "-Xfuture"
+  "-Ywarn-numeric-widen"
 )
 
 val Versions = new {
-  val circe = "0.10.0"
-  val discipline = "0.9.0"
-  val scalaCheck = "1.13.5"
-  val scalaTest = "3.0.5"
-  val snakeYaml = "1.23"
-  val previousCirceYaml = "0.8.0"
+  val circe = "0.12.3"
+  val discipline = "1.0.1"
+  val scalaCheck = "1.14.2"
+  val scalaTest = "3.1.0-RC3"
+  val scalaTestPlus = "3.1.0.0-RC2"
+  val snakeYaml = "1.25"
+  val previousCirceYaml = "0.10.0"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
@@ -31,20 +29,35 @@ val root = project.in(file("."))
     name := "circe-yaml",
     description := "Library for converting between SnakeYAML's AST and circe's AST",
     scalacOptions ++= compilerOptions,
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v <= 12 =>
+          Seq(
+            "-Xfuture",
+            "-Yno-adapted-args",
+            "-Ywarn-unused-import"
+          )
+        case _ =>
+          Seq(
+            "-Ywarn-unused:imports",
+          )
+      }
+    },
     scalacOptions in (Compile, console) ~= {
-      _.filterNot(Set("-Ywarn-unused-import"))
+      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
     scalacOptions in (Test, console) ~= {
-      _.filterNot(Set("-Ywarn-unused-import"))
+      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe,
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-testing" % Versions.circe % Test,
-      "org.typelevel" %% "discipline" % Versions.discipline % Test,
+      "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions.scalaTestPlus % Test
     ),
     mimaPreviousArtifacts := Set("io.circe" %% "circe-yaml" % Versions.previousCirceYaml)
   )

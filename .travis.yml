@@ -1,14 +1,15 @@
+dist: xenial
 language: scala
 
 scala:
-  - 2.11.12
-  - 2.12.6
+  - 2.12.10
+  - 2.13.0
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 script:
-  - sbt clean coverage test scalastyle coverageReport && sbt coverageAggregate
+  - sbt "++ ${TRAVIS_SCALA_VERSION}! -v" clean coverage test scalastyle coverageReport && sbt coverageAggregate
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

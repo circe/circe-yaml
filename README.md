@@ -23,7 +23,7 @@ the ADT marshalling.  You can also use circe's `Encoder` to obtain a `Json`, and
 The artifact is hosted by Sonatype, and release versions are synced to Maven Central:
 
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml" % "0.8.0"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.10.0"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
@@ -51,7 +51,7 @@ Both of these methods also support a "streaming" parse from a `java.io.Reader` â
 retrieve YAML from Java inputs:
 
 ```scala
-val config = getClass.getClassLoader.getResourcesAsStream("config.yml")
+val config = getClass.getClassLoader.getResourceAsStream("config.yml")
 val json = parser.parse(new InputStreamReader(config))
 
 val configs = getClass.getClassLoader.getResourceAsStream("configs.yml")

@@ -84,26 +84,29 @@ package object parser {
       case _ => Left(ParsingFailure("Only string keys can be represented in JSON", null))
     }
 
-    node match {
-      case mapping: MappingNode =>
-        flattener.flatten(mapping).getValue.asScala.foldLeft(
-          Either.right[ParsingFailure, JsonObject](JsonObject.empty)
-        ) {
-          (objEither, tup) => for {
-            obj <- objEither
-            key <- convertKeyNode(tup.getKeyNode)
-            value <- yamlToJson(tup.getValueNode)
-          } yield obj.add(key, value)
-        }.map(Json.fromJsonObject)
-      case sequence: SequenceNode =>
-        sequence.getValue.asScala.foldLeft(Either.right[ParsingFailure, List[Json]](List.empty[Json])) {
-          (arrEither, node) => for {
-            arr <- arrEither
-            value <- yamlToJson(node)
-          } yield value :: arr
-        }.map(arr => Json.fromValues(arr.reverse))
-      case scalar: ScalarNode => convertScalarNode(scalar)
+    if (node == null) {
+      Right(Json.False)
+    } else {
+      node match {
+        case mapping: MappingNode =>
+          flattener.flatten(mapping).getValue.asScala.foldLeft(
+            Either.right[ParsingFailure, JsonObject](JsonObject.empty)
+          ) {
+            (objEither, tup) => for {
+              obj <- objEither
+              key <- convertKeyNode(tup.getKeyNode)
+              value <- yamlToJson(tup.getValueNode)
+            } yield obj.add(key, value)
+          }.map(Json.fromJsonObject)
+        case sequence: SequenceNode =>
+          sequence.getValue.asScala.foldLeft(Either.right[ParsingFailure, List[Json]](List.empty[Json])) {
+            (arrEither, node) => for {
+              arr <- arrEither
+              value <- yamlToJson(node)
+            } yield value :: arr
+          }.map(arr => Json.fromValues(arr.reverse))
+        case scalar: ScalarNode => convertScalarNode(scalar)
+      }
     }
   }
-
 }
