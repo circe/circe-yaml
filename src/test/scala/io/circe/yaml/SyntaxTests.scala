@@ -1,9 +1,9 @@
 package io.circe.yaml
 
 import io.circe.Json
-import org.scalatest.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
 import syntax._
+import org.scalatest.matchers.should.Matchers
 
 class SyntaxTests extends AnyFlatSpec with Matchers {
 
