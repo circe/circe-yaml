@@ -14,8 +14,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "fail to parse complex keys" in {
-    assert(parser.parse(
-      """
+    assert(parser.parse("""
         |? - foo
         |  - bar
         |: 1
@@ -23,38 +22,64 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "fail to parse invalid YAML" in {
-    assert(parser.parse(
-      """foo: - bar"""
-    ).isLeft)
+    assert(
+      parser
+        .parse(
+          """foo: - bar"""
+        )
+        .isLeft
+    )
   }
 
   it should "parse yes as true" in {
-    assert(parser.parse(
-      """foo: yes"""
-    ).isRight)
+    assert(
+      parser
+        .parse(
+          """foo: yes"""
+        )
+        .isRight
+    )
   }
 
   it should "parse hexadecimal" in {
-    assert(parser.parse(
-      """[0xFF, 0xff, 0xab_cd]"""
-    ).contains(Seq(0xFF, 0xff, 0xabcd).asJson))
+    assert(
+      parser
+        .parse(
+          """[0xFF, 0xff, 0xab_cd]"""
+        )
+        .contains(Seq(0xFF, 0xff, 0xabcd).asJson)
+    )
   }
 
   it should "parse decimal with underscore breaks" in {
-    assert(parser.parse(
-      """foo: 1_000_000"""
-    ).contains(Map("foo" -> 1000000).asJson))
+    assert(
+      parser
+        .parse(
+          """foo: 1_000_000"""
+        )
+        .contains(Map("foo" -> 1000000).asJson)
+    )
   }
 
   it should "parse empty string as false" in {
-    assert(parser.parse(
-      ""
-    ).right.value == Json.False)
+    assert(
+      parser
+        .parse(
+          ""
+        )
+        .right
+        .value == Json.False
+    )
   }
 
   it should "parse blank string as false" in {
-    assert(parser.parse(
-      "   "
-    ).right.value == Json.False)
+    assert(
+      parser
+        .parse(
+          "   "
+        )
+        .right
+        .value == Json.False
+    )
   }
 }

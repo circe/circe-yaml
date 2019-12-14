@@ -4,8 +4,8 @@ import cats.Eq
 import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{Decoder, Encoder, Json, ParsingFailure}
-import org.scalacheck.{Arbitrary, Prop, Shrink}
+import io.circe.{ Decoder, Encoder, Json, ParsingFailure }
+import org.scalacheck.{ Arbitrary, Prop, Shrink }
 import org.typelevel.discipline.Laws
 
 trait SymmetricSerializationLaws {
@@ -30,7 +30,7 @@ trait SymmetricSerializationTests extends Laws {
   def symmetricPrinter[A: Eq: Arbitrary: Shrink: Encoder: Decoder](
     print: Json => String,
     parse: String => Either[ParsingFailure, Json]
-  ): RuleSet = {
+  ): RuleSet =
     new DefaultRuleSet(
       name = "printer",
       parent = None,
@@ -38,17 +38,15 @@ trait SymmetricSerializationTests extends Laws {
         laws.printerRoundTrip(parse, print, a)
       }
     )
-  }
 }
 
 object SymmetricSerializationTests {
   def apply[A: Eq: Arbitrary: Decoder: Encoder](
     print: Json => String,
     parse: String => Either[ParsingFailure, Json]
-  ): SymmetricSerializationTests = {
+  ): SymmetricSerializationTests =
     new SymmetricSerializationTests {
       val laws: SymmetricSerializationLaws = SymmetricSerializationLaws()
       symmetricPrinter[A](print, parse)
     }
-  }
 }

@@ -3,7 +3,7 @@ package io.circe.yaml
 import io.circe.Encoder
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import scala.util.{Success, Try}
+import scala.util.{ Success, Try }
 import org.scalatest.matchers.should.Matchers
 
 class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
@@ -15,16 +15,15 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
   // according to the YAML spec (section 5.1: character set)
   def isPrintable(c: Char): Boolean =
     ('\t' == c) ||
-    ('\n' == c) ||
-    ('\r' == c) ||
-    (' ' <= c && c <= '~') ||
-    ('\u0085' == c) ||
-    ('\u00a0' <= c && c <= '\ud7ff') ||
-    ('\ue000' <= c && c <= '\ufffd')
-
+      ('\n' == c) ||
+      ('\r' == c) ||
+      (' ' <= c && c <= '~') ||
+      ('\u0085' == c) ||
+      ('\u00a0' <= c && c <= '\ud7ff') ||
+      ('\ue000' <= c && c <= '\ufffd')
 
   def test1(c: Char): Unit = {
-    val r = "'\\u%04X'" format c.toInt
+    val r = "'\\u%04X'".format(c.toInt)
     def repr[A](a: A): (String, A) = (r, a)
 
     val json = c.toString.asJson
@@ -50,7 +49,9 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
   }
 
   it should "properly escape JSON string values" in {
-    forAll { (s0: String) => test2(s0) }
+    forAll { (s0: String) =>
+      test2(s0)
+    }
   }
 
   def test3(c: Char): Unit = {

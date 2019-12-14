@@ -91,20 +91,16 @@ final case class Printer(
 
     json.fold(
       scalarNode(Tag.NULL, "null"),
-      bool =>
-        scalarNode(Tag.BOOL, bool.toString),
-      number =>
-        scalarNode(numberTag(number), number.toString),
-      str =>
-        stringNode(str),
+      bool => scalarNode(Tag.BOOL, bool.toString),
+      number => scalarNode(numberTag(number), number.toString),
+      str => stringNode(str),
       arr =>
         new SequenceNode(
           Tag.SEQ,
           arr.map(jsonToYaml).asJava,
           if (sequenceStyle == FlowStyle.Flow) DumperOptions.FlowStyle.FLOW else DumperOptions.FlowStyle.BLOCK
         ),
-      obj =>
-        convertObject(obj)
+      obj => convertObject(obj)
     )
   }
 }
