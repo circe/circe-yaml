@@ -10,12 +10,11 @@ import org.typelevel.discipline.Laws
 class SnakeYamlSymmetricSerializationTests extends AnyFunSuite with Checkers with SymmetricSerializationTests {
   override val laws: SymmetricSerializationLaws = SymmetricSerializationLaws()
 
-  def checkAll(name: String, ruleSet: Laws#RuleSet): Unit = {
+  def checkAll(name: String, ruleSet: Laws#RuleSet): Unit =
     for ((id, prop) <- ruleSet.all.properties)
       test(name + "." + id) {
         check(prop)
       }
-  }
 
   checkAll("snake.printer", symmetricPrinter[Json](printer.print, parser.parse))
 }

@@ -9,7 +9,7 @@ jdk:
   - openjdk8
 
 script:
-  - sbt "++ ${TRAVIS_SCALA_VERSION}! -v" clean coverage test scalastyle coverageReport && sbt coverageAggregate
+  - sbt "++ ${TRAVIS_SCALA_VERSION}! -v" clean coverage test scalastyle coverageReport scalafmt test:scalafmt scalafmtSbt && sbt coverageAggregate
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

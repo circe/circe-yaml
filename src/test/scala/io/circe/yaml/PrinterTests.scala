@@ -1,7 +1,7 @@
 package io.circe.yaml
 
-import io.circe.{Json, JsonNumber}
-import io.circe.yaml.Printer.{FlowStyle, LineBreak, StringStyle, YamlVersion}
+import io.circe.Json
+import io.circe.yaml.Printer.{ FlowStyle, LineBreak, StringStyle, YamlVersion }
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -34,7 +34,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     "true" in {
       val printer = Printer(preserveOrder = true)
       printer.pretty(json) shouldEqual
-      """d: 4
+        """d: 4
         |a: 1
         |b: 2
         |c: 3
