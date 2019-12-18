@@ -35,13 +35,13 @@ class ParserTests extends FlatSpec with Matchers with EitherValues {
   it should "parse hexadecimal" in {
     assert(parser.parse(
       """[0xFF, 0xff, 0xab_cd]"""
-    ).contains(Seq(0xFF, 0xff, 0xabcd).asJson))
+    ).right.get == Seq(0xFF, 0xff, 0xabcd).asJson)
   }
 
   it should "parse decimal with underscore breaks" in {
     assert(parser.parse(
       """foo: 1_000_000"""
-    ).contains(Map("foo" -> 1000000).asJson))
+    ).right.get == Map("foo" -> 1000000).asJson)
   }
 
   it should "parse empty string as false" in {
