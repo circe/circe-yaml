@@ -23,7 +23,7 @@ the ADT marshalling.  You can also use circe's `Encoder` to obtain a `Json`, and
 The artifact is hosted by Sonatype, and release versions are synced to Maven Central:
 
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml" % "0.10.0"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.12.0"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
