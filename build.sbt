@@ -17,7 +17,7 @@ val Versions = new {
   val scalaCheck = "1.14.3"
   val scalaTest = "3.1.1"
   val scalaTestPlus = "3.1.0.0-RC2"
-  val snakeYaml = "1.25"
+  val snakeYaml = "1.26"
   val previousCirceYaml = "0.12.0"
 }
 
