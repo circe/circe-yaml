@@ -48,9 +48,10 @@ package object parser {
       getConstructor(node).construct(node)
   }
 
-  private[this] val flattener: FlatteningConstructor = new FlatteningConstructor
 
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
+    // Isn't thread-safe internally, may hence not be shared
+    val flattener: FlatteningConstructor = new FlatteningConstructor
 
     def convertScalarNode(node: ScalarNode) = Either
       .catchNonFatal(node.getTag match {
