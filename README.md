@@ -143,4 +143,4 @@ As part of the [circe](https://github.com/circe/circe) community, circe-yaml sup
 
 Please read the [circe Contributor's Guide](https://github.com/circe/circe/blob/master/CONTRIBUTING.md) for information about how to submit a pull request.
 
-This circe community module is currently maintained by [Jeremy Smith](https://github.com/jeremyrsmith) and [Jeff May](https://github.com/jeffmay), with guidance from [Travis Brown](https://github.com/travisbrown). It strives to conform as closely as possible to the style of circe itself.
+This circe community module is currently maintained by [Jeff May](https://github.com/jeffmay) and [Travis Brown](https://github.com/travisbrown). It strives to conform as closely as possible to the style of circe itself.
