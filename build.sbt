@@ -2,7 +2,8 @@ organization in ThisBuild := "io.circe"
 
 val compilerOptions = Seq(
   "-deprecation",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-feature",
   "-language:existentials",
   "-language:higherKinds",
@@ -23,7 +24,10 @@ val Versions = new {
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-val root = project.in(file("."))
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.4")
+
+val root = project
+  .in(file("."))
   .enablePlugins(GhpagesPlugin)
   .settings(
     name := "circe-yaml",
@@ -39,7 +43,7 @@ val root = project.in(file("."))
           )
         case _ =>
           Seq(
-            "-Ywarn-unused:imports",
+            "-Ywarn-unused:imports"
           )
       }
     },
@@ -73,8 +77,10 @@ lazy val docSettings = Seq(
   scalacOptions in (Compile, doc) ++= Seq(
     "-groups",
     "-implicits",
-    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
-   "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath
+    "-doc-source-url",
+    scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
+    "-sourcepath",
+    baseDirectory.in(LocalRootProject).value.getAbsolutePath
   )
 )
 
@@ -90,9 +96,9 @@ lazy val publishSettings = Seq(
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
+      Some("snapshots".at(nexus + "content/repositories/snapshots"))
     else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
   },
   scmInfo := Some(
     ScmInfo(
@@ -104,6 +110,22 @@ lazy val publishSettings = Seq(
     Developer("jeremyrsmith", "Jeremy Smith", "jeremyrsmith@gmail.com", url("https://github.com/jeremyrsmith")),
     Developer("jeffmay", "Jeff May", "jeff.n.may@gmail.com", url("https://github.com/jeffmay")),
     Developer("travisbrown", "Travis Brown", "travisrobertbrown@gmail.com", url("https://twitter.com/travisbrown"))
+  )
+)
+
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
+// No auto-publish atm. Remove this line to generate publish stage
+ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(
+    List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),
+    id = None,
+    name = Some("Test")
+  ),
+  WorkflowStep.Use(
+    "codecov",
+    "codecov-action",
+    "v1"
   )
 )
 
