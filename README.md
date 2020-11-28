@@ -1,6 +1,6 @@
 # circe-yaml
 
-[![Build status](https://travis-ci.org/circe/circe-yaml.svg?branch=master)](https://travis-ci.org/circe/circe-yaml)
+[![Build status](https://github.com/circe/circe-yaml/workflows/Continuous%20Integration/badge.svg)](https://github.com/circe/circe-yaml/actions)
 [![Codecov status](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12)
 

@@ -14,11 +14,15 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "fail to parse complex keys" in {
-    assert(parser.parse("""
+    assert(
+      parser
+        .parse("""
         |? - foo
         |  - bar
         |: 1
-      """.stripMargin).isLeft)
+      """.stripMargin)
+        .isLeft
+    )
   }
 
   it should "fail to parse invalid YAML" in {
@@ -47,7 +51,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         .parse(
           """[0xFF, 0xff, 0xab_cd]"""
         )
-        .contains(Seq(0xFF, 0xff, 0xabcd).asJson)
+        .contains(Seq(0xff, 0xff, 0xabcd).asJson)
     )
   }
 
