@@ -48,7 +48,6 @@ package object parser {
       getConstructor(node).construct(node)
   }
 
-
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
     // Isn't thread-safe internally, may hence not be shared
     val flattener: FlatteningConstructor = new FlatteningConstructor
