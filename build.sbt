@@ -120,12 +120,20 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),
     id = None,
-    name = Some("Test")
+    name = Some("Test"),
+    cond = Some("matrix.scala != '3.0.0-M3'")
+  ),
+  WorkflowStep.Sbt(
+    List("clean", "test"),
+    id = None,
+    name = Some("Test"),
+    cond = Some("matrix.scala == '3.0.0-M3'")
   ),
   WorkflowStep.Use(
     "codecov",
     "codecov-action",
-    "v1"
+    "v1",
+    cond = Some("matrix.scala != '3.0.0-M3'")
   )
 )
 
