@@ -33,17 +33,17 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 ```
 
 ### Parsing
-Parsing is accomplished through the `io.circe.yaml.parser` package; its API is similar to that of `circe-parser`:
+Parsing is accomplished through the `io.circe.yaml.parser._` package; its API is similar to that of `circe-parser`:
 
 ```scala
-import io.circe.yaml.parser
-val json: Either[ParsingFailure, Json] = parser.parse(yamlString)
+import io.circe.yaml.parser._
+val json: Either[ParsingFailure, Json] = parse(yamlString)
 ```
 
 Additionally, there is a function for parsing multiple YAML documents from a single string:
 
 ```scala
-val jsons: Stream[Either[ParsingFailure, Json]] = parser.parseDocuments(multiDocumentString)
+val jsons: Stream[Either[ParsingFailure, Json]] = parseDocuments(multiDocumentString)
 ```
 
 Both of these methods also support a "streaming" parse from a `java.io.Reader` – this is different from the behavior of 

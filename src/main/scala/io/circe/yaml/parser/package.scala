@@ -3,6 +3,7 @@ package io.circe.yaml
 import cats.syntax.either._
 import io.circe._
 import java.io.{ Reader, StringReader }
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
@@ -11,25 +12,43 @@ import scala.collection.JavaConverters._
 package object parser {
 
   /**
+   * A wrapper class to allow customization of the underlying SnakeYAML parser options.
+   *
+   * @param loaderOptions
+   */
+  case class ParserConfig(loaderOptions: LoaderOptions = new LoaderOptions)
+
+  /**
+   * The default parser config using the same default options used by SnakeYAML.
+   */
+  implicit val defaultParserConfig: ParserConfig = ParserConfig()
+
+  /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
    * @param yaml
    * @return
    */
-  def parse(yaml: Reader): Either[ParsingFailure, Json] = for {
-    parsed <- parseSingle(yaml)
+  def parse(yaml: Reader)(implicit parserConfig: ParserConfig): Either[ParsingFailure, Json] = for {
+    parsed <- parseSingle(yaml)(parserConfig)
     json <- yamlToJson(parsed)
   } yield json
 
-  def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
+  def parse(yaml: String)(implicit parserConfig: ParserConfig): Either[ParsingFailure, Json] =
+    parse(new StringReader(yaml))(parserConfig)
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml).map(yamlToJson)
-  def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
+  def parseDocuments(yaml: Reader)(implicit parserConfig: ParserConfig): Stream[Either[ParsingFailure, Json]] =
+    parseStream(yaml)(parserConfig).map(yamlToJson)
 
-  private[this] def parseSingle(reader: Reader) =
-    Either.catchNonFatal(new Yaml().compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
+  def parseDocuments(yaml: String)(implicit parserConfig: ParserConfig): Stream[Either[ParsingFailure, Json]] =
+    parseDocuments(new StringReader(yaml))(parserConfig)
 
-  private[this] def parseStream(reader: Reader) =
-    new Yaml().composeAll(reader).asScala.toStream
+  private[this] def parseSingle(reader: Reader)(implicit parserConfig: ParserConfig) =
+    Either
+      .catchNonFatal(new Yaml(parserConfig.loaderOptions).compose(reader))
+      .leftMap(err => ParsingFailure(err.getMessage, err))
+
+  private[this] def parseStream(reader: Reader)(implicit parserConfig: ParserConfig) =
+    new Yaml(parserConfig.loaderOptions).composeAll(reader).asScala.toStream
 
   private[this] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
