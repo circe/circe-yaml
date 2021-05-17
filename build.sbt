@@ -24,7 +24,7 @@ val Versions = new {
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.5", "3.0.0-M3")
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.6", "3.0.0-M3")
 
 val root = project
   .in(file("."))
