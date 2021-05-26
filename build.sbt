@@ -13,7 +13,7 @@ val compilerOptions = Seq(
 )
 
 val Versions = new {
-  val circe = "0.14.0-M7"
+  val circe = "0.14.0"
   val discipline = "1.1.5"
   val scalaCheck = "1.15.4"
   val scalaTest = "3.2.9"
@@ -24,7 +24,7 @@ val Versions = new {
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-ThisBuild / crossScalaVersions := Seq("2.12.13", "2.13.5", "3.0.0")
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.6", "3.0.0")
 
 val root = project
   .in(file("."))
