@@ -19,12 +19,12 @@ val Versions = new {
   val scalaTest = "3.2.9"
   val scalaTestPlus = "3.2.9.0"
   val snakeYaml = "1.28"
-  val previousCirceYaml = "0.13.0"
+  val previousCirceYaml = "0.13.1"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.6", "3.0.0")
+ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6", "3.0.0")
 
 val root = project
   .in(file("."))
