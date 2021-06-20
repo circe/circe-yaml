@@ -35,10 +35,10 @@ class PrinterTests extends AnyFreeSpec with Matchers {
       val printer = Printer(preserveOrder = true)
       printer.pretty(json) shouldEqual
         """d: 4
-        |a: 1
-        |b: 2
-        |c: 3
-        |""".stripMargin
+          |a: 1
+          |b: 2
+          |c: 3
+          |""".stripMargin
     }
   }
 
@@ -86,6 +86,16 @@ class PrinterTests extends AnyFreeSpec with Matchers {
            |""".stripMargin
     }
 
+  }
+
+  "Plain with newlines" in {
+    val json = Json.obj("foo" -> Json.fromString("abc\nxyz\n"))
+    val printer = Printer.spaces2.copy(stringStyle = StringStyle.Plain)
+    printer.pretty(json) shouldEqual
+      s"""foo: |
+         |  abc
+         |  xyz
+         |""".stripMargin
   }
 
   "Drop null keys" in {
