@@ -1,4 +1,4 @@
-organization in ThisBuild := "io.circe"
+ThisBuild / organization := "io.circe"
 
 val compilerOptions = Seq(
   "-deprecation",
@@ -47,10 +47,10 @@ val root = project
           )
       }
     },
-    scalacOptions in (Compile, console) ~= {
+    Compile / console / scalacOptions ~= {
       _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
-    scalacOptions in (Test, console) ~= {
+    Test / console / scalacOptions ~= {
       _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
     },
     libraryDependencies ++= Seq(
@@ -72,15 +72,15 @@ lazy val docSettings = Seq(
   apiURL := Some(url("https://circe.github.io/circe-yaml/api/")),
   git.remoteRepo := "git@github.com:circe/circe-yaml.git",
   docMappingsApiDir := "api",
-  addMappingsToSiteDir(mappings in (Compile, packageDoc), docMappingsApiDir),
+  addMappingsToSiteDir(Compile / packageDoc / mappings, docMappingsApiDir),
   ghpagesNoJekyll := true,
-  scalacOptions in (Compile, doc) ++= Seq(
+  Compile / doc / scalacOptions ++= Seq(
     "-groups",
     "-implicits",
     "-doc-source-url",
     scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
     "-sourcepath",
-    baseDirectory.in(LocalRootProject).value.getAbsolutePath
+    (LocalRootProject / baseDirectory).value.getAbsolutePath
   )
 )
 
@@ -91,7 +91,7 @@ lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/circe/circe-yaml")),
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomIncludeRepository := { _ => false },
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
@@ -130,9 +130,11 @@ ThisBuild / githubWorkflowBuild := Seq(
     cond = Some("matrix.scala == '3.0.0'")
   ),
   WorkflowStep.Use(
-    "codecov",
-    "codecov-action",
-    "v1",
+    UseRef.Public(
+      "codecov",
+      "codecov-action",
+      "v1"
+    ),
     cond = Some("matrix.scala != '3.0.0'")
   )
 )
