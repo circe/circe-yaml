@@ -24,7 +24,7 @@ val Versions = new {
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6", "3.0.0")
+ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6", "3.0.1")
 
 val root = project
   .in(file("."))
@@ -121,13 +121,13 @@ ThisBuild / githubWorkflowBuild := Seq(
     List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),
     id = None,
     name = Some("Test"),
-    cond = Some("matrix.scala != '3.0.0'")
+    cond = Some("matrix.scala != '3.0.1'")
   ),
   WorkflowStep.Sbt(
     List("clean", "test"),
     id = None,
     name = Some("Test"),
-    cond = Some("matrix.scala == '3.0.0'")
+    cond = Some("matrix.scala == '3.0.1'")
   ),
   WorkflowStep.Use(
     UseRef.Public(
@@ -135,7 +135,7 @@ ThisBuild / githubWorkflowBuild := Seq(
       "codecov-action",
       "v1"
     ),
-    cond = Some("matrix.scala != '3.0.0'")
+    cond = Some("matrix.scala != '3.0.1'")
   )
 )
 
