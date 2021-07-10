@@ -115,7 +115,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
           | baz:
           |  - *alias1
           |  - *alias1
-        |""".stripMargin
+          |""".stripMargin
       ).isLeft
     )
   }
