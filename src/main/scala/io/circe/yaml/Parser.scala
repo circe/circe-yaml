@@ -129,5 +129,5 @@ final case class Parser(
 }
 
 object Parser {
-    val defaultParser = Parser()
+    val default: Parser = Parser()
 }
