@@ -1,7 +1,6 @@
 package io.circe.yaml
 
 import io.circe._
-
 import java.io.Reader
 
 package object parser {
