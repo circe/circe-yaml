@@ -61,12 +61,15 @@ final case class Printer(
   }
 
   private def isBad(s: String): Boolean = s.indexOf('\u0085') >= 0 || s.indexOf('\ufeff') >= 0
+  private def hasNewline(s: String): Boolean = s.indexOf('\n') >= 0
 
   private def scalarStyle(value: String): DumperOptions.ScalarStyle =
     if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED else DumperOptions.ScalarStyle.PLAIN
 
   private def stringScalarStyle(value: String): DumperOptions.ScalarStyle =
-    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED else StringStyle.toScalarStyle(stringStyle)
+    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED
+    else if (stringStyle == StringStyle.Plain && hasNewline(value)) DumperOptions.ScalarStyle.LITERAL
+    else StringStyle.toScalarStyle(stringStyle)
 
   private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, scalarStyle(value))
   private def stringNode(value: String) = new ScalarNode(Tag.STR, value, null, null, stringScalarStyle(value))
