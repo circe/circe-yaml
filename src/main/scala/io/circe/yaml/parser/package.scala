@@ -4,6 +4,7 @@ import io.circe._
 import java.io.Reader
 
 package object parser {
+
   /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
    * @param yaml

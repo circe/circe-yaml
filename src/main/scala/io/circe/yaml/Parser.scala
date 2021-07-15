@@ -19,7 +19,7 @@ final case class Parser(
     options
   }
 
-    /**
+  /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
    * @param yaml
    * @return
@@ -129,5 +129,5 @@ final case class Parser(
 }
 
 object Parser {
-    val default: Parser = Parser()
+  val default: Parser = Parser()
 }
