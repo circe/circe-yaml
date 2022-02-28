@@ -8,7 +8,7 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
-package object parser {
+package object parser extends Parser {
 
   /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
