@@ -35,7 +35,7 @@ val root = project
     scalacOptions ++= compilerOptions,
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v <= 12 =>
+        case Some(2, v) if v <= 12 =>
           Seq(
             "-Xfuture",
             "-Yno-adapted-args",

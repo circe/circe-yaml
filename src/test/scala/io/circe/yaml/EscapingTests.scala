@@ -14,13 +14,13 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
 
   // according to the YAML spec (section 5.1: character set)
   def isPrintable(c: Char): Boolean =
-    ('\t' == c) ||
-      ('\n' == c) ||
-      ('\r' == c) ||
-      (' ' <= c && c <= '~') ||
-      ('\u0085' == c) ||
-      ('\u00a0' <= c && c <= '\ud7ff') ||
-      ('\ue000' <= c && c <= '\ufffd')
+    '\t' == c ||
+      '\n' == c ||
+      '\r' == c ||
+      ' ' <= c && c <= '~' ||
+      '\u0085' == c ||
+      '\u00a0' <= c && c <= '\ud7ff' ||
+      '\ue000' <= c && c <= '\ufffd'
 
   def test1(c: Char): Unit = {
     val r = "'\\u%04X'".format(c.toInt)

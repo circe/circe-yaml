@@ -29,7 +29,7 @@ final case class Printer(
 
   def pretty(json: Json): String = {
     val rootTag = yamlTag(json)
-    val writer = new StringWriter()
+    val writer = new StringWriter
     val serializer = new Serializer(new Emitter(writer, options), new Resolver, options, rootTag)
     serializer.open()
     serializer.serialize(jsonToYaml(json))
@@ -38,7 +38,7 @@ final case class Printer(
   }
 
   private lazy val options = {
-    val options = new DumperOptions()
+    val options = new DumperOptions
     options.setIndent(indent)
     options.setWidth(maxScalarWidth)
     options.setSplitLines(splitLines)
