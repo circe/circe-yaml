@@ -8,7 +8,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
-package object parser {
+class Parser(snakeYaml: Yaml) {
 
   /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
@@ -26,10 +26,10 @@ package object parser {
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def parseSingle(reader: Reader) =
-    Either.catchNonFatal(new Yaml().compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
+    Either.catchNonFatal(snakeYaml.compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
 
   private[this] def parseStream(reader: Reader) =
-    new Yaml().composeAll(reader).asScala.toStream
+    snakeYaml.composeAll(reader).asScala.toStream
 
   private[this] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
