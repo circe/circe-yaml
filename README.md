@@ -4,7 +4,7 @@
 [![Codecov status](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12)
 
-This is a small library which translates [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)'s AST into 
+This is a small library which translates [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml)'s AST into 
 [circe](https://github.com/circe/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents into circe's
 `Json` AST.
 
