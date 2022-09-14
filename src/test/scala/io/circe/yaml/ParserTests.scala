@@ -86,4 +86,40 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         .value == Json.False
     )
   }
+
+  it should "parse aliases" in {
+    assert(
+      Parser(maxAliasesForCollections = 2)
+        .parse(
+          """
+          | aliases: 
+          |   - &alias1
+          |     foo:
+          |       bar
+          | baz:
+          |  - *alias1
+          |  - *alias1
+          |""".stripMargin
+        )
+        .isRight
+    )
+  }
+
+  it should "fail to parse too many aliases" in {
+    assert(
+      Parser(maxAliasesForCollections = 1)
+        .parse(
+          """
+          | aliases: 
+          |   - &alias1
+          |     foo:
+          |       bar
+          | baz:
+          |  - *alias1
+          |  - *alias1
+          |""".stripMargin
+        )
+        .isLeft
+    )
+  }
 }
