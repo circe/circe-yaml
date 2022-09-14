@@ -13,10 +13,10 @@ val compilerOptions = Seq(
 )
 
 val Versions = new {
-  val circe = "0.14.1"
-  val discipline = "1.4.0"
+  val circe = "0.14.2"
+  val discipline = "1.5.1"
   val scalaCheck = "1.15.4"
-  val scalaTest = "3.2.11"
+  val scalaTest = "3.2.13"
   val scalaTestPlus = "3.2.11.0"
   val snakeYaml = "1.32"
   val previousCirceYaml = "0.13.1"
