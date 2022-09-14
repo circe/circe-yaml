@@ -30,7 +30,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
 
   "Preserves order" - {
     val kvPairs = Seq("d" -> 4, "a" -> 1, "b" -> 2, "c" -> 3)
-    val json = Json.obj(kvPairs.map { case (k, v) => (k -> Json.fromInt(v)) }: _*)
+    val json = Json.obj(kvPairs.map { case (k, v) => k -> Json.fromInt(v) }: _*)
     "true" in {
       val printer = Printer(preserveOrder = true)
       printer.pretty(json) shouldEqual
