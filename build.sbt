@@ -13,18 +13,18 @@ val compilerOptions = Seq(
 )
 
 val Versions = new {
-  val circe = "0.14.1"
-  val discipline = "1.4.0"
+  val circe = "0.14.2"
+  val discipline = "1.5.1"
   val scalaCheck = "1.15.4"
-  val scalaTest = "3.2.11"
+  val scalaTest = "3.2.13"
   val scalaTestPlus = "3.2.11.0"
-  val snakeYaml = "1.28"
+  val snakeYaml = "1.32"
   val previousCirceYaml = "0.13.1"
 }
 
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.7", "3.0.2")
+ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.8", "3.2.0")
 
 val root = project
   .in(file("."))
@@ -121,13 +121,13 @@ ThisBuild / githubWorkflowBuild := Seq(
     List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),
     id = None,
     name = Some("Test"),
-    cond = Some("matrix.scala != '3.0.2'")
+    cond = Some("matrix.scala != '3.2.0'")
   ),
   WorkflowStep.Sbt(
     List("clean", "test"),
     id = None,
     name = Some("Test"),
-    cond = Some("matrix.scala == '3.0.2'")
+    cond = Some("matrix.scala == '3.2.0'")
   ),
   WorkflowStep.Use(
     UseRef.Public(
@@ -135,7 +135,7 @@ ThisBuild / githubWorkflowBuild := Seq(
       "codecov-action",
       "v1"
     ),
-    cond = Some("matrix.scala != '3.0.2'")
+    cond = Some("matrix.scala != '3.2.0'")
   )
 )
 
