@@ -25,7 +25,7 @@ final case class Printer(
   explicitStart: Boolean = false,
   explicitEnd: Boolean = false,
   version: YamlVersion = YamlVersion.Auto
-) {
+) extends yaml.common.Printer {
 
   def pretty(json: Json): String = {
     val rootTag = yamlTag(json)
@@ -44,7 +44,7 @@ final case class Printer(
     options.setSplitLines(splitLines)
     options.setIndicatorIndent(indicatorIndent)
     options.setTags(tags.asJava)
-    options.setDefaultScalarStyle(StringStyle.toScalarStyle(stringStyle))
+    options.setDefaultScalarStyle(stringStyle.toScalarStyle)
     options.setLineBreak(lineBreak match {
       case LineBreak.Unix    => DumperOptions.LineBreak.UNIX
       case LineBreak.Windows => DumperOptions.LineBreak.WIN
@@ -69,7 +69,7 @@ final case class Printer(
   private def stringScalarStyle(value: String): DumperOptions.ScalarStyle =
     if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED
     else if (stringStyle == StringStyle.Plain && hasNewline(value)) DumperOptions.ScalarStyle.LITERAL
-    else StringStyle.toScalarStyle(stringStyle)
+    else stringStyle.toScalarStyle
 
   private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, scalarStyle(value))
   private def stringNode(value: String) = new ScalarNode(Tag.STR, value, null, null, stringScalarStyle(value))
@@ -113,6 +113,7 @@ object Printer {
   val spaces2 = Printer()
   val spaces4 = Printer(indent = 4)
 
+  // TODO: at next compatibility break, unify on io.circe.yaml.common
   sealed trait FlowStyle
   object FlowStyle {
     case object Flow extends FlowStyle

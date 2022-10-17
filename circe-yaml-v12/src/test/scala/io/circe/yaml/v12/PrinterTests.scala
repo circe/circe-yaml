@@ -1,7 +1,7 @@
 package io.circe.yaml.v12
 
 import io.circe.Json
-import io.circe.yaml.v12.Printer.{ FlowStyle, LineBreak, StringStyle }
+import io.circe.yaml.common.Printer.{ FlowStyle, LineBreak, StringStyle }
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
