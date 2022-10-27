@@ -22,22 +22,22 @@ package object parser {
   def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private val loaderOptions = {
     val options = new LoaderOptions()
     options.setMaxAliasesForCollections(50)
     options
   }
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
     Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] def parseStream(reader: Reader): Stream[Node] =
     new Yaml(loaderOptions).composeAll(reader).asScala.toStream
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
       Some(tag.getValue)
@@ -45,9 +45,9 @@ package object parser {
       None
   }
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] class FlatteningConstructor extends Parser.FlatteningConstructor
 
-  @deprecated("moved to Parser.CustomTag", since="0.14.2")
+  @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = Parser.yamlToJson(node)
 }
