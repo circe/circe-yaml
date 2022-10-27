@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
+import Parser._
 
 final case class Parser(
   maxAliasesForCollections: Int = 50
@@ -34,20 +35,24 @@ final case class Parser(
   def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml).map(yamlToJson)
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
-  private[this] def parseSingle(reader: Reader) =
+  private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
     Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
 
-  private[this] def parseStream(reader: Reader) =
+  private[this] def parseStream(reader: Reader): Stream[Node] =
     new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+}
 
-  private[this] object CustomTag {
+object Parser {
+  val default: Parser = Parser()
+
+  private[yaml] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
       Some(tag.getValue)
     else
       None
   }
 
-  private[this] class FlatteningConstructor extends SafeConstructor {
+  private[yaml] class FlatteningConstructor extends SafeConstructor {
     def flatten(node: MappingNode): MappingNode = {
       flattenMapping(node)
       node
@@ -57,7 +62,7 @@ final case class Parser(
       getConstructor(node).construct(node)
   }
 
-  private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
+  private[yaml] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
     // Isn't thread-safe internally, may hence not be shared
     val flattener: FlatteningConstructor = new FlatteningConstructor
 
@@ -126,8 +131,4 @@ final case class Parser(
       }
     }
   }
-}
-
-object Parser {
-  val default: Parser = Parser()
 }
