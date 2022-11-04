@@ -3,12 +3,12 @@ package io.circe.yaml
 import cats.syntax.either._
 import io.circe._
 import io.circe.yaml.Parser._
+import java.io.{ Reader, StringReader }
+import org.yaml.snakeyaml.{ LoaderOptions, Yaml }
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
-import org.yaml.snakeyaml.{ LoaderOptions, Yaml }
-
-import java.io.{ Reader, StringReader }
 import scala.collection.JavaConverters._
+
 
 final case class Parser(
   maxAliasesForCollections: Int = 50,
