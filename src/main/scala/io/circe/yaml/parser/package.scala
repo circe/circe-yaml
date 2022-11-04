@@ -1,5 +1,6 @@
 package io.circe.yaml
 
+import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import java.io._
@@ -8,7 +9,7 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
-package object parser extends Parser {
+package object parser {
 
   /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
@@ -21,6 +22,14 @@ package object parser extends Parser {
 
   def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
+
+  final def decode[A: Decoder](input: String): Either[Error, A] = Parser.default.decode[A](input)
+  final def decode[A: Decoder](input: Reader): Either[Error, A] = Parser.default.decode[A](input)
+
+  final def decodeAccumulating[A: Decoder](input: String): ValidatedNel[Error, A] =
+    Parser.default.decodeAccumulating[A](input)
+  final def decodeAccumulating[A: Decoder](input: Reader): ValidatedNel[Error, A] =
+    Parser.default.decodeAccumulating[A](input)
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private val loaderOptions = {
