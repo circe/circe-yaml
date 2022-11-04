@@ -1,13 +1,13 @@
 package io.circe.yaml
 
-import Parser._
 import cats.syntax.either._
 import io.circe._
-import java.io.{ Reader, StringReader }
-import org.yaml.snakeyaml.LoaderOptions
-import org.yaml.snakeyaml.Yaml
+import io.circe.yaml.Parser._
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
+import org.yaml.snakeyaml.{LoaderOptions, Yaml}
+
+import java.io.{Reader, StringReader}
 import scala.collection.JavaConverters._
 
 final case class Parser(
@@ -56,7 +56,8 @@ object Parser {
       None
   }
 
-  private[yaml] class FlatteningConstructor extends SafeConstructor {
+  private[yaml] class FlatteningConstructor(val loaderOptions: LoaderOptions = new LoaderOptions)
+      extends SafeConstructor(loaderOptions) {
     def flatten(node: MappingNode): MappingNode = {
       flattenMapping(node)
       node

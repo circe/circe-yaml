@@ -71,7 +71,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         .parse(
           ""
         )
-        .right
         .value == Json.False
     )
   }
@@ -82,7 +81,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         .parse(
           "   "
         )
-        .right
         .value == Json.False
     )
   }
