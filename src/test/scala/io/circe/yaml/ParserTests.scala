@@ -122,4 +122,59 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         .isLeft
     )
   }
+
+  it should "parse when within depth limits" in {
+    assert(
+      Parser(nestingDepthLimit = 3)
+        .parse(
+          """
+            | foo:
+            |   bar:
+            |     baz
+            |""".stripMargin
+        )
+        .isRight
+    )
+  }
+
+  it should "fail to parse when depth limit is exceeded" in {
+    assert(
+      Parser(nestingDepthLimit = 1)
+        .parse(
+          """
+            | foo:
+            |   bar:
+            |     baz
+            |""".stripMargin
+        )
+        .isLeft
+    )
+  }
+
+  it should "parse when within code point limit" in {
+    assert(
+      Parser(codePointLimit = 1 * 1024 * 1024) // 1MB
+        .parse(
+          """
+            | foo:
+            |   bar:
+            |     baz
+            |""".stripMargin
+        )
+        .isRight
+    )
+  }
+
+  it should "fail to parse when code point limit is exceeded" in {
+    assert(
+      Parser(codePointLimit = 13) // 13B
+        .parse(
+          """
+            | foo:
+            |   bar
+            |""".stripMargin
+        )
+        .isLeft
+    )
+  }
 }

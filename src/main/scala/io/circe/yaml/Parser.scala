@@ -11,12 +11,16 @@ import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
 final case class Parser(
-  maxAliasesForCollections: Int = 50
+  maxAliasesForCollections: Int = 50,
+  nestingDepthLimit: Int = 50,
+  codePointLimit: Int = 3 * 1024 * 1024 // 3 MB
 ) {
 
   private val loaderOptions = {
     val options = new LoaderOptions()
     options.setMaxAliasesForCollections(maxAliasesForCollections)
+    options.setNestingDepthLimit(nestingDepthLimit)
+    options.setCodePointLimit(codePointLimit)
     options
   }
 
