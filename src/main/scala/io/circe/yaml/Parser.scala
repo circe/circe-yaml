@@ -5,9 +5,9 @@ import io.circe._
 import io.circe.yaml.Parser._
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
-import org.yaml.snakeyaml.{LoaderOptions, Yaml}
+import org.yaml.snakeyaml.{ LoaderOptions, Yaml }
 
-import java.io.{Reader, StringReader}
+import java.io.{ Reader, StringReader }
 import scala.collection.JavaConverters._
 
 final case class Parser(
