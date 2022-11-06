@@ -63,7 +63,7 @@ val root = project
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
       "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
     ),
-    mimaPreviousArtifacts :=  Versions.previousCirceYamls.map("io.circe" %% "circe-yaml" % _)
+    mimaPreviousArtifacts := Versions.previousCirceYamls.map("io.circe" %% "circe-yaml" % _)
   )
   .settings(publishSettings ++ docSettings)
 
