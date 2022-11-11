@@ -9,11 +9,10 @@ import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
 import scala.collection.JavaConverters._
 
-
 final case class Parser(
-  maxAliasesForCollections: Int = 50,
-  nestingDepthLimit: Int = 50,
-  codePointLimit: Int = 3 * 1024 * 1024 // 3 MB
+  maxAliasesForCollections: Int = Parser.defaultMaxAliasesForCollections,
+  nestingDepthLimit: Int = Parser.defaultNestingDepthLimit,
+  codePointLimit: Int = Parser.defaultCodePointLimit
 ) {
 
   private val loaderOptions = {
@@ -44,10 +43,33 @@ final case class Parser(
 
   private[this] def parseStream(reader: Reader): Stream[Node] =
     new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+
+  def copy(
+    maxAliasesForCollections: Int = this.maxAliasesForCollections,
+    nestingDepthLimit: Int = this.nestingDepthLimit,
+    codePointLimit: Int = this.codePointLimit
+  ): Parser = new Parser(maxAliasesForCollections, nestingDepthLimit, codePointLimit)
+
+  def copy(maxAliasesForCollections: Int): Parser = new Parser(
+    maxAliasesForCollections = maxAliasesForCollections,
+    nestingDepthLimit = this.nestingDepthLimit,
+    codePointLimit = this.codePointLimit
+  )
+
+  def this(maxAliasesForCollections: Int) =
+    this(maxAliasesForCollections, Parser.defaultNestingDepthLimit, Parser.defaultCodePointLimit)
 }
 
 object Parser {
   val default: Parser = Parser()
+
+  val defaultMaxAliasesForCollections: Int = 50 // to prevent YAML at
+  // https://en.wikipedia.org/wiki/Billion_laughs_attack
+  val defaultNestingDepthLimit: Int = 50
+  val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
+
+  def apply(maxAliasesForCollections: Int): Parser =
+    new Parser(maxAliasesForCollections = maxAliasesForCollections)
 
   private[yaml] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
