@@ -61,12 +61,12 @@ final case class Parser(
 }
 
 object Parser {
-  val default: Parser = Parser()
-
   val defaultMaxAliasesForCollections: Int = 50 // to prevent YAML at
   // https://en.wikipedia.org/wiki/Billion_laughs_attack
   val defaultNestingDepthLimit: Int = 50
   val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
+
+  val default: Parser = Parser()
 
   def apply(maxAliasesForCollections: Int): Parser =
     new Parser(maxAliasesForCollections = maxAliasesForCollections)
