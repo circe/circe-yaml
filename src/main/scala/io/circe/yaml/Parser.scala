@@ -44,7 +44,7 @@ final case class Parser(
 
   private[this] def parseStream(reader: Reader): Stream[Node] =
     new Yaml(loaderOptions).composeAll(reader).asScala.toStream
-
+    
   def copy(
     maxAliasesForCollections: Int = this.maxAliasesForCollections,
     nestingDepthLimit: Int = this.nestingDepthLimit,
