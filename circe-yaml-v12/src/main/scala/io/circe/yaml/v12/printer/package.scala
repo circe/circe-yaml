@@ -2,10 +2,11 @@ package io.circe.yaml.v12
 
 import io.circe.Json
 
-package object printer {
+package object printer extends io.circe.yaml.common.Printer {
 
   /**
    * A default printer implementation using Snake YAML.
    */
-  def print(tree: Json): String = Printer.spaces2.pretty(tree)
+  def print(tree: Json): String = pretty(tree)
+  def pretty(tree: Json): String = Printer.spaces2.pretty(tree)
 }

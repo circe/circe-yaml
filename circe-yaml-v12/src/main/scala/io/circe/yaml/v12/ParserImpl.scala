@@ -1,5 +1,6 @@
 package io.circe.yaml.v12
 
+import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import io.circe.yaml.common
@@ -48,6 +49,12 @@ class ParserImpl(settings: LoadSettings) extends common.Parser {
 
   private[this] def parseStream(reader: Reader) =
     createComposer(reader).asScala.toStream
+
+  final def decode[A: Decoder](input: Reader): Either[Error, A] =
+    finishDecode(parse(input))
+
+  final def decodeAccumulating[A: Decoder](input: Reader): ValidatedNel[Error, A] =
+    finishDecodeAccumulating(parse(input))
 
   private[this] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.getValue.startsWith(Tag.PREFIX))

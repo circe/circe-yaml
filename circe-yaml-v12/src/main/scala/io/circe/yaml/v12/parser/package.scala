@@ -1,9 +1,10 @@
 package io.circe.yaml.v12
 
-import io.circe._
+import cats.data.ValidatedNel
+import io.circe.{ Decoder, Error, Json, ParsingFailure }
 import java.io.Reader
 
-package object parser {
+package object parser extends io.circe.yaml.common.Parser {
 
   /**
    * Parse YAML from the given [[Reader]], returning either [[ParsingFailure]] or [[Json]]
@@ -17,4 +18,7 @@ package object parser {
   def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = Parser.default.parseDocuments(yaml)
 
+  final def decode[A: Decoder](input: Reader): Either[Error, A] = Parser.default.decode[A](input)
+  final def decodeAccumulating[A: Decoder](input: Reader): ValidatedNel[Error, A] =
+    Parser.default.decodeAccumulating[A](input)
 }
