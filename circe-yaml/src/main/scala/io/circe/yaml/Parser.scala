@@ -1,6 +1,7 @@
 package io.circe.yaml
 
 import Parser._
+import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import java.io.{ Reader, StringReader }
@@ -40,6 +41,12 @@ final case class Parser(
 
   private[this] def parseStream(reader: Reader): Stream[Node] =
     new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+
+  final def decode[A: Decoder](input: Reader): Either[Error, A] =
+    finishDecode(parse(input))
+
+  final def decodeAccumulating[A: Decoder](input: Reader): ValidatedNel[Error, A] =
+    finishDecodeAccumulating(parse(input))
 }
 
 object Parser {
