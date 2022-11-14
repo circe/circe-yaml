@@ -31,12 +31,13 @@ final case class Parser(
    */
   def parse(yaml: Reader): Either[ParsingFailure, Json] = for {
     parsed <- parseSingle(yaml)
-    json <- yamlToJson(parsed)
+    json <- yamlToJson(parsed, loaderOptions)
   } yield json
 
   def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml).map(yamlToJson)
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] =
+    parseStream(yaml).map(node => yamlToJson(node, loaderOptions))
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
@@ -85,8 +86,7 @@ object Parser {
       None
   }
 
-  private[yaml] class FlatteningConstructor(val loaderOptions: LoaderOptions = new LoaderOptions)
-      extends SafeConstructor(loaderOptions) {
+  private[yaml] class FlatteningConstructor(val loaderOptions: LoaderOptions) extends SafeConstructor(loaderOptions) {
     def flatten(node: MappingNode): MappingNode = {
       flattenMapping(node)
       node
@@ -96,9 +96,9 @@ object Parser {
       getConstructor(node).construct(node)
   }
 
-  private[yaml] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
+  private[yaml] def yamlToJson(node: Node, loaderOptions: LoaderOptions): Either[ParsingFailure, Json] = {
     // Isn't thread-safe internally, may hence not be shared
-    val flattener: FlatteningConstructor = new FlatteningConstructor
+    val flattener: FlatteningConstructor = new FlatteningConstructor(loaderOptions)
 
     def convertScalarNode(node: ScalarNode) = Either
       .catchNonFatal(node.getTag match {
@@ -148,7 +148,7 @@ object Parser {
               for {
                 obj <- objEither
                 key <- convertKeyNode(tup.getKeyNode)
-                value <- yamlToJson(tup.getValueNode)
+                value <- yamlToJson(tup.getValueNode, loaderOptions)
               } yield obj.add(key, value)
             }
             .map(Json.fromJsonObject)
@@ -157,7 +157,7 @@ object Parser {
             .foldLeft(Either.right[ParsingFailure, List[Json]](List.empty[Json])) { (arrEither, node) =>
               for {
                 arr <- arrEither
-                value <- yamlToJson(node)
+                value <- yamlToJson(node, loaderOptions)
               } yield value :: arr
             }
             .map(arr => Json.fromValues(arr.reverse))
