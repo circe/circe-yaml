@@ -19,6 +19,7 @@ val Versions = new {
   val scalaTest = "3.2.14"
   val scalaTestPlus = "3.2.11.0"
   val snakeYaml = "1.33"
+  val snakeYamlEngine = "2.5"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 }
 
@@ -28,44 +29,92 @@ ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.8", "3.2.0")
 
 val root = project
   .in(file("."))
-  .enablePlugins(GhpagesPlugin)
+//  .settings(commonSettings)
   .settings(
-    name := "circe-yaml",
-    description := "Library for converting between SnakeYAML's AST and circe's AST",
-    scalacOptions ++= compilerOptions,
-    scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v <= 12 =>
-          Seq(
-            "-Xfuture",
-            "-Yno-adapted-args",
-            "-Ywarn-unused-import"
-          )
-        case _ =>
-          Seq(
-            "-Ywarn-unused:imports"
-          )
-      }
-    },
-    Compile / console / scalacOptions ~= {
-      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
-    },
-    Test / console / scalacOptions ~= {
-      _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
-    },
-    libraryDependencies ++= Seq(
-      "io.circe" %% "circe-core" % Versions.circe,
-      "io.circe" %% "circe-jawn" % Versions.circe % Test,
-      "org.yaml" % "snakeyaml" % Versions.snakeYaml,
-      "io.circe" %% "circe-testing" % Versions.circe % Test,
-      "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
-      "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-      "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
-    ),
-    mimaPreviousArtifacts := Versions.previousCirceYamls.map("io.circe" %% "circe-yaml" % _)
+    name := "circe-yaml-root",
+    publish / skip := true
   )
-  .settings(publishSettings ++ docSettings)
+  .aggregate(
+    `circe-yaml-common`,
+    `circe-yaml`,
+    `circe-yaml-v12`
+  )
+//  .enablePlugins(GhpagesPlugin)
+
+lazy val `circe-yaml-common` =
+  project
+    .in(file("circe-yaml-common"))
+    .settings(commonSettings)
+    .settings(
+      description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+      libraryDependencies ++= Seq(
+        "io.circe" %% "circe-core" % Versions.circe
+      )
+    )
+    .enablePlugins(GhpagesPlugin)
+
+lazy val `circe-yaml` =
+  project
+    .in(file("circe-yaml"))
+    .settings(commonSettings)
+    .dependsOn(`circe-yaml-common`)
+    .settings(
+      description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+      libraryDependencies ++= Seq(
+        "org.yaml" % "snakeyaml" % Versions.snakeYaml,
+        "io.circe" %% "circe-jawn" % Versions.circe % Test,
+        "io.circe" %% "circe-testing" % Versions.circe % Test,
+        "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
+        "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
+        "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+        "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
+      ),
+      mimaPreviousArtifacts := Versions.previousCirceYamls.map("io.circe" %% "circe-yaml" % _)
+    )
+    .enablePlugins(GhpagesPlugin)
+
+lazy val `circe-yaml-v12` =
+  project
+    .in(file("circe-yaml-v12"))
+    .settings(commonSettings)
+    .dependsOn(`circe-yaml-common`)
+    .settings(
+      description := "Library for converting between snakeyaml-engine's AST (YAML 1.2) and circe's AST",
+      libraryDependencies ++= Seq(
+        "io.circe" %% "circe-jawn" % Versions.circe % Test,
+        "org.snakeyaml" % "snakeyaml-engine" % Versions.snakeYamlEngine,
+        "io.circe" %% "circe-testing" % Versions.circe % Test,
+        "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
+        "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
+        "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+        "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
+      )
+    )
+    .enablePlugins(GhpagesPlugin)
+
+lazy val commonSettings = List(
+  scalacOptions ++= compilerOptions,
+  scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, v)) if v <= 12 =>
+        Seq(
+          "-Xfuture",
+          "-Yno-adapted-args",
+          "-Ywarn-unused-import"
+        )
+      case _ =>
+        Seq(
+          "-Ywarn-unused:imports"
+        )
+    }
+  },
+  Compile / console / scalacOptions ~= {
+    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
+  },
+  Test / console / scalacOptions ~= {
+    _.filterNot(Set("-Ywarn-unused-import", "-Ywarn-unused:imports"))
+  }
+) ++ publishSettings ++ docSettings
 
 lazy val docSettings = Seq(
   autoAPIMappings := true,
@@ -116,6 +165,7 @@ lazy val publishSettings = Seq(
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
 // No auto-publish atm. Remove this line to generate publish stage
 ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
+ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
     List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),

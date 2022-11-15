@@ -4,9 +4,9 @@
 [![Codecov status](https://codecov.io/gh/circe/circe-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/circe/circe-yaml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12)
 
-This is a small library which translates [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml)'s AST into 
-[circe](https://github.com/circe/circe)'s AST.  It enables parsing [YAML](https://yaml.org) 1.1 documents into circe's
-`Json` AST.
+This is a small library for parsing [YAML](https://yaml.org) into [circe](https://github.com/circe/circe)'s `Json` AST.
+ * For parsing YAML 1.1 it uses [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml).
+ * For parsing YAML 1.2 it uses [snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine).
 
 ## Why?
 
@@ -22,14 +22,19 @@ the ADT marshalling.  You can also use circe's `Encoder` to obtain a `Json`, and
 
 The artifact is hosted by Sonatype, and release versions are synced to Maven Central:
 
+For YAML 1.1
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml" % "0.14.1"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.14.2"
+```
+or for YAML 1.2
+```scala
+libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.14.2"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
 
 ```scala
-resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 ```
 
 ### Parsing
@@ -143,4 +148,4 @@ As part of the [circe](https://github.com/circe/circe) community, circe-yaml sup
 
 Please read the [circe Contributor's Guide](https://github.com/circe/circe/blob/master/CONTRIBUTING.md) for information about how to submit a pull request.
 
-This circe community module is currently maintained by [Jeff May](https://github.com/jeffmay) and [Travis Brown](https://github.com/travisbrown). It strives to conform as closely as possible to the style of circe itself.
+This circe community module is currently maintained by [Jeff May](https://github.com/jeffmay), [Darren Gibson](https://github.com/zarthross), and [Zach McCoy](https://github.com/zmccoy). It strives to conform as closely as possible to the style of circe itself.
