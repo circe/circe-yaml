@@ -1,6 +1,5 @@
 package io.circe.yaml
 
-import cats.syntax.all._
 import io.circe.Json
 import io.circe.syntax._
 import java.io.StringReader
@@ -144,15 +143,15 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
 
   it should "fail to parse invalid YAML" in {
     /*
-    See comments below that document the "real" expected behaviour
+    See comments below that document the actual behaviour
      */
-    val result = Either.catchNonFatal(parser.parseDocuments(new StringReader("""foo: - bar""")).toList)
-    assert(result.isLeft)
-    assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.scanner.ScannerException])
-    // val result = parser.parseDocuments(new StringReader("""foo: - bar""")).toList
-    // assert(result.size == 1)
-    // assert(result.head.isLeft)
-    // assert(result.head.isInstanceOf[Either[io.circe.ParsingFailure, Json]])
+    // val result = Either.catchNonFatal(parser.parseDocuments(new StringReader("""foo: - bar""")).toList)
+    // assert(result.isLeft)
+    // assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.scanner.ScannerException])
+    val result = parser.parseDocuments(new StringReader("""foo: - bar""")).toList
+    assert(result.size == 1)
+    assert(result.head.isLeft)
+    assert(result.head.isInstanceOf[Either[io.circe.ParsingFailure, Json]])
   }
 
   it should "parse yes as true" in {
@@ -175,22 +174,22 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
 
   it should "parse empty string as false" in {
     /*
-    See comments below that document the "real" expected behaviour
+    See comments below that document the actual behaviour
      */
     val result = parser.parseDocuments(new StringReader("")).toList
-    assert(result.isEmpty)
-    // assert(result.size == 1)
-    // assert(result.head.right.value == Json.False)
+    // assert(result.isEmpty)
+    assert(result.size == 1)
+    assert(result.head.right.value == Json.False)
   }
 
   it should "parse blank string as false" in {
     /*
-    See comments below that document the "real" expected behaviour
+    See comments below that document the actual behaviour
      */
     val result = parser.parseDocuments(new StringReader("   ")).toList
-    assert(result.isEmpty)
-    // assert(result.size == 1)
-    // assert(result.head.right.value == Json.False)
+    // assert(result.isEmpty)
+    assert(result.size == 1)
+    assert(result.head.right.value == Json.False)
   }
 
   it should "parse aliases" in {
@@ -215,41 +214,41 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
 
   it should "fail to parse too many aliases" in {
     /*
-    See comments below that document the "real" expected behaviour
+    See comments below that document the actual behaviour
      */
-    val result = Either.catchNonFatal(
-      Parser(maxAliasesForCollections = 1)
-        .parseDocuments(
-          new StringReader(
-            """
-                | aliases:
-                |   - &alias1
-                |     foo:
-                |       bar
-                | baz:
-                |  - *alias1
-                |  - *alias1
-                |""".stripMargin
-          )
-        )
-        .toList
-    )
-    assert(result.isLeft)
-    assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.error.YAMLException])
-    // val result =
+    // val result = Either.catchNonFatal(
     //   Parser(maxAliasesForCollections = 1)
-    //     .parseDocuments(new StringReader(
-    //       """
-    //         | aliases:
-    //         |   - &alias1
-    //         |     foo:
-    //         |       bar
-    //         | baz:
-    //         |  - *alias1
-    //         |  - *alias1
-    //         |""".stripMargin
-    //     )).toList
-    // assert(result.isEmpty)
-    // assert(result.head.isLeft)
+    //     .parseDocuments(
+    //       new StringReader(
+    //         """
+    //             | aliases:
+    //             |   - &alias1
+    //             |     foo:
+    //             |       bar
+    //             | baz:
+    //             |  - *alias1
+    //             |  - *alias1
+    //             |""".stripMargin
+    //       )
+    //     )
+    //     .toList
+    // )
+    // assert(result.isLeft)
+    // assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.error.YAMLException])
+    val result =
+      Parser(maxAliasesForCollections = 1)
+        .parseDocuments(new StringReader(
+          """
+            | aliases:
+            |   - &alias1
+            |     foo:
+            |       bar
+            | baz:
+            |  - *alias1
+            |  - *alias1
+            |""".stripMargin
+        )).toList
+    assert(result.isEmpty)
+    assert(result.head.isLeft)
   }
 }
