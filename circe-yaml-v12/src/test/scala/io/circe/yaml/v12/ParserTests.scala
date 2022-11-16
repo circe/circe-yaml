@@ -142,12 +142,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "fail to parse invalid YAML" in {
-    /*
-    See comments below that document the actual behaviour
-     */
-    // val result = Either.catchNonFatal(parser.parseDocuments(new StringReader("""foo: - bar""")).toList)
-    // assert(result.isLeft)
-    // assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.scanner.ScannerException])
     val result = parser.parseDocuments(new StringReader("""foo: - bar""")).toList
     assert(result.size == 1)
     assert(result.head.isLeft)
