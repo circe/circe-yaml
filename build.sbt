@@ -168,7 +168,15 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
-    List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll", "mimaReportBinaryIssues"),
+    List(
+      "clean",
+      "coverage",
+      "test",
+      "coverageReport",
+      "scalastyle",
+      "scalafmtCheckAll",
+      "circe-yaml/mimaReportBinaryIssues"
+    ),
     id = None,
     name = Some("Test"),
     cond = Some("matrix.scala != '3.2.0'")

@@ -54,7 +54,7 @@ jobs:
 
       - name: Test
         if: matrix.scala != '3.2.0'
-        run: sbt ++${{ matrix.scala }} clean coverage test coverageReport scalastyle scalafmtCheckAll mimaReportBinaryIssues
+        run: sbt ++${{ matrix.scala }} clean coverage test coverageReport scalastyle scalafmtCheckAll circe-yaml/mimaReportBinaryIssues
 
       - name: Test
         if: matrix.scala == '3.2.0'
