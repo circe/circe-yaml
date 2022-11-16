@@ -175,9 +175,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "parseDocuments blank string as 0 documents" in {
-    /*
-    See comments below that document the actual behaviour
-     */
     val result = parser.parseDocuments(new StringReader("   ")).toList
     assert(result.isEmpty)
   }
