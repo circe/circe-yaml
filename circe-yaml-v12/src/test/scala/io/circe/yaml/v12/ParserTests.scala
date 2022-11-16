@@ -10,7 +10,7 @@ import org.scalatest.matchers.should.Matchers
 class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
-  "Parser" should "fail on invalid tagged numbers" in {
+  "Parser.parse" should "fail on invalid tagged numbers" in {
     assert(parser.parse("!!int 12foo").isLeft)
   }
 
