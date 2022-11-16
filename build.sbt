@@ -168,7 +168,7 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
-    List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll"),
+    List("clean", "coverage", "test", "coverageReport", "scalastyle", "scalafmtCheckAll", "mimaReportBinaryIssues"),
     id = None,
     name = Some("Test"),
     cond = Some("matrix.scala != '3.2.0'")
