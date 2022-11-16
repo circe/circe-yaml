@@ -172,24 +172,20 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     assert(result.head.contains(Map("foo" -> 1000000).asJson))
   }
 
-  it should "parse empty string as false" in {
+  it should "parseDocuments empty string as 0 documents" in {
     /*
     See comments below that document the actual behaviour
      */
     val result = parser.parseDocuments(new StringReader("")).toList
-    // assert(result.isEmpty)
-    assert(result.size == 1)
-    assert(result.head.right.value == Json.False)
+    assert(result.isEmpty)
   }
 
-  it should "parse blank string as false" in {
+  it should "parseDocuments blank string as 0 documents" in {
     /*
     See comments below that document the actual behaviour
      */
     val result = parser.parseDocuments(new StringReader("   ")).toList
-    // assert(result.isEmpty)
-    assert(result.size == 1)
-    assert(result.head.right.value == Json.False)
+    assert(result.isEmpty)
   }
 
   it should "parse aliases" in {
@@ -237,8 +233,9 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     // assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.error.YAMLException])
     val result =
       Parser(maxAliasesForCollections = 1)
-        .parseDocuments(new StringReader(
-          """
+        .parseDocuments(
+          new StringReader(
+            """
             | aliases:
             |   - &alias1
             |     foo:
@@ -247,8 +244,10 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
             |  - *alias1
             |  - *alias1
             |""".stripMargin
-        )).toList
-    assert(result.isEmpty)
+          )
+        )
+        .toList
+    assertResult(1)(result.size)
     assert(result.head.isLeft)
   }
 }
