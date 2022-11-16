@@ -54,7 +54,7 @@ jobs:
 
       - name: Test
         if: matrix.scala != '3.2.0'
-        run: sbt ++${{ matrix.scala }} clean coverage test coverageReport scalastyle scalafmtCheckAll
+        run: sbt ++${{ matrix.scala }} clean coverage test coverageReport scalastyle scalafmtCheckAll mimaReportBinaryIssues
 
       - name: Test
         if: matrix.scala == '3.2.0'
