@@ -197,28 +197,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   }
 
   it should "fail to parse too many aliases" in {
-    /*
-    See comments below that document the actual behaviour
-     */
-    // val result = Either.catchNonFatal(
-    //   Parser(maxAliasesForCollections = 1)
-    //     .parseDocuments(
-    //       new StringReader(
-    //         """
-    //             | aliases:
-    //             |   - &alias1
-    //             |     foo:
-    //             |       bar
-    //             | baz:
-    //             |  - *alias1
-    //             |  - *alias1
-    //             |""".stripMargin
-    //       )
-    //     )
-    //     .toList
-    // )
-    // assert(result.isLeft)
-    // assert(result.swap.value.isInstanceOf[org.yaml.snakeyaml.error.YAMLException])
     val result =
       Parser
         .make(Parser.Config(maxAliasesForCollections = 1))
