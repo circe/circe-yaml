@@ -2,6 +2,7 @@ ThisBuild / tlBaseVersion := "0.14"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
 ThisBuild / scalafixScalaBinaryVersion := "2.12"
+ThisBuild / tlFatalWarningsInCi := false //TODO: ... fix this someday
 
 val Versions = new {
   val circe = "0.14.3"
