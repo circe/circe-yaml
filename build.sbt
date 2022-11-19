@@ -32,9 +32,7 @@ val root = tlCrossRootProject.aggregate(
   `circe-yaml-v12`
 )
 
-lazy val `circe-yaml-common` = crossProject(JVMPlatform)
-  .crossType(CrossType.Pure)
-  .withoutSuffixFor(JVMPlatform)
+lazy val `circe-yaml-common` = project
   .in(file("circe-yaml-common"))
   .settings(
     description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
@@ -44,44 +42,38 @@ lazy val `circe-yaml-common` = crossProject(JVMPlatform)
     tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
 
-lazy val `circe-yaml` =
-  crossProject(JVMPlatform)
-    .crossType(CrossType.Pure)
-    .withoutSuffixFor(JVMPlatform)
-    .in(file("circe-yaml"))
-    .dependsOn(`circe-yaml-common`)
-    .settings(
-      description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
-      libraryDependencies ++= Seq(
-        "org.yaml" % "snakeyaml" % Versions.snakeYaml,
-        "io.circe" %% "circe-jawn" % Versions.circe % Test,
-        "io.circe" %% "circe-testing" % Versions.circe % Test,
-        "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
-        "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-        "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-        "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
-      )
+lazy val `circe-yaml` = project
+  .in(file("circe-yaml"))
+  .dependsOn(`circe-yaml-common`)
+  .settings(
+    description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+    libraryDependencies ++= Seq(
+      "org.yaml" % "snakeyaml" % Versions.snakeYaml,
+      "io.circe" %% "circe-jawn" % Versions.circe % Test,
+      "io.circe" %% "circe-testing" % Versions.circe % Test,
+      "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
+      "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+      "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
     )
+  )
 
-lazy val `circe-yaml-v12` =
-  crossProject(JVMPlatform)
-    .crossType(CrossType.Pure)
-    .withoutSuffixFor(JVMPlatform)
-    .in(file("circe-yaml-v12"))
-    .dependsOn(`circe-yaml-common`)
-    .settings(
-      description := "Library for converting between snakeyaml-engine's AST (YAML 1.2) and circe's AST",
-      libraryDependencies ++= Seq(
-        "io.circe" %% "circe-jawn" % Versions.circe % Test,
-        "org.snakeyaml" % "snakeyaml-engine" % Versions.snakeYamlEngine,
-        "io.circe" %% "circe-testing" % Versions.circe % Test,
-        "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
-        "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-        "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-        "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
-      ),
-      tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
-    )
+lazy val `circe-yaml-v12` = project
+  .in(file("circe-yaml-v12"))
+  .dependsOn(`circe-yaml-common`)
+  .settings(
+    description := "Library for converting between snakeyaml-engine's AST (YAML 1.2) and circe's AST",
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-jawn" % Versions.circe % Test,
+      "org.snakeyaml" % "snakeyaml-engine" % Versions.snakeYamlEngine,
+      "io.circe" %% "circe-testing" % Versions.circe % Test,
+      "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
+      "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
+      "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
+      "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test
+    ),
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+  )
 
 ThisBuild / developers := List(
   Developer("jeremyrsmith", "Jeremy Smith", "jeremyrsmith@gmail.com", url("https://github.com/jeremyrsmith")),

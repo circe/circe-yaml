@@ -111,11 +111,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
-        run: mkdir -p circe-yaml-v12/.jvm/target target circe-yaml-common/.jvm/target .js/target circe-yaml/.jvm/target .jvm/target .native/target project/target
+        run: mkdir -p circe-yaml-v12/target target circe-yaml-common/target .js/target circe-yaml/target .jvm/target .native/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
-        run: tar cf targets.tar circe-yaml-v12/.jvm/target target circe-yaml-common/.jvm/target .js/target circe-yaml/.jvm/target .jvm/target .native/target project/target
+        run: tar cf targets.tar circe-yaml-v12/target target circe-yaml-common/target .js/target circe-yaml/target .jvm/target .native/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
