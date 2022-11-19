@@ -21,8 +21,6 @@ val Versions = new {
   val scalaVersions = Seq(scala212, scala213, scala3)
 }
 
-val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
-
 ThisBuild / scalaVersion := Versions.scala213
 ThisBuild / crossScalaVersions := Versions.scalaVersions
 
