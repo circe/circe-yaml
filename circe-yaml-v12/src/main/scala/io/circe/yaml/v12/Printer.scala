@@ -3,6 +3,7 @@ package io.circe.yaml.v12
 import io.circe.yaml.common
 import io.circe.yaml.common.Printer._
 import org.snakeyaml.engine.v2.api.DumpSettings
+
 import scala.collection.JavaConverters._
 
 object Printer {

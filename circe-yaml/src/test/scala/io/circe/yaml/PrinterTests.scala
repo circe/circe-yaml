@@ -1,7 +1,10 @@
 package io.circe.yaml
 
 import io.circe.Json
-import io.circe.yaml.Printer.{ FlowStyle, LineBreak, StringStyle, YamlVersion }
+import io.circe.yaml.Printer.FlowStyle
+import io.circe.yaml.Printer.LineBreak
+import io.circe.yaml.Printer.StringStyle
+import io.circe.yaml.Printer.YamlVersion
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 

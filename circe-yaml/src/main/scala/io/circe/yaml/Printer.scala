@@ -1,14 +1,16 @@
 package io.circe.yaml
 
-import Printer._
 import io.circe._
-import java.io.StringWriter
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.nodes._
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
+
+import java.io.StringWriter
 import scala.collection.JavaConverters._
+
+import Printer._
 
 final case class Printer(
   preserveOrder: Boolean = false,

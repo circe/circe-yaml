@@ -1,13 +1,17 @@
 package io.circe.yaml.v12
 
-import io.circe.{ Json, JsonNumber, JsonObject }
+import io.circe.Json
+import io.circe.JsonNumber
+import io.circe.JsonObject
 import io.circe.yaml.common.Printer._
-import java.io.StringWriter
-import org.snakeyaml.engine.v2.api.{ DumpSettings, StreamDataWriter }
+import org.snakeyaml.engine.v2.api.DumpSettings
+import org.snakeyaml.engine.v2.api.StreamDataWriter
 import org.snakeyaml.engine.v2.common
 import org.snakeyaml.engine.v2.emitter.Emitter
 import org.snakeyaml.engine.v2.nodes._
 import org.snakeyaml.engine.v2.serializer.Serializer
+
+import java.io.StringWriter
 import scala.collection.JavaConverters._
 
 class PrinterImpl(

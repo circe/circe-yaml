@@ -1,9 +1,9 @@
 package io.circe.yaml
 
 import io.circe.Json
+import io.circe.syntax._
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
-import io.circe.syntax._
 import org.scalatest.matchers.should.Matchers
 
 class ParserTests extends AnyFlatSpec with Matchers with EitherValues {

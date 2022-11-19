@@ -1,7 +1,9 @@
 package io.circe.yaml.v12
 
-import java.io.{ File, InputStreamReader }
 import org.scalatest.freespec.AnyFreeSpec
+
+import java.io.File
+import java.io.InputStreamReader
 import scala.io.Source
 
 class ExampleFileTests extends AnyFreeSpec {

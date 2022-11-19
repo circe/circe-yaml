@@ -3,10 +3,11 @@ package io.circe.yaml
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
-import java.io._
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes._
+
+import java.io._
 import scala.collection.JavaConverters._
 
 package object parser extends io.circe.yaml.common.Parser {

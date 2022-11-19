@@ -4,8 +4,13 @@ import cats.Eq
 import cats.instances.either._
 import cats.laws._
 import cats.laws.discipline._
-import io.circe.{ Decoder, Encoder, Json, ParsingFailure }
-import org.scalacheck.{ Arbitrary, Prop, Shrink }
+import io.circe.Decoder
+import io.circe.Encoder
+import io.circe.Json
+import io.circe.ParsingFailure
+import org.scalacheck.Arbitrary
+import org.scalacheck.Prop
+import org.scalacheck.Shrink
 import org.typelevel.discipline.Laws
 
 trait SymmetricSerializationLaws {

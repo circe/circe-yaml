@@ -1,15 +1,18 @@
 package io.circe.yaml
 
-import Parser._
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
-import java.io.{ Reader, StringReader }
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
+
+import java.io.Reader
+import java.io.StringReader
 import scala.collection.JavaConverters._
+
+import Parser._
 
 final case class Parser(
   maxAliasesForCollections: Int = 50

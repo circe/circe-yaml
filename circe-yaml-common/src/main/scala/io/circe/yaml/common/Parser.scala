@@ -1,7 +1,11 @@
 package io.circe.yaml.common
 
 import cats.data.ValidatedNel
-import io.circe.{ Decoder, Error, Json, ParsingFailure }
+import io.circe.Decoder
+import io.circe.Error
+import io.circe.Json
+import io.circe.ParsingFailure
+
 import java.io.Reader
 
 trait Parser extends io.circe.Parser {

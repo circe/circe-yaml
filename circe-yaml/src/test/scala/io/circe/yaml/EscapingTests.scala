@@ -2,9 +2,11 @@ package io.circe.yaml
 
 import io.circe.Encoder
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import scala.util.{ Success, Try }
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+
+import scala.util.Success
+import scala.util.Try
 
 class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
