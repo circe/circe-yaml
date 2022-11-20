@@ -52,14 +52,20 @@ final case class Parser(
 
   def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml).map(yamlToJson)
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml) match {
+    case Left(error)   => Stream(Left(error))
+    case Right(stream) => stream.map(yamlToJson)
+  }
+
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
     Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
 
-  private[this] def parseStream(reader: Reader): Stream[Node] =
-    new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+  private[this] def parseStream(reader: Reader): Either[ParsingFailure, Stream[Node]] =
+    Either
+      .catchNonFatal(new Yaml(loaderOptions).composeAll(reader).asScala.toStream)
+      .leftMap(err => ParsingFailure(err.getMessage, err))
 
   final def decode[A: Decoder](input: Reader): Either[Error, A] =
     finishDecode(parse(input))

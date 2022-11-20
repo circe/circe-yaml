@@ -22,10 +22,12 @@ import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.io.StringReader
+
 class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
-  "Parser" should "fail on invalid tagged numbers" in {
+  "Parser.parse" should "fail on invalid tagged numbers" in {
     assert(parser.parse("!!int 12foo").isLeft)
   }
 
@@ -137,5 +139,98 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
+  }
+
+  "Parser.parseDocuments" should "fail on invalid tagged numbers" in {
+    val result = parser.parseDocuments(new StringReader("!!int 12foo")).toList
+    assert(result.size == 1)
+    assert(result.head.isLeft)
+  }
+
+  it should "fail to parse complex keys" in {
+    val result = parser
+      .parseDocuments(new StringReader("""
+        |? - foo
+        |  - bar
+        |: 1""".stripMargin))
+      .toList
+    assert(result.size == 1)
+    assert(result.head.isLeft)
+  }
+
+  it should "fail to parse invalid YAML" in {
+    val result = parser.parseDocuments(new StringReader("""foo: - bar""")).toList
+    assert(result.size == 1)
+    assert(result.head.isLeft)
+    assert(result.head.isInstanceOf[Either[io.circe.ParsingFailure, Json]])
+  }
+
+  it should "parse yes as true" in {
+    val result = parser.parseDocuments(new StringReader("""foo: yes""")).toList
+    assert(result.size == 1)
+    assert(result.head.isRight)
+  }
+
+  it should "parse hexadecimal" in {
+    val result = parser.parseDocuments(new StringReader("""[0xFF, 0xff, 0xab_cd]""")).toList
+    assert(result.size == 1)
+    assert(result.head.contains(Seq(0xff, 0xff, 0xabcd).asJson))
+  }
+
+  it should "parse decimal with underscore breaks" in {
+    val result = parser.parseDocuments(new StringReader("""foo: 1_000_000""")).toList
+    assert(result.size == 1)
+    assert(result.head.contains(Map("foo" -> 1000000).asJson))
+  }
+
+  it should "parseDocuments empty string as 0 documents" in {
+    val result = parser.parseDocuments(new StringReader("")).toList
+    assert(result.isEmpty)
+  }
+
+  it should "parseDocuments blank string as 0 documents" in {
+    val result = parser.parseDocuments(new StringReader("   ")).toList
+    assert(result.isEmpty)
+  }
+
+  it should "parse aliases" in {
+    val result = parser
+      .parseDocuments(
+        new StringReader(
+          """
+            | aliases:
+            |   - &alias1
+            |     foo:
+            |       bar
+            | baz:
+            |  - *alias1
+            |  - *alias1
+            |""".stripMargin
+        )
+      )
+      .toList
+    assert(result.size == 1)
+    assert(result.head.isRight)
+  }
+
+  it should "fail to parse too many aliases" in {
+    val result =
+      Parser(maxAliasesForCollections = 1)
+        .parseDocuments(
+          new StringReader(
+            """
+            | aliases:
+            |   - &alias1
+            |     foo:
+            |       bar
+            | baz:
+            |  - *alias1
+            |  - *alias1
+            |""".stripMargin
+          )
+        )
+        .toList
+    assertResult(1)(result.size)
+    assert(result.head.isLeft)
   }
 }
