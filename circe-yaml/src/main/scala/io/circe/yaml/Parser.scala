@@ -16,21 +16,15 @@
 
 package io.circe.yaml
 
+import Parser._
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import java.io.{ Reader, StringReader }
 import org.yaml.snakeyaml.{ LoaderOptions, Yaml }
-import org.yaml.snakeyaml.LoaderOptions
-import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
-
-import java.io.Reader
-import java.io.StringReader
-import scala.collection.JavaConverters._
-
-import Parser._
+import scala.jdk.CollectionConverters._
 
 final case class Parser(
   maxAliasesForCollections: Int = Parser.defaultMaxAliasesForCollections,
@@ -58,9 +52,10 @@ final case class Parser(
 
   def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml) match {
-    case Left(error)   => Stream(Left(error))
-    case Right(stream) => stream.map(yamlToJson)
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] =
+    parseStream(yaml) match {
+      case Left(error)   => Stream(Left(error))
+      case Right(stream) => stream.map(n => yamlToJson(n, loaderOptions))
   }
 
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
