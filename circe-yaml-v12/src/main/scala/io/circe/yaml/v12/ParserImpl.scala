@@ -1,16 +1,34 @@
+/*
+ * Copyright 2016 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.yaml.v12
 
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import io.circe.yaml.common
-import java.io.{ Reader, StringReader }
-import java.util.Optional
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.composer.Composer
 import org.snakeyaml.engine.v2.constructor.StandardConstructor
 import org.snakeyaml.engine.v2.nodes._
 import org.snakeyaml.engine.v2.scanner.StreamReader
+
+import java.io.Reader
+import java.io.StringReader
+import java.util.Optional
 import scala.collection.JavaConverters._
 
 class ParserImpl(settings: LoadSettings) extends common.Parser {
@@ -28,7 +46,10 @@ class ParserImpl(settings: LoadSettings) extends common.Parser {
   def parse(yaml: String): Either[ParsingFailure, Json] =
     parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml).map(yamlToJson)
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml) match {
+    case Left(error)   => Stream(Left(error))
+    case Right(stream) => stream.map(yamlToJson)
+  }
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def asScala[T](ot: Optional[T]): Option[T] =
@@ -47,8 +68,8 @@ class ParserImpl(settings: LoadSettings) extends common.Parser {
       case Right(Some(value)) => Right(value)
     }
 
-  private[this] def parseStream(reader: Reader) =
-    createComposer(reader).asScala.toStream
+  private[this] def parseStream(reader: Reader): Either[ParsingFailure, Stream[Node]] =
+    Either.catchNonFatal(createComposer(reader).asScala.toStream).leftMap(err => ParsingFailure(err.getMessage, err))
 
   final def decode[A: Decoder](input: Reader): Either[Error, A] =
     finishDecode(parse(input))

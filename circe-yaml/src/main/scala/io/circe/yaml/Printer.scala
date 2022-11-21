@@ -1,14 +1,32 @@
+/*
+ * Copyright 2016 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.yaml
 
-import Printer._
 import io.circe._
-import java.io.StringWriter
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.emitter.Emitter
 import org.yaml.snakeyaml.nodes._
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
+
+import java.io.StringWriter
 import scala.collection.JavaConverters._
+
+import Printer._
 
 final case class Printer(
   preserveOrder: Boolean = false,

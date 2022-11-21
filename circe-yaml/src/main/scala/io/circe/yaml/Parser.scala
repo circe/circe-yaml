@@ -1,14 +1,36 @@
+/*
+ * Copyright 2016 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.circe.yaml
 
-import Parser._
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
 import java.io.{ Reader, StringReader }
 import org.yaml.snakeyaml.{ LoaderOptions, Yaml }
+import org.yaml.snakeyaml.LoaderOptions
+import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
+
+import java.io.Reader
+import java.io.StringReader
 import scala.collection.JavaConverters._
+
+import Parser._
 
 final case class Parser(
   maxAliasesForCollections: Int = Parser.defaultMaxAliasesForCollections,
@@ -36,15 +58,20 @@ final case class Parser(
 
   def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] =
-    parseStream(yaml).map(node => yamlToJson(node, loaderOptions))
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml) match {
+    case Left(error)   => Stream(Left(error))
+    case Right(stream) => stream.map(yamlToJson)
+  }
+
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
     Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
 
-  private[this] def parseStream(reader: Reader): Stream[Node] =
-    new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+  private[this] def parseStream(reader: Reader): Either[ParsingFailure, Stream[Node]] =
+    Either
+      .catchNonFatal(new Yaml(loaderOptions).composeAll(reader).asScala.toStream)
+      .leftMap(err => ParsingFailure(err.getMessage, err))
 
   def copy(
     maxAliasesForCollections: Int = this.maxAliasesForCollections,
