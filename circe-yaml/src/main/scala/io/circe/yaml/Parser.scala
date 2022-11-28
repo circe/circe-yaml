@@ -19,6 +19,7 @@ package io.circe.yaml
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
+import io.circe.yaml.Parser.default.loaderOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
@@ -31,12 +32,16 @@ import scala.collection.JavaConverters._
 import Parser._
 
 final case class Parser(
-  maxAliasesForCollections: Int = 50
+  maxAliasesForCollections: Int = Parser.defaultMaxAliasesForCollections,
+  nestingDepthLimit: Int = Parser.defaultNestingDepthLimit,
+  codePointLimit: Int = Parser.defaultCodePointLimit
 ) extends yaml.common.Parser {
 
   private val loaderOptions = {
     val options = new LoaderOptions()
     options.setMaxAliasesForCollections(maxAliasesForCollections)
+    options.setNestingDepthLimit(nestingDepthLimit)
+    options.setCodePointLimit(codePointLimit)
     options
   }
 
@@ -47,15 +52,16 @@ final case class Parser(
    */
   def parse(yaml: Reader): Either[ParsingFailure, Json] = for {
     parsed <- parseSingle(yaml)
-    json <- yamlToJson(parsed)
+    json <- yamlToJson(parsed, loaderOptions)
   } yield json
 
   def parse(yaml: String): Either[ParsingFailure, Json] = parse(new StringReader(yaml))
 
-  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] = parseStream(yaml) match {
-    case Left(error)   => Stream(Left(error))
-    case Right(stream) => stream.map(yamlToJson)
-  }
+  def parseDocuments(yaml: Reader): Stream[Either[ParsingFailure, Json]] =
+    parseStream(yaml) match {
+      case Left(error)   => Stream(Left(error))
+      case Right(stream) => stream.map(n => yamlToJson(n, loaderOptions))
+    }
 
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
@@ -67,6 +73,21 @@ final case class Parser(
       .catchNonFatal(new Yaml(loaderOptions).composeAll(reader).asScala.toStream)
       .leftMap(err => ParsingFailure(err.getMessage, err))
 
+  def copy(
+    maxAliasesForCollections: Int = this.maxAliasesForCollections,
+    nestingDepthLimit: Int = this.nestingDepthLimit,
+    codePointLimit: Int = this.codePointLimit
+  ): Parser = new Parser(maxAliasesForCollections, nestingDepthLimit, codePointLimit)
+
+  def copy(maxAliasesForCollections: Int): Parser = new Parser(
+    maxAliasesForCollections = maxAliasesForCollections,
+    nestingDepthLimit = this.nestingDepthLimit,
+    codePointLimit = this.codePointLimit
+  )
+
+  def this(maxAliasesForCollections: Int) =
+    this(maxAliasesForCollections, Parser.defaultNestingDepthLimit, Parser.defaultCodePointLimit)
+
   final def decode[A: Decoder](input: Reader): Either[Error, A] =
     finishDecode(parse(input))
 
@@ -75,7 +96,15 @@ final case class Parser(
 }
 
 object Parser {
+  val defaultMaxAliasesForCollections: Int = 50 // to prevent YAML at
+  // https://en.wikipedia.org/wiki/Billion_laughs_attack
+  val defaultNestingDepthLimit: Int = 50
+  val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
+
   val default: Parser = Parser()
+
+  def apply(maxAliasesForCollections: Int): Parser =
+    new Parser(maxAliasesForCollections = maxAliasesForCollections)
 
   private[yaml] object CustomTag {
     def unapply(tag: Tag): Option[String] = if (!tag.startsWith(Tag.PREFIX))
@@ -84,7 +113,7 @@ object Parser {
       None
   }
 
-  private[yaml] class FlatteningConstructor extends SafeConstructor {
+  private[yaml] class FlatteningConstructor(val loaderOptions: LoaderOptions) extends SafeConstructor(loaderOptions) {
     def flatten(node: MappingNode): MappingNode = {
       flattenMapping(node)
       node
@@ -94,9 +123,12 @@ object Parser {
       getConstructor(node).construct(node)
   }
 
-  private[yaml] def yamlToJson(node: Node): Either[ParsingFailure, Json] = {
+  private[yaml] def yamlToJson(node: Node): Either[ParsingFailure, Json] =
+    yamlToJson(node, loaderOptions)
+
+  private[yaml] def yamlToJson(node: Node, loaderOptions: LoaderOptions): Either[ParsingFailure, Json] = {
     // Isn't thread-safe internally, may hence not be shared
-    val flattener: FlatteningConstructor = new FlatteningConstructor
+    val flattener: FlatteningConstructor = new FlatteningConstructor(loaderOptions)
 
     def convertScalarNode(node: ScalarNode) = Either
       .catchNonFatal(node.getTag match {
@@ -146,7 +178,7 @@ object Parser {
               for {
                 obj <- objEither
                 key <- convertKeyNode(tup.getKeyNode)
-                value <- yamlToJson(tup.getValueNode)
+                value <- yamlToJson(tup.getValueNode, loaderOptions)
               } yield obj.add(key, value)
             }
             .map(Json.fromJsonObject)
@@ -155,7 +187,7 @@ object Parser {
             .foldLeft(Either.right[ParsingFailure, List[Json]](List.empty[Json])) { (arrEither, node) =>
               for {
                 arr <- arrEither
-                value <- yamlToJson(node)
+                value <- yamlToJson(node, loaderOptions)
               } yield value :: arr
             }
             .map(arr => Json.fromValues(arr.reverse))

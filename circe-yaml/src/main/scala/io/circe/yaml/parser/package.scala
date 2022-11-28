@@ -46,9 +46,11 @@ package object parser extends io.circe.yaml.common.Parser {
     Parser.default.decodeAccumulating[A](input)
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
-  private val loaderOptions = {
+  private val loaderOptions: LoaderOptions = {
     val options = new LoaderOptions()
-    options.setMaxAliasesForCollections(50)
+    options.setMaxAliasesForCollections(Parser.defaultMaxAliasesForCollections)
+    options.setNestingDepthLimit(Parser.defaultNestingDepthLimit)
+    options.setCodePointLimit(Parser.defaultCodePointLimit)
     options
   }
 
@@ -69,8 +71,8 @@ package object parser extends io.circe.yaml.common.Parser {
   }
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
-  private[this] class FlatteningConstructor extends Parser.FlatteningConstructor
+  private[this] class FlatteningConstructor extends Parser.FlatteningConstructor(loaderOptions)
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
-  private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = Parser.yamlToJson(node)
+  private[this] def yamlToJson(node: Node): Either[ParsingFailure, Json] = Parser.yamlToJson(node, loaderOptions)
 }
