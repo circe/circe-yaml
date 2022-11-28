@@ -19,6 +19,7 @@ package io.circe.yaml
 import cats.data.ValidatedNel
 import cats.syntax.either._
 import io.circe._
+import io.circe.yaml.Parser.default.loaderOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
@@ -121,6 +122,9 @@ object Parser {
     def construct(node: ScalarNode): Object =
       getConstructor(node).construct(node)
   }
+
+  private[yaml] def yamlToJson(node: Node): Either[ParsingFailure, Json] =
+    yamlToJson(node, loaderOptions)
 
   private[yaml] def yamlToJson(node: Node, loaderOptions: LoaderOptions): Either[ParsingFailure, Json] = {
     // Isn't thread-safe internally, may hence not be shared
