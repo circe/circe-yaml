@@ -56,7 +56,7 @@ final case class Parser(
     parseStream(yaml) match {
       case Left(error)   => Stream(Left(error))
       case Right(stream) => stream.map(n => yamlToJson(n, loaderOptions))
-  }
+    }
 
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
