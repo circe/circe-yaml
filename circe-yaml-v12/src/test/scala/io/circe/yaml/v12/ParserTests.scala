@@ -234,4 +234,33 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     assertResult(1)(result.size)
     assert(result.head.isLeft)
   }
+
+  it should "parse when within code point limit" in {
+    assert(
+      Parser
+        .make(Parser.Config(codePointLimit = 1 * 1024 * 1024)) // 1MB
+        .parse(
+          """
+            | foo:
+            |   bar:
+            |     baz
+            |""".stripMargin
+        )
+        .isRight
+    )
+  }
+
+  it should "fail to parse when code point limit is exceeded" in {
+    assert(
+      Parser
+        .make(Parser.Config(codePointLimit = 13)) // 13B
+        .parse(
+          """
+            | foo:
+            |   bar
+            |""".stripMargin
+        )
+        .isLeft
+    )
+  }
 }
