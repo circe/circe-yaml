@@ -96,7 +96,6 @@ final case class Parser(
 }
 
 object Parser {
-  // https://en.wikipedia.org/wiki/Billion_laughs_attack
   val defaultNestingDepthLimit: Int = 50
 
   val default: Parser = Parser()

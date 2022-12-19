@@ -40,6 +40,7 @@ trait Parser extends io.circe.Parser {
 }
 
 object Parser {
-  val defaultMaxAliasesForCollections: Int = 50 // to prevent YAML at
+  // to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
+  val defaultMaxAliasesForCollections: Int = 50
   val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
 }
