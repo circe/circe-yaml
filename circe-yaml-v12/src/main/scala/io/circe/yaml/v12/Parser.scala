@@ -24,8 +24,9 @@ object Parser {
     allowDuplicateKeys: Boolean = false,
     allowRecursiveKeys: Boolean = false,
     bufferSize: Int = 1024,
+    codePointLimit: Int = common.Parser.defaultCodePointLimit,
     label: String = "reader",
-    maxAliasesForCollections: Int = 50,
+    maxAliasesForCollections: Int = common.Parser.defaultMaxAliasesForCollections,
     parseComments: Boolean = false,
     useMarks: Boolean = true
   )
@@ -37,6 +38,7 @@ object Parser {
         .setAllowDuplicateKeys(allowDuplicateKeys)
         .setAllowRecursiveKeys(allowRecursiveKeys)
         .setBufferSize(bufferSize)
+        .setCodePointLimit(codePointLimit)
         .setLabel(label)
         .setMaxAliasesForCollections(maxAliasesForCollections)
         .setParseComments(parseComments)

@@ -32,9 +32,9 @@ import scala.collection.JavaConverters._
 import Parser._
 
 final case class Parser(
-  maxAliasesForCollections: Int = Parser.defaultMaxAliasesForCollections,
+  maxAliasesForCollections: Int = common.Parser.defaultMaxAliasesForCollections,
   nestingDepthLimit: Int = Parser.defaultNestingDepthLimit,
-  codePointLimit: Int = Parser.defaultCodePointLimit
+  codePointLimit: Int = common.Parser.defaultCodePointLimit
 ) extends yaml.common.Parser {
 
   private val loaderOptions = {
@@ -86,7 +86,7 @@ final case class Parser(
   )
 
   def this(maxAliasesForCollections: Int) =
-    this(maxAliasesForCollections, Parser.defaultNestingDepthLimit, Parser.defaultCodePointLimit)
+    this(maxAliasesForCollections, Parser.defaultNestingDepthLimit, common.Parser.defaultCodePointLimit)
 
   final def decode[A: Decoder](input: Reader): Either[Error, A] =
     finishDecode(parse(input))
@@ -96,10 +96,7 @@ final case class Parser(
 }
 
 object Parser {
-  val defaultMaxAliasesForCollections: Int = 50 // to prevent YAML at
-  // https://en.wikipedia.org/wiki/Billion_laughs_attack
   val defaultNestingDepthLimit: Int = 50
-  val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
 
   val default: Parser = Parser()
 

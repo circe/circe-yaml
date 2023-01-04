@@ -48,9 +48,9 @@ package object parser extends io.circe.yaml.common.Parser {
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private val loaderOptions: LoaderOptions = {
     val options = new LoaderOptions()
-    options.setMaxAliasesForCollections(Parser.defaultMaxAliasesForCollections)
+    options.setMaxAliasesForCollections(common.Parser.defaultMaxAliasesForCollections)
     options.setNestingDepthLimit(Parser.defaultNestingDepthLimit)
-    options.setCodePointLimit(Parser.defaultCodePointLimit)
+    options.setCodePointLimit(common.Parser.defaultCodePointLimit)
     options
   }
 

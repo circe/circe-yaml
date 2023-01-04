@@ -38,3 +38,9 @@ trait Parser extends io.circe.Parser {
   def decode[A: Decoder](input: Reader): Either[Error, A]
   def decodeAccumulating[A: Decoder](input: Reader): ValidatedNel[Error, A]
 }
+
+object Parser {
+  // to prevent YAML at https://en.wikipedia.org/wiki/Billion_laughs_attack
+  val defaultMaxAliasesForCollections: Int = 50
+  val defaultCodePointLimit: Int = 3 * 1024 * 1024 // 3MB
+}
