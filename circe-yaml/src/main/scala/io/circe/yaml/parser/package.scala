@@ -21,6 +21,7 @@ import cats.syntax.either._
 import io.circe._
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.nodes._
 
 import java.io._
@@ -56,11 +57,13 @@ package object parser extends io.circe.yaml.common.Parser {
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
-    Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
+    Either
+      .catchNonFatal(new Yaml(new SafeConstructor(loaderOptions)).compose(reader))
+      .leftMap(err => ParsingFailure(err.getMessage, err))
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] def parseStream(reader: Reader): Stream[Node] =
-    new Yaml(loaderOptions).composeAll(reader).asScala.toStream
+    new Yaml(new SafeConstructor(loaderOptions)).composeAll(reader).asScala.toStream
 
   @deprecated("moved to Parser.CustomTag", since = "0.14.2")
   private[this] object CustomTag {
