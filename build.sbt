@@ -6,12 +6,12 @@ ThisBuild / tlFatalWarningsInCi := false //TODO: ... fix this someday
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Versions = new {
-  val circe = "0.14.3"
+  val circe = "0.14.4"
   val discipline = "1.5.1"
   val scalaCheck = "1.17.0"
   val scalaTest = "3.2.15"
   val scalaTestPlus = "3.2.11.0"
-  val snakeYaml = "1.33"
+  val snakeYaml = "2.0"
   val snakeYamlEngine = "2.5"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
