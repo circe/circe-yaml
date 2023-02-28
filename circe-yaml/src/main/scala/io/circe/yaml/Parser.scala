@@ -66,11 +66,13 @@ final case class Parser(
   def parseDocuments(yaml: String): Stream[Either[ParsingFailure, Json]] = parseDocuments(new StringReader(yaml))
 
   private[this] def parseSingle(reader: Reader): Either[ParsingFailure, Node] =
-    Either.catchNonFatal(new Yaml(loaderOptions).compose(reader)).leftMap(err => ParsingFailure(err.getMessage, err))
+    Either
+      .catchNonFatal(new Yaml(new SafeConstructor(loaderOptions)).compose(reader))
+      .leftMap(err => ParsingFailure(err.getMessage, err))
 
   private[this] def parseStream(reader: Reader): Either[ParsingFailure, Stream[Node]] =
     Either
-      .catchNonFatal(new Yaml(loaderOptions).composeAll(reader).asScala.toStream)
+      .catchNonFatal(new Yaml(new SafeConstructor(loaderOptions)).composeAll(reader).asScala.toStream)
       .leftMap(err => ParsingFailure(err.getMessage, err))
 
   def copy(
