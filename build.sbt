@@ -16,7 +16,7 @@ val Versions = new {
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
   val scala212 = "2.12.17"
-  val scala213 = "2.13.11"
+  val scala213 = "2.13.10"
   val scala3 = "3.2.1"
 
   val scalaVersions = Seq(scala212, scala213, scala3)
