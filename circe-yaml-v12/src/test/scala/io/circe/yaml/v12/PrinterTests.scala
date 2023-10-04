@@ -155,4 +155,42 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Indicator indent" - {
+    val firstEl = Json.obj("a" -> Json.fromString("b"), "c" -> Json.fromString("d"))
+    val secondEl = Json.obj("aa" -> Json.fromString("bb"), "cc" -> Json.fromString("dd"))
+    val json = Json.obj("root" -> Json.arr(firstEl, secondEl))
+
+    "Default" in {
+      Printer.spaces2.pretty(json)shouldEqual
+        """root:
+          |- a: b
+          |  c: d
+          |- aa: bb
+          |  cc: dd
+          |""".stripMargin
+    }
+
+    "Indent without indentWithIndicator" in {
+      Printer.make(Printer.Config(indicatorIndent = 2)).pretty(json) shouldEqual
+        """root:
+          |  -
+          |  a: b
+          |  c: d
+          |  -
+          |  aa: bb
+          |  cc: dd
+          |""".stripMargin
+    }
+
+    "Indent with indentWithIndicator" in {
+      Printer.make(Printer.Config(indicatorIndent = 2, indentWithIndicator = true)).pretty(json) shouldEqual
+        """root:
+          |  - a: b
+          |    c: d
+          |  - aa: bb
+          |    cc: dd
+          |""".stripMargin
+    }
+  }
+
 }
