@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "0.14"
+ThisBuild / tlBaseVersion := "1.15"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
 ThisBuild / scalafixScalaBinaryVersion := "2.12"
@@ -13,7 +13,7 @@ val Versions = new {
   val scalaTestPlus = "3.2.14.0"
   val snakeYaml = "2.2"
   val snakeYamlEngine = "2.7"
-  val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
+  val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2", "0.15.0")
 
   val scala212 = "2.12.18"
   val scala213 = "2.13.12"
