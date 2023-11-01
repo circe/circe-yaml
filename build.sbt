@@ -37,8 +37,7 @@ lazy val `circe-yaml-common` = project
     description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe
-    ),
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+    )
   )
 
 lazy val `circe-yaml` = project
@@ -70,8 +69,7 @@ lazy val `circe-yaml-v12` = project
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
       "org.scalatestplus" %% "scalacheck-1-16" % Versions.scalaTestPlus % Test
-    ),
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+    )
   )
 
 ThisBuild / developers := List(
