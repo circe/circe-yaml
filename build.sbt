@@ -12,7 +12,7 @@ val Versions = new {
   val scalaTest = "3.2.17"
   val scalaTestPlus = "3.2.14.0"
   val snakeYaml = "2.2"
-  val snakeYamlEngine = "2.6"
+  val snakeYamlEngine = "2.7"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
   val scala212 = "2.12.18"
