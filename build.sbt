@@ -2,7 +2,7 @@ ThisBuild / tlBaseVersion := "1.15"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
 ThisBuild / scalafixScalaBinaryVersion := "2.12"
-ThisBuild / tlFatalWarningsInCi := false //TODO: ... fix this someday
+ThisBuild / tlFatalWarnings := false //TODO: ... fix this someday
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Versions = new {
