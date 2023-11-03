@@ -34,7 +34,7 @@ val root = tlCrossRootProject.aggregate(
 lazy val `circe-yaml-common` = project
   .in(file("circe-yaml-common"))
   .settings(
-    description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+    description := "Library for converting between SnakeYAML's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe
     ),
@@ -45,7 +45,7 @@ lazy val `circe-yaml` = project
   .in(file("circe-yaml"))
   .dependsOn(`circe-yaml-common`)
   .settings(
-    description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+    description := "Library for converting between SnakeYAML's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
@@ -61,7 +61,7 @@ lazy val `circe-yaml-v12` = project
   .in(file("circe-yaml-v12"))
   .dependsOn(`circe-yaml-common`)
   .settings(
-    description := "Library for converting between snakeyaml-engine's AST (YAML 1.2) and circe's AST",
+    description := "Library for converting between snakeyaml-engine's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
       "org.snakeyaml" % "snakeyaml-engine" % Versions.snakeYamlEngine,
