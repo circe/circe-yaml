@@ -1,8 +1,8 @@
-ThisBuild / tlBaseVersion := "1.15"
+ThisBuild / tlBaseVersion := "0.15"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
 ThisBuild / scalafixScalaBinaryVersion := "2.12"
-ThisBuild / tlFatalWarningsInCi := false //TODO: ... fix this someday
+ThisBuild / tlFatalWarnings := false //TODO: ... fix this someday
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Versions = new {
@@ -13,7 +13,7 @@ val Versions = new {
   val scalaTestPlus = "3.2.14.0"
   val snakeYaml = "2.2"
   val snakeYamlEngine = "2.7"
-  val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2", "0.15.0")
+  val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
   val scala212 = "2.12.18"
   val scala213 = "2.13.12"
@@ -34,17 +34,18 @@ val root = tlCrossRootProject.aggregate(
 lazy val `circe-yaml-common` = project
   .in(file("circe-yaml-common"))
   .settings(
-    description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+    description := "Library for converting between SnakeYAML's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % Versions.circe
-    )
+    ),
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
 
 lazy val `circe-yaml` = project
   .in(file("circe-yaml"))
   .dependsOn(`circe-yaml-common`)
   .settings(
-    description := "Library for converting between SnakeYAML's AST (YAML 1.1) and circe's AST",
+    description := "Library for converting between SnakeYAML's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "org.yaml" % "snakeyaml" % Versions.snakeYaml,
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
@@ -52,7 +53,7 @@ lazy val `circe-yaml` = project
       "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-      "org.scalatestplus" %% "scalacheck-1-16" % Versions.scalaTestPlus % Test
+      "org.scalatestplus" %% "scalacheck-1-17" % Versions.scalaTestPlus % Test
     )
   )
 
@@ -60,7 +61,7 @@ lazy val `circe-yaml-v12` = project
   .in(file("circe-yaml-v12"))
   .dependsOn(`circe-yaml-common`)
   .settings(
-    description := "Library for converting between snakeyaml-engine's AST (YAML 1.2) and circe's AST",
+    description := "Library for converting between snakeyaml-engine's AST (YAML 2.0) and circe's AST",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-jawn" % Versions.circe % Test,
       "org.snakeyaml" % "snakeyaml-engine" % Versions.snakeYamlEngine,
@@ -68,8 +69,9 @@ lazy val `circe-yaml-v12` = project
       "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-      "org.scalatestplus" %% "scalacheck-1-16" % Versions.scalaTestPlus % Test
-    )
+      "org.scalatestplus" %% "scalacheck-1-17" % Versions.scalaTestPlus % Test
+    ),
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
   )
 
 ThisBuild / developers := List(
