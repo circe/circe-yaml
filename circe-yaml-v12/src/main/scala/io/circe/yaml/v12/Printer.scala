@@ -36,7 +36,8 @@ object Printer {
     stringStyle: StringStyle = StringStyle.Plain,
     lineBreak: LineBreak = LineBreak.Unix,
     explicitStart: Boolean = false,
-    explicitEnd: Boolean = false
+    explicitEnd: Boolean = false,
+    indentWithIndicator: Boolean = false,
   )
 
   def make(config: Config = Config()): common.Printer = {
@@ -64,6 +65,7 @@ object Printer {
             case LineBreak.Mac     => "\r"
           }
         }
+        .setIndentWithIndicator(indentWithIndicator)
         .build()
     )
   }

@@ -155,4 +155,18 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Indent indicators" - {
+    val json = Json.obj("arr" -> Json.arr(Json.fromString("foo"), Json.fromString("bar")))
+
+    "defaults" in {
+      Printer.make(Printer.Config(indentWithIndicator = false, indicatorIndent = 0)).pretty(json) shouldEqual
+        "arr:\n- foo\n- bar\n"
+    }
+
+    "Indent arrays" in {
+      Printer.make(Printer.Config(indentWithIndicator = true, indicatorIndent = 2)).pretty(json) shouldEqual
+        "arr:\n  - foo\n  - bar\n"
+    }
+  }
+
 }
