@@ -22,6 +22,7 @@ import org.snakeyaml.engine.v2.api.DumpSettings
 
 import scala.collection.JavaConverters._
 
+@deprecated("Use PrinterConfig instead", since = "1.15.1")
 object Printer {
   final case class Config(
     preserveOrder: Boolean = false,
@@ -36,8 +37,7 @@ object Printer {
     stringStyle: StringStyle = StringStyle.Plain,
     lineBreak: LineBreak = LineBreak.Unix,
     explicitStart: Boolean = false,
-    explicitEnd: Boolean = false,
-    indentWithIndicator: Boolean = false,
+    explicitEnd: Boolean = false
   )
 
   def make(config: Config = Config()): common.Printer = {
@@ -65,7 +65,6 @@ object Printer {
             case LineBreak.Mac     => "\r"
           }
         }
-        .setIndentWithIndicator(indentWithIndicator)
         .build()
     )
   }
