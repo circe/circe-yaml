@@ -29,7 +29,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     val json = Json.obj("foo" -> Json.arr((0 until 3).map(_.toString).map(Json.fromString): _*))
 
     "Block" in {
-      val printer = Printer.make(Printer.Config(sequenceStyle = FlowStyle.Block, mappingStyle = FlowStyle.Block))
+      val printer = Printer.builder.withSequenceStyle(FlowStyle.Block).withMappingStyle(FlowStyle.Block).build()
       printer.pretty(json) shouldEqual
         """foo:
           |- '0'
@@ -39,7 +39,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     }
 
     "Flow" in {
-      val printer = Printer.make(Printer.Config(sequenceStyle = FlowStyle.Flow, mappingStyle = FlowStyle.Flow))
+      val printer = Printer.builder.withSequenceStyle(FlowStyle.Block).withMappingStyle(FlowStyle.Flow).build()
       printer.pretty(json) shouldEqual
         """{foo: ['0', '1', '2']}
           |""".stripMargin
@@ -50,7 +50,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     val kvPairs = Seq("d" -> 4, "a" -> 1, "b" -> 2, "c" -> 3)
     val json = Json.obj(kvPairs.map { case (k, v) => k -> Json.fromInt(v) }: _*)
     "true" in {
-      val printer = Printer.make(Printer.Config(preserveOrder = true))
+      val printer = Printer.builder.withPreserveOrder(true).build()
       printer.pretty(json) shouldEqual
         """d: 4
           |a: 1
@@ -68,28 +68,28 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     val json = Json.obj("foo" -> Json.fromString(foosPlain))
 
     "Plain" in {
-      val printer = Printer.make(Printer.Config(splitLines = false, stringStyle = StringStyle.Plain))
+      val printer = Printer.builder.withSplitLines(false).withStringStyle(StringStyle.Plain).build()
       printer.pretty(json) shouldEqual
         s"""foo: $foosPlain
            |""".stripMargin
     }
 
     "Double quoted" in {
-      val printer = Printer.make(Printer.Config(stringStyle = StringStyle.DoubleQuoted))
+      val printer = Printer.builder.withStringStyle(StringStyle.DoubleQuoted).build()
       printer.pretty(json) shouldEqual
         s"""foo: "${foosSplit.mkString("\\\n  \\ ")}"
            |""".stripMargin
     }
 
     "Single quoted" in {
-      val printer = Printer.make(Printer.Config(stringStyle = StringStyle.SingleQuoted))
+      val printer = Printer.builder.withStringStyle(StringStyle.SingleQuoted).build()
       printer.pretty(json) shouldEqual
         s"""foo: '${foosSplit.mkString("\n  ")}'
            |""".stripMargin
     }
 
     "Folded" in {
-      val printer = Printer.make(Printer.Config(stringStyle = StringStyle.Folded))
+      val printer = Printer.builder.withStringStyle(StringStyle.Folded).build()
       printer.pretty(json) shouldEqual
         s"""foo: >-
            |  $foosFolded
@@ -97,7 +97,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     }
 
     "Literal" in {
-      val printer = Printer.make(Printer.Config(stringStyle = StringStyle.Literal))
+      val printer = Printer.builder.withStringStyle(StringStyle.Literal).build()
       printer.pretty(json) shouldEqual
         s"""foo: |-
            |  $foosPlain
@@ -108,7 +108,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
 
   "Plain with newlines" in {
     val json = Json.obj("foo" -> Json.fromString("abc\nxyz\n"))
-    val printer = Printer.make(Printer.Config(stringStyle = StringStyle.Plain))
+    val printer = Printer.builder.withStringStyle(StringStyle.Plain).build()
     printer.pretty(json) shouldEqual
       s"""foo: |
          |  abc
@@ -118,7 +118,8 @@ class PrinterTests extends AnyFreeSpec with Matchers {
 
   "Drop null keys" in {
     val json = Json.obj("nullField" -> Json.Null, "nonNullField" -> Json.fromString("foo"))
-    Printer.make(Printer.Config(dropNullKeys = true)).pretty(json) shouldEqual "nonNullField: foo\n"
+    val printer = Printer.builder.withDropNullKeys(true).build()
+    printer.pretty(json) shouldEqual "nonNullField: foo\n"
   }
 
   "Root integer" in {
@@ -140,33 +141,56 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     val json = Json.arr(Json.fromString("foo"), Json.fromString("bar"))
 
     "Unix" in {
-      Printer.make(Printer.Config(lineBreak = LineBreak.Unix)).pretty(json) shouldEqual
+      Printer.builder.withLineBreak(LineBreak.Unix).build().pretty(json) shouldEqual
         "- foo\n- bar\n"
     }
 
     "Windows" in {
-      Printer.make(Printer.Config(lineBreak = LineBreak.Windows)).pretty(json) shouldEqual
+      Printer.builder.withLineBreak(LineBreak.Windows).build().pretty(json) shouldEqual
         "- foo\r\n- bar\r\n"
     }
 
     "Mac" in {
-      Printer.make(Printer.Config(lineBreak = LineBreak.Mac)).pretty(json) shouldEqual
+      Printer.builder.withLineBreak(LineBreak.Mac).build().pretty(json) shouldEqual
         "- foo\r- bar\r"
     }
   }
 
-  "Indent indicators" - {
-    val json = Json.obj("arr" -> Json.arr(Json.fromString("foo"), Json.fromString("bar")))
+  "Indicator indent" - {
+    val firstEl = Json.obj("a" -> Json.fromString("b"), "c" -> Json.fromString("d"))
+    val secondEl = Json.obj("aa" -> Json.fromString("bb"), "cc" -> Json.fromString("dd"))
+    val json = Json.obj("root" -> Json.arr(firstEl, secondEl))
 
-    "defaults" in {
-      Printer.make(Printer.Config(indentWithIndicator = false, indicatorIndent = 0)).pretty(json) shouldEqual
-        "arr:\n- foo\n- bar\n"
+    "Default" in {
+      Printer.spaces2.pretty(json)shouldEqual
+        """root:
+          |- a: b
+          |  c: d
+          |- aa: bb
+          |  cc: dd
+          |""".stripMargin
     }
 
-    "Indent arrays" in {
-      Printer.make(Printer.Config(indentWithIndicator = true, indicatorIndent = 2)).pretty(json) shouldEqual
-        "arr:\n  - foo\n  - bar\n"
+    "Indent without indentWithIndicator" in {
+      Printer.builder.withIndicatorIndent(2).build().pretty(json) shouldEqual
+        """root:
+          |  -
+          |  a: b
+          |  c: d
+          |  -
+          |  aa: bb
+          |  cc: dd
+          |""".stripMargin
+    }
+
+    "Indent with indentWithIndicator" in {
+      Printer.builder.withIndentWithIndicator(true).withIndicatorIndent(2).build().pretty(json) shouldEqual
+        """root:
+          |  - a: b
+          |    c: d
+          |  - aa: bb
+          |    cc: dd
+          |""".stripMargin
     }
   }
-
 }

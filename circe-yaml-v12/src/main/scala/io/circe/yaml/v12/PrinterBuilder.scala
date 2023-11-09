@@ -94,7 +94,5 @@ final case class PrinterBuilder private (
 }
 
 object PrinterBuilder {
-  def default = PrinterBuilder()
-  def spaces2 = default
-  def spaces4 = default.withIndent(4)
+  def apply(): PrinterBuilder = new PrinterBuilder()
 }
