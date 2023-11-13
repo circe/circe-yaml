@@ -46,4 +46,9 @@ object Printer {
     case object Folded extends StringStyle
   }
 
+  sealed trait NonPrintableStyle
+  object NonPrintableStyle {
+    case object Binary extends NonPrintableStyle
+    case object Escape extends NonPrintableStyle
+  }
 }

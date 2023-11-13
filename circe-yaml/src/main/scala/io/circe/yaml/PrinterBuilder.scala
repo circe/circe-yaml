@@ -1,11 +1,11 @@
-package io.circe.yaml.v12
+package io.circe.yaml
 
-import io.circe.yaml.common
-import io.circe.yaml.common.Printer._
-import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.common.{ NonPrintableStyle => SnakeNonPrintableStyle }
+import io.circe.yaml.Printer.YamlVersion
+import io.circe.yaml.common.Printer.*
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.DumperOptions.{ScalarStyle, NonPrintableStyle as SnakeNonPrintableStyle}
 
-import scala.collection.JavaConverters._
+import scala.collection.JavaConverters.*
 
 final case class PrinterBuilder private (
   preserveOrder: Boolean = false,
@@ -22,7 +22,8 @@ final case class PrinterBuilder private (
   lineBreak: LineBreak = LineBreak.Unix,
   explicitStart: Boolean = false,
   explicitEnd: Boolean = false,
-  nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.Escape
+  nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.Escape,
+  yamlVersion: YamlVersion = YamlVersion.Auto
 ) {
   def withPreserveOrder(preserveOrder: Boolean): PrinterBuilder =
     copy(preserveOrder = preserveOrder)
@@ -69,41 +70,59 @@ final case class PrinterBuilder private (
   def withNonPrintableStyle(nonPrintableStyle: NonPrintableStyle): PrinterBuilder =
     copy(nonPrintableStyle = nonPrintableStyle)
 
-  def build(): common.Printer =
+  def withYamlVersion(yamlVersion: YamlVersion): PrinterBuilder =
+    copy(yamlVersion = yamlVersion)
+
+  def build(): common.Printer = {
+    import PrinterBuilder.*
+    val options = new DumperOptions()
+    options.setIndent(indent)
+    options.setWidth(maxScalarWidth)
+    options.setSplitLines(splitLines)
+    options.setIndicatorIndent(indicatorIndent)
+    options.setIndentWithIndicator(indentWithIndicator)
+    options.setTags(tags.asJava)
+    options.setDefaultScalarStyle(stringStyle.toScalarStyle)
+    options.setExplicitStart(explicitStart)
+    options.setExplicitEnd(explicitEnd)
+    options.setLineBreak(lineBreak match {
+      case LineBreak.Unix => org.yaml.snakeyaml.DumperOptions.LineBreak.UNIX
+      case LineBreak.Windows => org.yaml.snakeyaml.DumperOptions.LineBreak.WIN
+      case LineBreak.Mac => org.yaml.snakeyaml.DumperOptions.LineBreak.MAC
+    })
+    options.setNonPrintableStyle(nonPrintableStyle match {
+      case NonPrintableStyle.Binary => SnakeNonPrintableStyle.BINARY
+      case NonPrintableStyle.Escape => SnakeNonPrintableStyle.ESCAPE
+    })
+    options.setVersion(yamlVersion match {
+      case YamlVersion.Auto => null
+      case YamlVersion.Yaml1_0 => DumperOptions.Version.V1_0
+      case YamlVersion.Yaml1_1 => DumperOptions.Version.V1_1
+    })
+
     new PrinterImpl(
       stringStyle,
       preserveOrder,
       dropNullKeys,
       mappingStyle,
       sequenceStyle,
-      DumpSettings
-        .builder()
-        .setIndent(indent)
-        .setWidth(maxScalarWidth)
-        .setSplitLines(splitLines)
-        .setIndicatorIndent(indicatorIndent)
-        .setIndentWithIndicator(indentWithIndicator)
-        .setTagDirective(tags.asJava)
-        .setDefaultScalarStyle(stringStyle.toScalarStyle)
-        .setExplicitStart(explicitStart)
-        .setExplicitEnd(explicitEnd)
-        .setBestLineBreak {
-          lineBreak match {
-            case LineBreak.Unix    => "\n"
-            case LineBreak.Windows => "\r\n"
-            case LineBreak.Mac     => "\r"
-          }
-        }
-        .setNonPrintableStyle {
-          nonPrintableStyle match {
-            case NonPrintableStyle.Binary => SnakeNonPrintableStyle.BINARY
-            case NonPrintableStyle.Escape => SnakeNonPrintableStyle.ESCAPE
-          }
-        }
-        .build()
+      options
     )
+  }
 }
 
 object PrinterBuilder {
   def apply(): PrinterBuilder = new PrinterBuilder()
+  def spaces2: common.Printer = new PrinterBuilder().build()
+  def spaces4: common.Printer = new PrinterBuilder(indent = 4).build()
+
+  implicit class SnakeStringStyle(stringStyle: StringStyle) {
+    def toScalarStyle: ScalarStyle = stringStyle match {
+      case StringStyle.Plain => ScalarStyle.PLAIN
+      case StringStyle.DoubleQuoted => ScalarStyle.DOUBLE_QUOTED
+      case StringStyle.SingleQuoted => ScalarStyle.SINGLE_QUOTED
+      case StringStyle.Literal => ScalarStyle.LITERAL
+      case StringStyle.Folded => ScalarStyle.FOLDED
+    }
+  }
 }
