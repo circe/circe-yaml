@@ -16,13 +16,12 @@
 
 package io.circe.yaml
 
-
 import io.circe.yaml.PrinterBuilder.SnakeStringStyle
-import io.circe.{Json, JsonNumber, JsonObject}
+import io.circe.{ Json, JsonNumber, JsonObject }
 import io.circe.yaml.common.Printer.*
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.emitter.Emitter
-import org.yaml.snakeyaml.nodes.{MappingNode, Node, NodeTuple, ScalarNode, SequenceNode, Tag}
+import org.yaml.snakeyaml.nodes.{ MappingNode, Node, NodeTuple, ScalarNode, SequenceNode, Tag }
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
 

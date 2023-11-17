@@ -162,7 +162,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     val json = Json.obj("root" -> Json.arr(firstEl, secondEl))
 
     "Default" in {
-      Printer.spaces2.pretty(json)shouldEqual
+      Printer.spaces2.pretty(json) shouldEqual
         """root:
           |- a: b
           |  c: d
