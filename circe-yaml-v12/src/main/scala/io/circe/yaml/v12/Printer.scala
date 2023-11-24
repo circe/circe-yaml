@@ -30,6 +30,7 @@ object Printer {
     maxScalarWidth: Int = 80,
     splitLines: Boolean = true,
     indicatorIndent: Int = 0,
+    indentWithIndicator: Boolean = false,
     tags: Map[String, String] = Map.empty,
     sequenceStyle: FlowStyle = FlowStyle.Block,
     mappingStyle: FlowStyle = FlowStyle.Block,
@@ -53,6 +54,7 @@ object Printer {
         .setWidth(maxScalarWidth)
         .setSplitLines(splitLines)
         .setIndicatorIndent(indicatorIndent)
+        .setIndentWithIndicator(indentWithIndicator)
         .setTagDirective(tags.asJava)
         .setDefaultScalarStyle(stringStyle.toScalarStyle)
         .setExplicitStart(explicitStart)

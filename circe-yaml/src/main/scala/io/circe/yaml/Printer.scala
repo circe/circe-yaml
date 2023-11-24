@@ -35,6 +35,7 @@ final case class Printer(
   maxScalarWidth: Int = 80,
   splitLines: Boolean = true,
   indicatorIndent: Int = 0,
+  indentWithIndicator: Boolean = false,
   tags: Map[String, String] = Map.empty,
   sequenceStyle: FlowStyle = FlowStyle.Block,
   mappingStyle: FlowStyle = FlowStyle.Block,
@@ -61,6 +62,7 @@ final case class Printer(
     options.setWidth(maxScalarWidth)
     options.setSplitLines(splitLines)
     options.setIndicatorIndent(indicatorIndent)
+    options.setIndentWithIndicator(indentWithIndicator)
     options.setTags(tags.asJava)
     options.setDefaultScalarStyle(stringStyle.toScalarStyle)
     options.setLineBreak(lineBreak match {
