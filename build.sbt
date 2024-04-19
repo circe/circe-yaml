@@ -7,7 +7,7 @@ ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Versions = new {
   val circe = "0.14.6"
-  val discipline = "1.5.1"
+  val discipline = "1.6.0"
   val scalaCheck = "1.17.1"
   val scalaTest = "3.2.17"
   val scalaTestPlus = "3.2.17.0"
