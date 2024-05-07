@@ -17,7 +17,7 @@ val Versions = new {
 
   val scala212 = "2.12.19"
   val scala213 = "2.13.12"
-  val scala3 = "3.3.3"
+  val scala3 = "3.4.1"
 
   val scalaVersions = Seq(scala212, scala213, scala3)
 }
