@@ -15,11 +15,10 @@ val Versions = new {
   val snakeYamlEngine = "2.7"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
-  val scala212 = "2.12.19"
   val scala213 = "2.13.13"
   val scala3 = "3.3.3"
 
-  val scalaVersions = Seq(scala212, scala213, scala3)
+  val scalaVersions = Seq(scala213, scala3)
 }
 
 ThisBuild / scalaVersion := Versions.scala213
@@ -79,8 +78,6 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
   .dependsOn(`circe-yaml-common`)
   .settings(
     description := "Library for converting between scala-yaml AST and circe's AST",
-    scalaVersion := Versions.scala213,
-    crossScalaVersions := Versions.scalaVersions.filterNot(_ == Versions.scala212),
     libraryDependencies ++= Seq(
       "org.virtuslab" %%% "scala-yaml" % "0.0.8",
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
