@@ -79,6 +79,7 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
   .dependsOn(`circe-yaml-common`)
   .settings(
     description := "Library for converting between scala-yaml AST and circe's AST",
+    ThisBuild / crossScalaVersions -= Versions.scala212,
     libraryDependencies ++= Seq(
       "org.virtuslab" %%% "scala-yaml" % "0.0.8",
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
