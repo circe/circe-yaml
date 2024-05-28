@@ -39,7 +39,7 @@ lazy val `circe-yaml-common` = crossProject(JSPlatform, JVMPlatform, NativePlatf
     libraryDependencies ++= Seq(
       "io.circe" %%% "circe-core" % Versions.circe
     ),
-    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.14.3").toMap
+    tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.15.2").toMap
   )
 
 lazy val `circe-yaml` = project
