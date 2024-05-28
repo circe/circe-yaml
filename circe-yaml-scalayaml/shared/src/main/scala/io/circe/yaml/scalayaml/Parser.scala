@@ -19,9 +19,13 @@ package io.circe.yaml.scalayaml
 import cats.data.ValidatedNel
 import cats.syntax.all._
 import io.circe
-import io.circe.{ Decoder, Json, JsonNumber, ParsingFailure }
-import java.io.Reader
+import io.circe.Decoder
+import io.circe.Json
+import io.circe.JsonNumber
+import io.circe.ParsingFailure
 import org.virtuslab.yaml._
+
+import java.io.Reader
 import scala.collection.mutable
 import scala.util.Try
 

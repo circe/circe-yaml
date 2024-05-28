@@ -21,6 +21,7 @@ import io.circe.Decoder
 import io.circe.Error
 import io.circe.Json
 import io.circe.ParsingFailure
+
 import java.io.Reader
 
 package object parser extends io.circe.yaml.common.Parser {
