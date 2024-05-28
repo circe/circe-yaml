@@ -15,8 +15,10 @@
  */
 
 package io.circe.yaml.scalayaml
+
 import io.circe.Json
 import org.virtuslab.yaml.Node
+import org.virtuslab.yaml.NodeOps
 
 object Printer extends io.circe.yaml.common.Printer {
 
