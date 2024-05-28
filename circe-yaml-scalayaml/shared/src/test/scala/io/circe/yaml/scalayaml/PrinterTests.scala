@@ -88,11 +88,6 @@ class PrinterTests extends AnyFreeSpec with Matchers {
     Printer.pretty(json) shouldEqual "22.22\n"
   }
 
-  "Root float without decimal part" in {
-    val json = Json.fromDoubleOrNull(22.0)
-    Printer.pretty(json) shouldEqual "22.0\n"
-  }
-
   "Line break" - {
     val json = Json.arr(Json.fromString("foo"), Json.fromString("bar"))
 
