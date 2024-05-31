@@ -1,7 +1,6 @@
 ThisBuild / tlBaseVersion := "0.15"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
-ThisBuild / scalafixScalaBinaryVersion := "2.12"
 ThisBuild / tlFatalWarnings := false //TODO: ... fix this someday
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
@@ -15,7 +14,7 @@ val Versions = new {
   val snakeYamlEngine = "2.7"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
-  val scala213 = "2.13.13"
+  val scala213 = "2.13.14"
   val scala3 = "3.3.3"
 
   val scalaVersions = Seq(scala213, scala3)
@@ -79,7 +78,7 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
   .settings(
     description := "Library for converting between scala-yaml AST and circe's AST",
     libraryDependencies ++= Seq(
-      "org.virtuslab" %%% "scala-yaml" % "0.0.8",
+      "org.virtuslab" %%% "scala-yaml" % "0.1.0",
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
     ),
     tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.15.2").toMap
