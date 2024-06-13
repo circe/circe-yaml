@@ -6,7 +6,7 @@ ThisBuild / tlFatalWarnings := false //TODO: ... fix this someday
 ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Versions = new {
-  val circe = "0.14.6"
+  val circe = "0.14.7"
   val discipline = "1.7.0"
   val scalaCheck = "1.18.0"
   val scalaTest = "3.2.17"
