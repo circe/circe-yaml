@@ -23,7 +23,7 @@ import org.snakeyaml.engine.v2.api.DumpSettings
 import scala.collection.JavaConverters._
 
 object Printer {
-  @deprecated("Use Printer.builder instead", since = "1.15.1")
+  @deprecated("Use Printer.builder instead", since = "1.15.2")
   final case class Config(
     preserveOrder: Boolean = false,
     dropNullKeys: Boolean = false,
@@ -40,7 +40,7 @@ object Printer {
     explicitEnd: Boolean = false
   )
 
-  @deprecated("Use Printer.builder instead", since = "1.15.1")
+  @deprecated("Use Printer.builder instead", since = "1.15.2")
   def make(config: Config = Config()): common.Printer = {
     import config._
     new PrinterImpl(
@@ -71,6 +71,6 @@ object Printer {
   }
 
   def builder: PrinterBuilder = PrinterBuilder()
-  lazy val spaces2: common.Printer = PrinterBuilder().withIndent(2).build()
-  lazy val spaces4: common.Printer = PrinterBuilder().withIndent(4).build()
+  lazy val spaces2: common.Printer = builder.withIndent(2).build()
+  lazy val spaces4: common.Printer = builder.withIndent(4).build()
 }
