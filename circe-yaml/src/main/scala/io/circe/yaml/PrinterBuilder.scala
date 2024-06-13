@@ -20,7 +20,7 @@ import io.circe.yaml.Printer.YamlVersion
 import io.circe.yaml.common.Printer._
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle
-import org.yaml.snakeyaml.DumperOptions.{NonPrintableStyle => SnakeNonPrintableStyle}
+import org.yaml.snakeyaml.DumperOptions.{ NonPrintableStyle => SnakeNonPrintableStyle }
 
 import scala.collection.JavaConverters._
 
