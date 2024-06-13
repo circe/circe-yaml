@@ -16,18 +16,24 @@
 
 package io.circe.yaml
 
+import io.circe.Json
+import io.circe.JsonNumber
+import io.circe.JsonObject
 import io.circe.yaml.PrinterBuilder.SnakeStringStyle
-import io.circe.{ Json, JsonNumber, JsonObject }
-import io.circe.yaml.common.Printer.*
+import io.circe.yaml.common.Printer._
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.emitter.Emitter
-import org.yaml.snakeyaml.nodes.{ MappingNode, Node, NodeTuple, ScalarNode, SequenceNode, Tag }
+import org.yaml.snakeyaml.nodes.MappingNode
+import org.yaml.snakeyaml.nodes.Node
+import org.yaml.snakeyaml.nodes.NodeTuple
+import org.yaml.snakeyaml.nodes.ScalarNode
+import org.yaml.snakeyaml.nodes.SequenceNode
+import org.yaml.snakeyaml.nodes.Tag
 import org.yaml.snakeyaml.resolver.Resolver
 import org.yaml.snakeyaml.serializer.Serializer
 
 import java.io.StringWriter
-
-import scala.collection.JavaConverters.*
+import scala.collection.JavaConverters._
 
 class PrinterImpl(
   stringStyle: StringStyle,

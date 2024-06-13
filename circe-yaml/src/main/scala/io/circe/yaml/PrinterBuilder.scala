@@ -17,11 +17,12 @@
 package io.circe.yaml
 
 import io.circe.yaml.Printer.YamlVersion
-import io.circe.yaml.common.Printer.*
+import io.circe.yaml.common.Printer._
 import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.DumperOptions.{ NonPrintableStyle => SnakeNonPrintableStyle, ScalarStyle }
+import org.yaml.snakeyaml.DumperOptions.ScalarStyle
+import org.yaml.snakeyaml.DumperOptions.{NonPrintableStyle => SnakeNonPrintableStyle}
 
-import scala.collection.JavaConverters.*
+import scala.collection.JavaConverters._
 
 final case class PrinterBuilder private (
   preserveOrder: Boolean = false,
