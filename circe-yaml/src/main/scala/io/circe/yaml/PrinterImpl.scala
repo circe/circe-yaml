@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package io.circe.yaml.v12
+package io.circe.yaml
 
 import io.circe.Json
 import io.circe.JsonNumber
 import io.circe.JsonObject
+import io.circe.yaml.PrinterBuilder.SnakeStringStyle
 import io.circe.yaml.common.Printer._
-import org.snakeyaml.engine.v2.api.DumpSettings
-import org.snakeyaml.engine.v2.api.StreamDataWriter
-import org.snakeyaml.engine.v2.common
-import org.snakeyaml.engine.v2.emitter.Emitter
-import org.snakeyaml.engine.v2.nodes._
-import org.snakeyaml.engine.v2.serializer.Serializer
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.emitter.Emitter
+import org.yaml.snakeyaml.nodes.MappingNode
+import org.yaml.snakeyaml.nodes.Node
+import org.yaml.snakeyaml.nodes.NodeTuple
+import org.yaml.snakeyaml.nodes.ScalarNode
+import org.yaml.snakeyaml.nodes.SequenceNode
+import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.resolver.Resolver
+import org.yaml.snakeyaml.serializer.Serializer
 
 import java.io.StringWriter
 import scala.collection.JavaConverters._
@@ -36,38 +41,42 @@ private class PrinterImpl(
   dropNullKeys: Boolean,
   mappingStyle: FlowStyle,
   sequenceStyle: FlowStyle,
-  options: DumpSettings
+  options: DumperOptions
 ) extends io.circe.yaml.common.Printer {
 
-  import PrinterImpl._
+  import PrinterImpl.*
 
   def pretty(json: Json): String = {
-    val writer = new StreamToStringWriter
-    val serializer = new Serializer(options, new Emitter(options, writer))
-    serializer.emitStreamStart()
-    serializer.serializeDocument(jsonToYaml(json))
-    serializer.emitStreamEnd()
+    val rootTag = yamlTag(json)
+    val writer = new StringWriter()
+    val serializer = new Serializer(new Emitter(writer, options), new Resolver, options, rootTag)
+    serializer.open()
+    serializer.serialize(jsonToYaml(json))
+    serializer.close()
     writer.toString
   }
 
   private def isBad(s: String): Boolean = s.indexOf('\u0085') >= 0 || s.indexOf('\ufeff') >= 0
+
   private def hasNewline(s: String): Boolean = s.indexOf('\n') >= 0
 
-  private def scalarStyle(value: String): common.ScalarStyle =
-    if (isBad(value)) common.ScalarStyle.DOUBLE_QUOTED else common.ScalarStyle.PLAIN
+  private def scalarStyle(value: String): DumperOptions.ScalarStyle =
+    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED else DumperOptions.ScalarStyle.PLAIN
 
-  private def stringScalarStyle(value: String): common.ScalarStyle =
-    if (isBad(value)) common.ScalarStyle.DOUBLE_QUOTED
-    else if (stringStyle == StringStyle.Plain && hasNewline(value)) common.ScalarStyle.LITERAL
+  private def stringScalarStyle(value: String): DumperOptions.ScalarStyle =
+    if (isBad(value)) DumperOptions.ScalarStyle.DOUBLE_QUOTED
+    else if (stringStyle == StringStyle.Plain && hasNewline(value)) DumperOptions.ScalarStyle.LITERAL
     else stringStyle.toScalarStyle
 
-  private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, scalarStyle(value))
-  private def stringNode(value: String) = new ScalarNode(Tag.STR, value, stringScalarStyle(value))
-  private def keyNode(value: String) = new ScalarNode(Tag.STR, value, scalarStyle(value))
+  private def scalarNode(tag: Tag, value: String) = new ScalarNode(tag, value, null, null, scalarStyle(value))
+
+  private def stringNode(value: String) = new ScalarNode(Tag.STR, value, null, null, stringScalarStyle(value))
+
+  private def keyNode(value: String) = new ScalarNode(Tag.STR, value, null, null, scalarStyle(value))
 
   private def jsonToYaml(json: Json): Node = {
 
-    def convertObject(obj: JsonObject) = {
+    def convertObject(obj: JsonObject): MappingNode = {
       val fields = if (preserveOrder) obj.keys else obj.keys.toSet
       val m = obj.toMap
       val childNodes = fields.flatMap { key =>
@@ -78,7 +87,7 @@ private class PrinterImpl(
       new MappingNode(
         Tag.MAP,
         childNodes.toList.asJava,
-        if (mappingStyle == FlowStyle.Flow) common.FlowStyle.FLOW else common.FlowStyle.BLOCK
+        if (mappingStyle == FlowStyle.Flow) DumperOptions.FlowStyle.FLOW else DumperOptions.FlowStyle.BLOCK
       )
     }
 
@@ -91,18 +100,24 @@ private class PrinterImpl(
         new SequenceNode(
           Tag.SEQ,
           arr.map(jsonToYaml).asJava,
-          if (sequenceStyle == FlowStyle.Flow) common.FlowStyle.FLOW else common.FlowStyle.BLOCK
+          if (sequenceStyle == FlowStyle.Flow) DumperOptions.FlowStyle.FLOW else DumperOptions.FlowStyle.BLOCK
         ),
       obj => convertObject(obj)
     )
   }
+
 }
 
 object PrinterImpl {
   private def numberTag(number: JsonNumber): Tag =
     if (number.toString.contains(".")) Tag.FLOAT else Tag.INT
 
-  private class StreamToStringWriter extends StringWriter with StreamDataWriter {
-    override def flush(): Unit = super.flush() // to fix "conflicting members"
-  }
+  private def yamlTag(json: Json): Tag = json.fold(
+    Tag.NULL,
+    _ => Tag.BOOL,
+    number => numberTag(number),
+    _ => Tag.STR,
+    _ => Tag.SEQ,
+    _ => Tag.MAP
+  )
 }
