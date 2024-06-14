@@ -35,7 +35,7 @@ import org.yaml.snakeyaml.serializer.Serializer
 import java.io.StringWriter
 import scala.collection.JavaConverters._
 
-class PrinterImpl(
+private class PrinterImpl(
   stringStyle: StringStyle,
   preserveOrder: Boolean,
   dropNullKeys: Boolean,

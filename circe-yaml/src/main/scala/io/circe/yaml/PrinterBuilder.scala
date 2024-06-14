@@ -24,7 +24,7 @@ import org.yaml.snakeyaml.DumperOptions.{ NonPrintableStyle => SnakeNonPrintable
 
 import scala.collection.JavaConverters._
 
-final case class PrinterBuilder private (
+final class PrinterBuilder private (
   preserveOrder: Boolean = false,
   dropNullKeys: Boolean = false,
   indent: Int = 2,
@@ -42,6 +42,43 @@ final case class PrinterBuilder private (
   nonPrintableStyle: NonPrintableStyle = NonPrintableStyle.Escape,
   yamlVersion: YamlVersion = YamlVersion.Auto
 ) {
+  private def copy(
+    preserveOrder: Boolean = this.preserveOrder,
+    dropNullKeys: Boolean = this.dropNullKeys,
+    indent: Int = this.indent,
+    maxScalarWidth: Int = this.maxScalarWidth,
+    splitLines: Boolean = this.splitLines,
+    indicatorIndent: Int = this.indicatorIndent,
+    indentWithIndicator: Boolean = this.indentWithIndicator,
+    tags: Map[String, String] = this.tags,
+    sequenceStyle: FlowStyle = this.sequenceStyle,
+    mappingStyle: FlowStyle = this.mappingStyle,
+    stringStyle: StringStyle = this.stringStyle,
+    lineBreak: LineBreak = this.lineBreak,
+    explicitStart: Boolean = this.explicitStart,
+    explicitEnd: Boolean = this.explicitEnd,
+    nonPrintableStyle: NonPrintableStyle = this.nonPrintableStyle,
+    yamlVersion: YamlVersion = this.yamlVersion
+  ): PrinterBuilder =
+    new PrinterBuilder(
+      preserveOrder = preserveOrder,
+      dropNullKeys = dropNullKeys,
+      indent = indent,
+      maxScalarWidth = maxScalarWidth,
+      splitLines = splitLines,
+      indicatorIndent = indicatorIndent,
+      indentWithIndicator = indentWithIndicator,
+      tags = tags,
+      sequenceStyle = sequenceStyle,
+      mappingStyle = mappingStyle,
+      stringStyle = stringStyle,
+      lineBreak = lineBreak,
+      explicitStart = explicitStart,
+      explicitEnd = explicitEnd,
+      nonPrintableStyle = nonPrintableStyle,
+      yamlVersion = yamlVersion
+    )
+
   def withPreserveOrder(preserveOrder: Boolean): PrinterBuilder =
     copy(preserveOrder = preserveOrder)
 
