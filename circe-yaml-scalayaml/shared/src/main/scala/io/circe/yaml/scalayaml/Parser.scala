@@ -108,5 +108,5 @@ object Parser extends io.circe.yaml.common.Parser {
   }
 
   private def errorToFailure(error: YamlError): ParsingFailure =
-    ParsingFailure(s"${error.getClass.getSimpleName}: ${error.msg}", null)
+    ParsingFailure(s"Parsing failed: ${error.msg}", error)
 }
