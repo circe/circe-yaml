@@ -1,4 +1,4 @@
-ThisBuild / tlBaseVersion := "0.15"
+ThisBuild / tlBaseVersion := "0.16"
 ThisBuild / circeRootOfCodeCoverage := None
 ThisBuild / startYear := Some(2016)
 ThisBuild / tlFatalWarnings := false //TODO: ... fix this someday
