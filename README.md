@@ -26,15 +26,15 @@ The artifact is hosted by Sonatype, and release versions are synced to Maven Cen
 
 For YAML 1.1
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml" % "0.15.4"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.16.0"
 ```
 or for YAML 1.2
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.15.4"
+libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.16.0"
 ```
 or for YAML on Scala.js or Scala Native (as well as Scala/JVM)
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml-scalayaml" % "0.15.4"
+libraryDependencies += "io.circe" %% "circe-yaml-scalayaml" % "0.16.0"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
