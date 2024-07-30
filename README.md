@@ -7,6 +7,7 @@
 This is a small library for parsing [YAML](https://yaml.org) into [circe](https://github.com/circe/circe)'s `Json` AST.
  * For parsing YAML 1.1 it uses [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml).
  * For parsing YAML 1.2 it uses [snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine).
+ * For parsing YAML on Scala.js or Scala Native (as well as Scala/JVM) it uses [scala-yaml](https://github.com/VirtusLab/scala-yaml).
 
 ## Why?
 
