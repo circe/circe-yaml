@@ -75,7 +75,7 @@ class PrinterTests extends AnyFreeSpec with Matchers {
 
   "Drop null keys" in {
     val json = Json.obj("nullField" -> Json.Null, "nonNullField" -> Json.fromString("foo"))
-    Printer.pretty(json) shouldEqual "nullField: null\nnonNullField: \"foo\"\n"
+    Printer.pretty(json) shouldEqual "nullField: !!null\nnonNullField: \"foo\"\n"
   }
 
   "Root integer" in {

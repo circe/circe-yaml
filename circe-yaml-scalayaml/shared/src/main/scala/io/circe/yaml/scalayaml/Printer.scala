@@ -20,6 +20,8 @@ import io.circe.Json
 import org.virtuslab.yaml.Node
 import org.virtuslab.yaml.NodeOps
 
+import scala.collection.immutable.ListMap
+
 object Printer extends io.circe.yaml.common.Printer {
 
   override def pretty(json: Json): String = {
@@ -31,7 +33,8 @@ object Printer extends io.circe.yaml.common.Printer {
     case Json.JArray(value) =>
       Node.SequenceNode(value.map(jsonToNode): _*)
     case Json.JObject(value) =>
-      Node.MappingNode(value.toMap.map { case (key, value) => (Node.ScalarNode(key): Node) -> jsonToNode(value) })
+      val mappings = value.toList.map { case (key, value) => (Node.ScalarNode(key): Node) -> jsonToNode(value) }
+      Node.MappingNode(ListMap.from(mappings))
     case json =>
       Node.ScalarNode(json.toString)
   }
