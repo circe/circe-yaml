@@ -5,8 +5,10 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.circe/circe-yaml_2.12)
 
 This is a small library for parsing [YAML](https://yaml.org) into [circe](https://github.com/circe/circe)'s `Json` AST.
- * For parsing YAML 1.1 it uses [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml).
- * For parsing YAML 1.2 it uses [snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine).
+You can choose from multiple YAML backends:
+ * `circe-yaml`: For parsing YAML 1.1 it uses [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml).
+ * `circe-yaml-v12`: For parsing YAML 1.2 it uses [snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine).
+ * `circe-yaml-scalayaml`: For parsing YAML on Scala.js or Scala Native (as well as Scala/JVM) it uses [scala-yaml](https://github.com/VirtusLab/scala-yaml).
 
 ## Why?
 
@@ -24,11 +26,15 @@ The artifact is hosted by Sonatype, and release versions are synced to Maven Cen
 
 For YAML 1.1
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml" % "0.14.2"
+libraryDependencies += "io.circe" %% "circe-yaml" % "0.16.0"
 ```
 or for YAML 1.2
 ```scala
-libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.14.2"
+libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.16.0"
+```
+or for YAML on Scala.js or Scala Native (as well as Scala/JVM)
+```scala
+libraryDependencies += "io.circe" %% "circe-yaml-scalayaml" % "0.16.0"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
