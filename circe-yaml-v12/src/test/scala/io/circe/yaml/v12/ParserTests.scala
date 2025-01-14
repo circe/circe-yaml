@@ -122,7 +122,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     )
   }
 
-  it should "fail to parse too many aliases" in {
+  it should "fail to parse too many aliases" in
     assert(
       Parser
         .make(Parser.Config(maxAliasesForCollections = 1))
@@ -139,7 +139,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 
   "Parser.parseDocuments" should "fail on invalid tagged numbers" in {
     val result = parser.parseDocuments(new StringReader("!!int 12foo")).toList
@@ -250,7 +249,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     )
   }
 
-  it should "fail to parse when code point limit is exceeded" in {
+  it should "fail to parse when code point limit is exceeded" in
     assert(
       Parser
         .make(Parser.Config(codePointLimit = 13)) // 13B
@@ -262,5 +261,4 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 }

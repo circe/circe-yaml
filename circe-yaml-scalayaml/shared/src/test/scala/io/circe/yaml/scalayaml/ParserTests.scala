@@ -83,7 +83,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     )
   }
 
-  it should "parse aliases" in {
+  it should "parse aliases" in
     assert(
       Parser
         .parse(
@@ -99,7 +99,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
   "Parser.parseDocuments" should "fail on invalid tagged numbers" in {
     val result = parser.parseDocuments(new StringReader("!!int 12foo")).toList
@@ -177,7 +176,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     )
   }
 
-  it should "parse when within code point limit" in {
+  it should "parse when within code point limit" in
     assert(
       Parser // 1MB
         .parse(
@@ -189,6 +188,5 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
 }
