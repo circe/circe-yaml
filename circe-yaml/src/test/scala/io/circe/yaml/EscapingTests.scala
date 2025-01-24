@@ -54,10 +54,9 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
     repr(Try(parse(s))) shouldBe repr(Success(Right(json)))
   }
 
-  "Escaping" should "properly escape JSON string values (all chars)" in {
+  "Escaping" should "properly escape JSON string values (all chars)" in
     // exhaustive test: 65k test cases
     (Char.MinValue to Char.MaxValue).map(_.toChar).foreach(test1)
-  }
 
   def test2(s0: String): Unit = {
     val json = s0.asJson
@@ -66,11 +65,10 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
     parse(s1) shouldBe Right(json)
   }
 
-  it should "properly escape JSON string values" in {
+  it should "properly escape JSON string values" in
     forAll { (s0: String) =>
       test2(s0)
     }
-  }
 
   def test3(c: Char): Unit = {
     val m = Map(c.toString -> c.toInt)
@@ -79,8 +77,7 @@ class EscapingTests extends AnyFlatSpec with Matchers with ScalaCheckDrivenPrope
     parser.parse(printer.print(o)).right.flatMap(_.as[Map[String, Int]]) shouldBe Right(m)
   }
 
-  it should "properly escape JSON object keys" in {
+  it should "properly escape JSON object keys" in
     // exhaustive test: 65k test cases
     (Char.MinValue to Char.MaxValue).map(_.toChar).foreach(test3)
-  }
 }
