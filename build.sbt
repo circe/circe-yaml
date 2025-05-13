@@ -14,7 +14,7 @@ val Versions = new {
   val snakeYamlEngine = "2.7"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
 
-  val scala213 = "2.13.14"
+  val scala213 = "2.13.16"
   val scala3 = "3.3.6"
 
   val scalaVersions = Seq(scala213, scala3)
