@@ -27,11 +27,10 @@ import java.io.StringReader
 class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
-  "Parser.parse" should "fail on invalid tagged numbers" in {
+  "Parser.parse" should "fail on invalid tagged numbers" in
     assert(parser.parse("!!int 12foo").isLeft)
-  }
 
-  it should "fail to parse complex keys" in {
+  it should "fail to parse complex keys" in
     assert(
       parser
         .parse("""
@@ -41,9 +40,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
       """.stripMargin)
         .isLeft
     )
-  }
 
-  it should "fail to parse invalid YAML" in {
+  it should "fail to parse invalid YAML" in
     assert(
       parser
         .parse(
@@ -51,9 +49,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 
-  it should "parse yes as true" in {
+  it should "parse yes as true" in
     assert(
       parser
         .parse(
@@ -61,9 +58,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "parse hexadecimal" in {
+  it should "parse hexadecimal" in
     assert(
       parser
         .parse(
@@ -71,9 +67,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .contains(Seq(0xff, 0xff, 0xabcd).asJson)
     )
-  }
 
-  it should "parse decimal with underscore breaks" in {
+  it should "parse decimal with underscore breaks" in
     assert(
       parser
         .parse(
@@ -81,9 +76,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .contains(Map("foo" -> 1000000).asJson)
     )
-  }
 
-  it should "parse empty string as false" in {
+  it should "parse empty string as false" in
     assert(
       parser
         .parse(
@@ -91,9 +85,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .value == Json.False
     )
-  }
 
-  it should "parse blank string as false" in {
+  it should "parse blank string as false" in
     assert(
       parser
         .parse(
@@ -101,9 +94,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .value == Json.False
     )
-  }
 
-  it should "parse aliases" in {
+  it should "parse aliases" in
     assert(
       Parser(maxAliasesForCollections = 2)
         .parse(
@@ -119,9 +111,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "fail to parse too many aliases" in {
+  it should "fail to parse too many aliases" in
     assert(
       Parser(maxAliasesForCollections = 1)
         .parse(
@@ -137,7 +128,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 
   "Parser.parseDocuments" should "fail on invalid tagged numbers" in {
     val result = parser.parseDocuments(new StringReader("!!int 12foo")).toList
@@ -232,7 +222,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     assert(result.head.isLeft)
   }
 
-  it should "parse when within depth limits" in {
+  it should "parse when within depth limits" in
     assert(
       Parser(nestingDepthLimit = 3)
         .parse(
@@ -244,9 +234,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "fail to parse when depth limit is exceeded" in {
+  it should "fail to parse when depth limit is exceeded" in
     assert(
       Parser(nestingDepthLimit = 1)
         .parse(
@@ -258,9 +247,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 
-  it should "parse when within code point limit" in {
+  it should "parse when within code point limit" in
     assert(
       Parser(codePointLimit = 1 * 1024 * 1024) // 1MB
         .parse(
@@ -272,9 +260,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "fail to parse when code point limit is exceeded" in {
+  it should "fail to parse when code point limit is exceeded" in
     assert(
       Parser(codePointLimit = 13) // 13B
         .parse(
@@ -285,5 +272,4 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 }
