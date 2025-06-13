@@ -27,11 +27,10 @@ import java.io.StringReader
 class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
   // the laws should do a pretty good job of surfacing errors; these are mainly to ensure test coverage
 
-  "Parser.parse" should "fail on invalid tagged numbers" in {
+  "Parser.parse" should "fail on invalid tagged numbers" in
     assert(parser.parse("!!int 12foo").isLeft)
-  }
 
-  it should "fail to parse complex keys" in {
+  it should "fail to parse complex keys" in
     assert(
       parser
         .parse("""
@@ -41,9 +40,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
       """.stripMargin)
         .isLeft
     )
-  }
 
-  it should "fail to parse invalid YAML" in {
+  it should "fail to parse invalid YAML" in
     assert(
       parser
         .parse(
@@ -51,9 +49,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isLeft
     )
-  }
 
-  it should "parse yes as true" in {
+  it should "parse yes as true" in
     assert(
       parser
         .parse(
@@ -61,9 +58,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "parse hexadecimal" in {
+  it should "parse hexadecimal" in
     assert(
       parser
         .parse(
@@ -71,9 +67,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .contains(Seq(0xff, 0xff, 0xabcd).asJson)
     )
-  }
 
-  it should "parse decimal with underscore breaks" in {
+  it should "parse decimal with underscore breaks" in
     assert(
       parser
         .parse(
@@ -81,9 +76,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .contains(Map("foo" -> 1000000).asJson)
     )
-  }
 
-  it should "parse aliases" in {
+  it should "parse aliases" in
     assert(
       Parser
         .parse(
@@ -99,7 +93,6 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
   "Parser.parseDocuments" should "fail on invalid tagged numbers" in {
     val result = parser.parseDocuments(new StringReader("!!int 12foo")).toList
@@ -163,7 +156,7 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
     assert(result.head.isRight)
   }
 
-  it should "parse when within depth limits" in {
+  it should "parse when within depth limits" in
     assert(
       Parser
         .parse(
@@ -175,9 +168,8 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
-  it should "parse when within code point limit" in {
+  it should "parse when within code point limit" in
     assert(
       Parser // 1MB
         .parse(
@@ -189,6 +181,5 @@ class ParserTests extends AnyFlatSpec with Matchers with EitherValues {
         )
         .isRight
     )
-  }
 
 }

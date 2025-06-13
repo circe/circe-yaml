@@ -101,8 +101,8 @@ class ParserImpl(settings: LoadSettings) extends common.Parser {
       .catchNonFatal(node.getTag match {
         case Tag.INT if node.getValue.startsWith("0x") || node.getValue.contains("_") =>
           Json.fromJsonNumber(flattener.construct(node) match {
-            case int: Integer         => JsonLong(int.toLong)
-            case long: java.lang.Long => JsonLong(long)
+            case int: Integer                 => JsonLong(int.toLong)
+            case long: java.lang.Long         => JsonLong(long)
             case bigint: java.math.BigInteger =>
               JsonDecimal(bigint.toString)
             case other => throw new NumberFormatException(s"Unexpected number type: ${other.getClass}")
@@ -116,7 +116,7 @@ class ParserImpl(settings: LoadSettings) extends common.Parser {
             case b: java.lang.Boolean => b
             case _                    => throw new IllegalArgumentException(s"Invalid boolean string ${node.getValue}")
           })
-        case Tag.NULL => Json.Null
+        case Tag.NULL         => Json.Null
         case CustomTag(other) =>
           Json.fromJsonObject(JsonObject.singleton(other.stripPrefix("!"), Json.fromString(node.getValue)))
         case _ => Json.fromString(node.getValue)
