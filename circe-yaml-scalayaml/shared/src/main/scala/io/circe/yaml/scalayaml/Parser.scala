@@ -74,14 +74,14 @@ object Parser extends io.circe.yaml.common.Parser {
   private def scalarNodeToJson(node: Node.ScalarNode): Either[ParsingFailure, Json] = {
     val parsed = YamlDecoder.forAny.construct(node).left.map(errorToFailure)
     parsed.flatMap {
-      case null | None   => Json.Null.asRight
-      case value: String => Json.fromString(value).asRight
-      case value: Int    => Json.fromInt(value).asRight
+      case null | None    => Json.Null.asRight
+      case value: String  => Json.fromString(value).asRight
+      case value: Int     => Json.fromInt(value).asRight
       case double: Double =>
         Json.fromDouble(double).toRight(ParsingFailure(s"${node.value} cannot be represented as a JSON number.", null))
       case value: Boolean => Json.fromBoolean(value).asRight
       case value: Long    => Json.fromLong(value).asRight
-      case float: Float =>
+      case float: Float   =>
         Json.fromFloat(float).toRight(ParsingFailure(s"${node.value} cannot be represented as a JSON number.", null))
       case value: BigDecimal => Json.fromBigDecimal(value).asRight
       case value: BigInt     => Json.fromBigInt(value).asRight
