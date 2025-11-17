@@ -79,7 +79,7 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
   .settings(
     description := "Library for converting between scala-yaml AST and circe's AST",
     libraryDependencies ++= Seq(
-      "org.virtuslab" %%% "scala-yaml" % "0.3.0",
+      "org.virtuslab" %%% "scala-yaml" % "0.3.1",
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
     ),
     tlVersionIntroduced := List("2.13", "3").map(_ -> "0.15.3").toMap
