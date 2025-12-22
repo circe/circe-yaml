@@ -7,7 +7,7 @@ ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 val Versions = new {
   val circe = "0.14.14"
   val discipline = "1.7.0"
-  val scalaCheck = "1.18.1"
+  val scalaCheck = "1.19.0"
   val scalaTest = "3.2.18"
   val scalaTestPlus = "3.2.18.0"
   val snakeYaml = "2.2"
@@ -79,7 +79,7 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
   .settings(
     description := "Library for converting between scala-yaml AST and circe's AST",
     libraryDependencies ++= Seq(
-      "org.virtuslab" %%% "scala-yaml" % "0.3.0",
+      "org.virtuslab" %%% "scala-yaml" % "0.3.1",
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
     ),
     tlVersionIntroduced := List("2.13", "3").map(_ -> "0.15.3").toMap
