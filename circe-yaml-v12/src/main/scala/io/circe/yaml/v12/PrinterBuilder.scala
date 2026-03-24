@@ -26,6 +26,7 @@ import scala.collection.JavaConverters._
 final class PrinterBuilder private (
   preserveOrder: Boolean = false,
   dropNullKeys: Boolean = false,
+  dropEmptyKeys: Boolean = false,
   indent: Int = 2,
   maxScalarWidth: Int = 80,
   splitLines: Boolean = true,
@@ -44,6 +45,7 @@ final class PrinterBuilder private (
   private def copy(
     preserveOrder: Boolean = this.preserveOrder,
     dropNullKeys: Boolean = this.dropNullKeys,
+    dropEmptyKeys: Boolean = this.dropEmptyKeys,
     indent: Int = this.indent,
     maxScalarWidth: Int = this.maxScalarWidth,
     splitLines: Boolean = this.splitLines,
@@ -61,6 +63,7 @@ final class PrinterBuilder private (
     new PrinterBuilder(
       preserveOrder = preserveOrder,
       dropNullKeys = dropNullKeys,
+      dropEmptyKeys = dropEmptyKeys,
       indent = indent,
       maxScalarWidth = maxScalarWidth,
       splitLines = splitLines,
@@ -81,6 +84,9 @@ final class PrinterBuilder private (
 
   def withDropNullKeys(dropNullKeys: Boolean): PrinterBuilder =
     copy(dropNullKeys = dropNullKeys)
+  
+  def withDropEmptyKeys(dropEmptyKeys: Boolean): PrinterBuilder =
+    copy(dropEmptyKeys = dropEmptyKeys)
 
   def withIndent(indent: Int): PrinterBuilder =
     copy(indent = indent)
@@ -126,6 +132,7 @@ final class PrinterBuilder private (
       stringStyle,
       preserveOrder,
       dropNullKeys,
+      dropEmptyKeys,
       mappingStyle,
       sequenceStyle,
       DumpSettings
