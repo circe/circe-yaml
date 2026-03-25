@@ -17,6 +17,7 @@
 package io.circe.yaml.literal
 
 import org.virtuslab.yaml._
+
 import scala.reflect.macros.blackbox
 
 class YamlLiteralMacros(val c: blackbox.Context) {
