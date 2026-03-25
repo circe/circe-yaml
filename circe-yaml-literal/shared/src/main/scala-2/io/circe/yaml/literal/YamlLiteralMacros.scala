@@ -28,7 +28,7 @@ class YamlLiteralMacros(val c: blackbox.Context) {
       case Apply(_, List(Apply(_, parts))) =>
         parts.map {
           case Literal(Constant(part: String)) => part
-          case _ => c.abort(c.enclosingPosition, "Expected string literal parts")
+          case _                               => c.abort(c.enclosingPosition, "Expected string literal parts")
         }
       case _ => c.abort(c.enclosingPosition, "Expected a string interpolation")
     }
@@ -43,10 +43,7 @@ class YamlLiteralMacros(val c: blackbox.Context) {
       }
 
       val yamlString = applyStripMargin(
-        stringParts
-          .zipAll(replacements.map(_.placeholder), "", "")
-          .map { case (part, ph) => part + ph }
-          .mkString
+        stringParts.zipAll(replacements.map(_.placeholder), "", "").map { case (part, ph) => part + ph }.mkString
       )
 
       c.Expr[io.circe.Json](parseAndConvertWithReplacements(yamlString, replacements))
@@ -83,7 +80,7 @@ class YamlLiteralMacros(val c: blackbox.Context) {
       n =>
         n.toLong match {
           case Some(l) => q"_root_.io.circe.Json.fromLong($l)"
-          case None =>
+          case None    =>
             n.toBigDecimal match {
               case Some(bd) =>
                 val s = bd.toString
@@ -111,7 +108,7 @@ class YamlLiteralMacros(val c: blackbox.Context) {
     case Node.ScalarNode(value, _) =>
       findReplacement(value, placeholders) match {
         case Some(replacement) => encoderApply(replacement.arg)
-        case None              => liftJson(io.circe.yaml.scalayaml.Parser.parse(value).getOrElse(io.circe.Json.fromString(value)))
+        case None => liftJson(io.circe.yaml.scalayaml.Parser.parse(value).getOrElse(io.circe.Json.fromString(value)))
       }
     case Node.SequenceNode(nodes, _) =>
       val elements = nodes.map(n => nodeToTreeWithReplacements(n, placeholders))
