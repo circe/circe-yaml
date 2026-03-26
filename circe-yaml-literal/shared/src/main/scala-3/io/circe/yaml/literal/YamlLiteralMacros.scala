@@ -22,10 +22,10 @@ import io.circe.JsonNumber
 import io.circe.JsonObject
 import io.circe.KeyEncoder
 import io.circe.yaml.scalayaml.Parser
-import org.virtuslab.yaml._
+import org.virtuslab.yaml.*
 
 import java.util.UUID
-import scala.quoted._
+import scala.quoted.*
 
 object YamlLiteralMacros {
 
@@ -39,7 +39,7 @@ object YamlLiteralMacros {
 
     val argExprs: List[Expr[Any]] = args match {
       case Varargs(exprs) => exprs.toList
-      case _ => report.errorAndAbort("Expected literal arguments")
+      case _              => report.errorAndAbort("Expected literal arguments")
     }
 
     if (argExprs.isEmpty) {
@@ -54,10 +54,7 @@ object YamlLiteralMacros {
       }
 
       val yamlString = applyStripMargin(
-        stringParts
-          .zipAll(replacements.map(_.placeholder), "", "")
-          .map { case (part, ph) => part + ph }
-          .mkString
+        stringParts.zipAll(replacements.map(_.placeholder), "", "").map { case (part, ph) => part + ph }.mkString
       )
 
       parseAndConvertWithReplacements(yamlString, replacements)
@@ -103,7 +100,7 @@ object YamlLiteralMacros {
       n =>
         n.toLong match {
           case Some(l) => '{ Json.fromLong(${ Expr(l) }) }
-          case None =>
+          case None    =>
             n.toBigDecimal match {
               case Some(bd) =>
                 val s = bd.toString

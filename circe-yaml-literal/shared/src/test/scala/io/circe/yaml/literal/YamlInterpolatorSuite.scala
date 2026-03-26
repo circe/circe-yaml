@@ -162,6 +162,61 @@ fruits:
     result shouldBe Json.obj("name" -> Json.fromString("Bob"))
   }
 
+  it should "parse a complex nested structure with mappings and sequences" in {
+    val result = yaml"""
+      |server:
+      |  host: localhost
+      |  port: 8080
+      |  ssl: true
+      |  endpoints:
+      |    - path: /api/users
+      |      methods:
+      |        - GET
+      |        - POST
+      |      headers:
+      |        Content-Type: application/json
+      |        Accept: application/json
+      |    - path: /api/health
+      |      methods:
+      |        - GET
+      |      headers:
+      |        Accept: text/plain
+      |  limits:
+      |    maxConnections: 1000
+      |    timeout: 30.5
+      |    retries: null
+      """
+    result shouldBe Json.obj(
+      "server" -> Json.obj(
+        "host" -> Json.fromString("localhost"),
+        "port" -> Json.fromLong(8080L),
+        "ssl" -> Json.True,
+        "endpoints" -> Json.arr(
+          Json.obj(
+            "path" -> Json.fromString("/api/users"),
+            "methods" -> Json.arr(Json.fromString("GET"), Json.fromString("POST")),
+            "headers" -> Json.obj(
+              "Content-Type" -> Json.fromString("application/json"),
+              "Accept" -> Json.fromString("application/json")
+            )
+          ),
+          Json.obj(
+            "path" -> Json.fromString("/api/health"),
+            "methods" -> Json.arr(Json.fromString("GET")),
+            "headers" -> Json.obj(
+              "Accept" -> Json.fromString("text/plain")
+            )
+          )
+        ),
+        "limits" -> Json.obj(
+          "maxConnections" -> Json.fromLong(1000L),
+          "timeout" -> Json.fromDoubleOrNull(30.5),
+          "retries" -> Json.Null
+        )
+      )
+    )
+  }
+
   it should "parse YAML 1.2 boolean variants" in {
     yaml"true" shouldBe Json.True
     yaml"True" shouldBe Json.True

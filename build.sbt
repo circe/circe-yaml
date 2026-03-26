@@ -100,7 +100,7 @@ lazy val `circe-yaml-literal` = crossProject(JSPlatform, JVMPlatform, NativePlat
         Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
       else Nil
     },
-    tlVersionIntroduced := List("2.13", "3").map(_ -> "0.16.0").toMap
+    tlVersionIntroduced := List("2.13", "3").map(_ -> "0.16.2").toMap
   )
 
 ThisBuild / developers := List(
