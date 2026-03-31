@@ -87,7 +87,7 @@ final class PrinterBuilder private (
 
   def withDropNullKeys(dropNullKeys: Boolean): PrinterBuilder =
     copy(dropNullKeys = dropNullKeys)
-  
+
   def withDropEmptyKeys(dropEmptyKeys: Boolean): PrinterBuilder =
     copy(dropEmptyKeys = dropEmptyKeys)
 
