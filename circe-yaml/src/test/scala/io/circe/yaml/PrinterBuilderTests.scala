@@ -122,6 +122,15 @@ class PrinterBuilderTests extends AnyFreeSpec with Matchers {
     PrinterBuilder().withDropNullKeys(true).build().pretty(json) shouldEqual "nonNullField: foo\n"
   }
 
+  "Drop empty keys" in {
+    val json = Json.obj(
+      "emptyObject" -> Json.obj(),
+      "emptyArray" -> Json.arr(),
+      "nonEmptyField" -> Json.fromString("foo")
+    )
+    PrinterBuilder().withDropEmptyKeys(true).build().pretty(json) shouldEqual "nonEmptyField: foo\n"
+  }
+
   "Root integer" in {
     val json = Json.fromInt(10)
     PrinterBuilder.spaces2.pretty(json) shouldEqual "10\n"

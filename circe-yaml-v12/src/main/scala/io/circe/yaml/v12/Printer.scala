@@ -44,11 +44,12 @@ object Printer {
   def make(config: Config = Config()): common.Printer = {
     import config._
     new PrinterImpl(
-      stringStyle,
-      preserveOrder,
-      dropNullKeys,
-      mappingStyle,
-      sequenceStyle,
+      stringStyle = stringStyle,
+      preserveOrder = preserveOrder,
+      dropNullKeys = dropNullKeys,
+      dropEmptyKeys = false,
+      mappingStyle = mappingStyle,
+      sequenceStyle = sequenceStyle,
       DumpSettings
         .builder()
         .setIndent(indent)

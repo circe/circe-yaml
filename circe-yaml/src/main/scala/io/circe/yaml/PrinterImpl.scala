@@ -39,12 +39,30 @@ private class PrinterImpl(
   stringStyle: StringStyle,
   preserveOrder: Boolean,
   dropNullKeys: Boolean,
+  dropEmptyKeys: Boolean,
   mappingStyle: FlowStyle,
   sequenceStyle: FlowStyle,
   options: DumperOptions
 ) extends io.circe.yaml.common.Printer {
 
   import PrinterImpl.*
+
+  def this(
+    stringStyle: StringStyle,
+    preserveOrder: Boolean,
+    dropNullKeys: Boolean,
+    mappingStyle: FlowStyle,
+    sequenceStyle: FlowStyle,
+    options: DumperOptions
+  ) = this(
+    stringStyle = stringStyle,
+    preserveOrder = preserveOrder,
+    dropNullKeys = dropNullKeys,
+    dropEmptyKeys = false,
+    mappingStyle = mappingStyle,
+    sequenceStyle = sequenceStyle,
+    options = options
+  )
 
   def pretty(json: Json): String = {
     val rootTag = yamlTag(json)
@@ -81,7 +99,10 @@ private class PrinterImpl(
       val m = obj.toMap
       val childNodes = fields.flatMap { key =>
         val value = m(key)
-        if (!dropNullKeys || !value.isNull) Some(new NodeTuple(keyNode(key), jsonToYaml(value)))
+        val dropAsNull = dropNullKeys && value.isNull
+        val dropAsEmpty = dropEmptyKeys &&
+          (value.asObject.exists(_.isEmpty) || value.asArray.exists(_.isEmpty))
+        if (!dropAsNull && !dropAsEmpty) Some(new NodeTuple(keyNode(key), jsonToYaml(value)))
         else None
       }
       new MappingNode(
