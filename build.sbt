@@ -9,7 +9,7 @@ val Versions = new {
   val discipline = "1.7.0"
   val scalaCheck = "1.19.0"
   val scalaTest = "3.2.20"
-  val scalaTestPlus = "3.2.18.0"
+  val scalaTestPlus = "3.2.19.0"
   val snakeYaml = "2.2"
   val snakeYamlEngine = "2.7"
   val previousCirceYamls = Set("0.14.0", "0.14.1", "0.14.2")
@@ -52,7 +52,7 @@ lazy val `circe-yaml` = project
       "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-      "org.scalatestplus" %% "scalacheck-1-17" % Versions.scalaTestPlus % Test
+      "org.scalatestplus" %% "scalacheck-1-18" % Versions.scalaTestPlus % Test
     ),
     tlVersionIntroduced := List("2.13", "3").map(_ -> "0.14.3").toMap
   )
@@ -69,7 +69,7 @@ lazy val `circe-yaml-v12` = project
       "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
       "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
       "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-      "org.scalatestplus" %% "scalacheck-1-17" % Versions.scalaTestPlus % Test
+      "org.scalatestplus" %% "scalacheck-1-18" % Versions.scalaTestPlus % Test
     ),
     tlVersionIntroduced := List("2.13", "3").map(_ -> "0.14.3").toMap
   )
