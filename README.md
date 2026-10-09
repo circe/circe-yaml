@@ -9,6 +9,7 @@ You can choose from multiple YAML backends:
  * `circe-yaml`: For parsing YAML 1.1 it uses [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml).
  * `circe-yaml-v12`: For parsing YAML 1.2 it uses [snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine).
  * `circe-yaml-scalayaml`: For parsing YAML on Scala.js or Scala Native (as well as Scala/JVM) it uses [scala-yaml](https://github.com/VirtusLab/scala-yaml).
+ * `circe-yaml-literal`: A `yaml"..."` string interpolator with compile-time YAML validation and variable interpolation (cross-platform).
 
 ## Why?
 
@@ -35,6 +36,10 @@ libraryDependencies += "io.circe" %% "circe-yaml-v12" % "0.16.0"
 or for YAML on Scala.js or Scala Native (as well as Scala/JVM)
 ```scala
 libraryDependencies += "io.circe" %% "circe-yaml-scalayaml" % "0.16.0"
+```
+or for compile-time YAML string interpolation (cross-platform)
+```scala
+libraryDependencies += "io.circe" %% "circe-yaml-literal" % "0.16.0"
 ```
 
 Snapshot versions are available by adding the Sonatype Snapshots resolver:
@@ -132,6 +137,51 @@ with many options which control the `String` output. Its `pretty` method produce
 ```
 io.circe.yaml.Printer(dropNullKeys = true, mappingStyle = Printer.FlowStyle.Block)
   .pretty(json)
+```
+
+### String Interpolation
+
+The `circe-yaml-literal` module provides a `yaml` string interpolator with compile-time YAML validation, similar to
+`json"..."` from circe-literal:
+
+```scala
+import io.circe.yaml.literal._
+
+val json = yaml"""
+  |name: Alice
+  |age: 30
+  |tags:
+  |  - scala
+  |  - yaml
+  """
+```
+
+Invalid YAML is rejected at compile time:
+```scala
+val bad = yaml"foo: - bar"  // Compilation error: Invalid YAML
+```
+
+Variable interpolation is supported via circe's `Encoder` and `KeyEncoder`:
+```scala
+import io.circe.yaml.literal._
+
+val name = "Alice"
+val age = 30
+val json = yaml"""
+  |name: $name
+  |age: $age
+  """
+```
+
+The interpolator automatically applies `stripMargin` when it detects `|` characters at the start of lines, so you
+don't need to call `.stripMargin` manually. You can also use multiline strings without `|` — just keep consistent
+indentation:
+
+```scala
+val json = yaml"""
+  name: Alice
+  age: 30
+  """
 ```
 
 ### Limitations
