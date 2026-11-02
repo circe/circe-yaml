@@ -27,7 +27,8 @@ val root = tlCrossRootProject.aggregate(
   `circe-yaml-common`,
   `circe-yaml`,
   `circe-yaml-v12`,
-  `circe-yaml-scalayaml`
+  `circe-yaml-scalayaml`,
+  `circe-yaml-literal`
 )
 
 lazy val `circe-yaml-common` = crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -83,6 +84,23 @@ lazy val `circe-yaml-scalayaml` = crossProject(JSPlatform, JVMPlatform, NativePl
       "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
     ),
     tlVersionIntroduced := List("2.13", "3").map(_ -> "0.15.3").toMap
+  )
+
+lazy val `circe-yaml-literal` = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .dependsOn(`circe-yaml-common`, `circe-yaml-scalayaml`)
+  .settings(
+    description := "YAML string interpolator with compile-time validation for circe-yaml",
+    libraryDependencies ++= Seq(
+      "io.circe" %%% "circe-core" % Versions.circe,
+      "org.virtuslab" %%% "scala-yaml" % "0.3.1",
+      "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test
+    ),
+    libraryDependencies ++= {
+      if (scalaBinaryVersion.value == "2.13")
+        Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+      else Nil
+    },
+    tlVersionIntroduced := List("2.13", "3").map(_ -> "0.16.2").toMap
   )
 
 ThisBuild / developers := List(

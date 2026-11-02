@@ -108,11 +108,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
-        run: mkdir -p circe-yaml-v12/target circe-yaml-common/jvm/target circe-yaml-common/native/target circe-yaml-common/js/target circe-yaml/target circe-yaml-scalayaml/jvm/target circe-yaml-scalayaml/js/target circe-yaml-scalayaml/native/target project/target
+        run: mkdir -p circe-yaml-literal/native/target circe-yaml-v12/target circe-yaml-common/jvm/target circe-yaml-common/native/target circe-yaml-common/js/target circe-yaml/target circe-yaml-literal/js/target circe-yaml-scalayaml/jvm/target circe-yaml-literal/jvm/target circe-yaml-scalayaml/js/target circe-yaml-scalayaml/native/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
-        run: tar cf targets.tar circe-yaml-v12/target circe-yaml-common/jvm/target circe-yaml-common/native/target circe-yaml-common/js/target circe-yaml/target circe-yaml-scalayaml/jvm/target circe-yaml-scalayaml/js/target circe-yaml-scalayaml/native/target project/target
+        run: tar cf targets.tar circe-yaml-literal/native/target circe-yaml-v12/target circe-yaml-common/jvm/target circe-yaml-common/native/target circe-yaml-common/js/target circe-yaml/target circe-yaml-literal/js/target circe-yaml-scalayaml/jvm/target circe-yaml-literal/jvm/target circe-yaml-scalayaml/js/target circe-yaml-scalayaml/native/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
